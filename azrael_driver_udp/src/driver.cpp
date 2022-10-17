@@ -1,0 +1,165 @@
+#include <azrael_driver_udp/driver.h>
+
+using std::placeholders::_1;
+using namespace std::chrono_literals;
+
+
+
+azrael_driver::azrael_driver() : Node("azrael_driver")
+{
+
+    RCLCPP_INFO(this->get_logger(), "Constructor init");
+
+    if ( (sockfd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+        perror("socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    memset(&servaddr_, 0, sizeof(servaddr_));
+    memset(&cliaddr_ , 0, sizeof(cliaddr_));
+
+    // Filling server information 
+    servaddr_.sin_family    = AF_INET; // IPv4 
+    servaddr_.sin_addr.s_addr = inet_addr("192.169.1.2");
+    servaddr_.sin_port = htons(PORT);
+
+    cliaddr_.sin_family    = AF_INET; // IPv4 
+    cliaddr_.sin_addr.s_addr = inet_addr("192.169.1.1");
+    cliaddr_.sin_port = htons(PORT);
+
+    if ( bind(sockfd_, (const struct sockaddr *)&servaddr_,
+            sizeof(servaddr_)) < 0 )
+    {
+        perror("bind failed");
+        exit(EXIT_FAILURE);
+    }
+
+    const float samplingrate     = 50; // Hz
+    const float cutoff_frequency = 10; // Hz
+    fx.setup (samplingrate, cutoff_frequency);
+    fy.setup (samplingrate, cutoff_frequency);
+    fw.setup (samplingrate, cutoff_frequency);
+
+    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", 1);
+    timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
+    timer_udp_   = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_call, this));
+    cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
+
+    tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
+
+    current_time = std::chrono::high_resolution_clock::now();
+    last_time    = std::chrono::high_resolution_clock::now();
+
+    RCLCPP_INFO(this->get_logger(), "Constructor End");
+}
+    
+
+
+void azrael_driver::call_odom()
+{
+    // auto message = nav_msgs::msg::Odometry();
+    current_time = std::chrono::high_resolution_clock::now();
+
+    double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
+    {
+        std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+        this->velx_odom = ( -1 * this->v_wheels_[0] + this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.5);
+        this->vely_odom = (      this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.5);
+        this->velw_odom = (      this->v_wheels_[0] - this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius / ( 4 * lxy));
+    }
+
+    this->posx_odom += (this->velx_odom * cos(this->posw_odom) - this->vely_odom * sin(this->posw_odom)) * dt;
+    this->posy_odom += (this->velx_odom * sin(this->posw_odom) + this->vely_odom * cos(this->posw_odom)) * dt;
+    this->posw_odom += this->velw_odom * dt;
+
+    this->last_time = this->current_time;
+
+    message_odom.header.stamp =  this->get_clock()->now();
+    message_odom.child_frame_id  = "azrael/base_footprint";
+    message_odom.header.frame_id = "azrael/odom";
+
+    tf2::Quaternion q;
+    q.setRPY(0.0, 0.0, this->posw_odom);
+
+    message_odom.pose.pose.orientation.x = q.x();
+    message_odom.pose.pose.orientation.y = q.y();
+    message_odom.pose.pose.orientation.z = q.z();
+    message_odom.pose.pose.orientation.w = q.w();
+
+    message_odom.pose.pose.position.x = this->posx_odom;
+    message_odom.pose.pose.position.y = this->posy_odom;
+
+    message_odom.twist.twist.linear.x  = this->velx_odom;
+    message_odom.twist.twist.linear.y  = this->vely_odom;
+    message_odom.twist.twist.angular.z = this->velw_odom;
+
+    odom_pub_->publish(message_odom);
+
+    geometry_msgs::msg::TransformStamped t;
+    
+    t.header.stamp = this->get_clock()->now();
+    t.header.frame_id = "azrael/odom";
+    t.child_frame_id = "azrael/base_footprint";
+
+    t.transform.translation.x = this->posx_odom;
+    t.transform.translation.y = this->posy_odom;
+
+    t.transform.rotation.x = q.x();
+    t.transform.rotation.y = q.y();
+    t.transform.rotation.z = q.z();
+    t.transform.rotation.w = q.w();
+
+    tf_broadcaster_->sendTransform(t);
+
+}
+
+void azrael_driver::timer_udp_call()
+{
+    len_addr_ = sizeof(cliaddr_);
+    {
+        std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+        n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
+        // n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
+        //TODO contrl if delay after a long run
+        // RCLCPP_INFO_STREAM(this->get_logger(), "cme " << this->v_wheels_[0] << " " << this->v_wheels_[1] << " " << this->v_wheels_[2] << " " << this->v_wheels_[3] << "\n");
+
+    }
+
+    // std::unique_lock<std::mutex> lock2(v_robot_mutex_);
+    v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
+    v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
+    v_robot_[2] = std::clamp(v_robot_[2], -1 * vw_max_, vw_max_);
+    sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_DONTWAIT, (const struct sockaddr *) &cliaddr_, len_addr_);
+}
+
+void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
+{
+    std::unique_lock<std::mutex> lock3(v_robot_mutex_);
+    // this->v_robot_[0] = msg->linear.x;
+    // this->v_robot_[1] = msg->linear.y;
+    // this->v_robot_[2] = msg->angular.z;
+    this->v_robot_[0] = fx.filter(msg->linear.x);
+    this->v_robot_[1] = fy.filter(msg->linear.y);
+    this->v_robot_[2] = fw.filter(msg->angular.z);
+    // RCLCPP_INFO_STREAM(this->get_logger(), "cme " << this->v_robot_[0] << " " << this->v_robot_[1] << " " << this->v_robot_[2] << "\n");
+}
+
+
+
+
+int main(int argc, char * argv[])
+{
+  rclcpp::init(argc, argv);
+
+  std::cout << "Init\n" << std::flush;
+
+  rclcpp::executors::MultiThreadedExecutor exec ;
+  rclcpp::Node::SharedPtr node1 = std::make_shared<azrael_driver>();
+
+  exec.add_node(node1);
+  exec.spin();
+
+//   rclcpp::spin(std::make_shared<azrael_driver>());
+  rclcpp::shutdown();
+  return 0;
+}
