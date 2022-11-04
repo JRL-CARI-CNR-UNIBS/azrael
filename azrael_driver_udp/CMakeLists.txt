@@ -40,8 +40,13 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(TARGETS
-  azrael_driver_udp_node
+install(
+  TARGETS azrael_driver_udp_node
   DESTINATION lib/${PROJECT_NAME})
+
+  install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 ament_package()
