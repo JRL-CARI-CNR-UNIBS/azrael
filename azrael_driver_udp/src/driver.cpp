@@ -41,7 +41,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     fw.setup (samplingrate, cutoff_frequency);
 
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", 1);
-    timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
+    timer_odom_  = this->create_wall_timer(50ms, std::bind(&azrael_driver::call_odom, this));
     timer_udp_   = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_call, this));
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
@@ -74,7 +74,7 @@ void azrael_driver::call_odom()
 
     this->last_time = this->current_time;
 
-    message_odom.header.stamp =  this->get_clock()->now();
+    message_odom.hea+-der.stamp =  this->get_clock()->now();
     message_odom.child_frame_id  = "azrael/base_footprint";
     message_odom.header.frame_id = "azrael/odom";
 
