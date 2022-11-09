@@ -74,7 +74,7 @@ void azrael_driver::call_odom()
 
     this->last_time = this->current_time;
 
-    message_odom.hea+-der.stamp =  this->get_clock()->now();
+    message_odom.header.stamp =  this->get_clock()->now();
     message_odom.child_frame_id  = "azrael/base_footprint";
     message_odom.header.frame_id = "azrael/odom";
 
