@@ -134,13 +134,13 @@ void azrael_driver::timer_udp_call()
     }
 
     // std::unique_lock<std::mutex> lock2(v_robot_mutex_);
-    if((std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e6) < 50)
+    if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now();-last_cmd_).count() / 1e6) < 50)
     {
         v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
         v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
         v_robot_[2] = std::clamp(v_robot_[2], -1 * vw_max_, vw_max_);
     }
-    else if((std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e6) > 500)
+    else if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now();-last_cmd_).count() / 1e6) > 500)
     {
         v_robot_[0] = 0.0;
         v_robot_[1] = 0.0;
@@ -152,7 +152,7 @@ void azrael_driver::timer_udp_call()
         v_robot_[1] = v_robot_[1]/2.0;
         v_robot_[2] = v_robot_[2]/2.0;
     }
-    
+
     sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_DONTWAIT, (const struct sockaddr *) &cliaddr_, len_addr_);
 }
 
