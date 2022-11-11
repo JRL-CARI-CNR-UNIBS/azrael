@@ -139,19 +139,19 @@ def generate_launch_description():
         param_rewrites={'autostart': "True"},
         convert_types=True)
 
-    # lifecycle_nodes = ['controller_server',
-    #                    'smoother_server',
-    #                    'planner_server',
-    #                    'behavior_server',
-    #                    'bt_navigator',
-    #                    'map_server',
-    #                    'amcl'
-    #                    'waypoint_follower']
-    #                 #    'velocity_smoother']
+    lifecycle_nodes = [#'controller_server',
+                    #    'smoother_server',
+                    #    'planner_server',
+                    #    'behavior_server',
+                    #    'bt_navigator',
+                       'map_server',
+                       'amcl',]
+                    #    'waypoint_follower']
+                    #    'velocity_smoother']
 
-    lifecycle_nodes = ['map_server',
-                       'amcl',
-                       ]
+    # lifecycle_nodes = ['map_server',
+                    #    'amcl',
+                    #    ]
 
     load_nodes = GroupAction(
         actions=[PushRosNamespace('azrael'),
@@ -231,11 +231,11 @@ def generate_launch_description():
         # joint_state_publisher_node,
         map_server,
         amcl_node,
-        lf_manager,
-        # TimerAction(
-        #         period=2.0,
-        #         actions=[load_nodes],
-        #         ),
+
+        TimerAction(
+                period=2.0,
+                actions=[load_nodes,lf_manager],
+                ),
 
     ]
 

@@ -103,6 +103,8 @@ void azrael_driver::call_odom()
     message_odom.twist.twist.linear.y  = this->vely_odom;
     message_odom.twist.twist.angular.z = this->velw_odom;
 
+    RCLCPP_INFO_STREAM(this->get_logger(), "odom \n");
+
     odom_pub_->publish(message_odom);
 
     geometry_msgs::msg::TransformStamped t;
@@ -129,10 +131,6 @@ void azrael_driver::timer_udp_call()
     {
         std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
         n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
-        // n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
-        //TODO contrl if delay after a long run
-        // RCLCPP_INFO_STREAM(this->get_logger(), "cme " << this->v_wheels_[0] << " " << this->v_wheels_[1] << " " << this->v_wheels_[2] << " " << this->v_wheels_[3] << "\n");
-
     }
 
     // std::unique_lock<std::mutex> lock2(v_robot_mutex_);
