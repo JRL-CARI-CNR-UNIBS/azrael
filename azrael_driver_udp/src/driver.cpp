@@ -69,7 +69,7 @@ void azrael_driver::call_odom()
 {
     // auto message = nav_msgs::msg::Odometry();
     current_time = std::chrono::high_resolution_clock::now();
-
+    RCLCPP_INFO_STREAM(this->get_logger(), "odom 0 \n");
     double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
     {
         // std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
@@ -77,6 +77,8 @@ void azrael_driver::call_odom()
         this->vely_odom = (      this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.5);
         this->velw_odom = (      this->v_wheels_[0] - this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius / ( 4 * lxy));
     }
+
+    RCLCPP_INFO_STREAM(this->get_logger(), "odom 1 \n");
 
     this->posx_odom += (this->velx_odom * cos(this->posw_odom) - this->vely_odom * sin(this->posw_odom)) * dt;
     this->posy_odom += (this->velx_odom * sin(this->posw_odom) + this->vely_odom * cos(this->posw_odom)) * dt;
@@ -87,7 +89,7 @@ void azrael_driver::call_odom()
     message_odom.header.stamp =  this->get_clock()->now();
     message_odom.child_frame_id  = "azrael/base_footprint";
     message_odom.header.frame_id = "azrael/odom";
-
+    RCLCPP_INFO_STREAM(this->get_logger(), "odom  2 \n");
     tf2::Quaternion q;
     q.setRPY(0.0, 0.0, this->posw_odom);
 
@@ -103,15 +105,18 @@ void azrael_driver::call_odom()
     message_odom.twist.twist.linear.y  = this->vely_odom;
     message_odom.twist.twist.angular.z = this->velw_odom;
 
-    RCLCPP_INFO_STREAM(this->get_logger(), "odom \n");
+    RCLCPP_INFO_STREAM(this->get_logger(), "odom 4 \n");
 
     odom_pub_->publish(message_odom);
+
+    RCLCPP_INFO_STREAM(this->get_logger(), "odom 5 \n");
 
     geometry_msgs::msg::TransformStamped t;
     
     t.header.stamp = this->get_clock()->now();
-    t.header.frame_id = "azrael/odom";
     t.child_frame_id = "azrael/base_footprint";
+    t.header.frame_id = "azrael/odom";
+    
 
     t.transform.translation.x = this->posx_odom;
     t.transform.translation.y = this->posy_odom;
@@ -122,6 +127,8 @@ void azrael_driver::call_odom()
     t.transform.rotation.w = q.w();
 
     tf_broadcaster_->sendTransform(t);
+
+    RCLCPP_INFO_STREAM(this->get_logger(), "odom 6\n");
 
 }
 
