@@ -1,10 +1,10 @@
 amcl:
   ros__parameters:
-    alpha1: 0.2
-    alpha2: 0.2
-    alpha3: 0.2
-    alpha4: 0.2
-    alpha5: 0.2
+    alpha1: 0.005
+    alpha2: 0.005
+    alpha3: 0.01
+    alpha4: 0.005
+    alpha5: 0.003
     base_frame_id: "azrael/base_footprint"
     beam_skip_distance: 0.5
     beam_skip_error_threshold: 0.9

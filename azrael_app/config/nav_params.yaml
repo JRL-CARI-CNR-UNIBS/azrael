@@ -4,7 +4,7 @@ bt_navigator:
     use_sim_time: False
     global_frame: map
     robot_base_frame: azrael/base_footprint
-    odom_topic: /azrael/odom
+    odom_topic: odom
     default_bt_xml_filename: "navigate_w_replanning_distance.xml"
     # default_nav_to_pose_bt_xml: "/home/kolmogorov/Documents/2ROS/lampo_ws_ros2_rolling/install/nav2_bt_navigator/share/nav2_bt_navigator/behavior_trees/lampo.xml"
     bt_loop_duration: 10
@@ -71,7 +71,7 @@ controller_server:
     min_y_velocity_threshold: 0.0
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.0
-    odom_topic: /azrael/odom
+    odom_topic: odom
     progress_checker_plugin: "progress_checker"
     goal_checker_plugins: ["general_goal_checker"] 
     controller_plugins: ["FollowPath"]
@@ -92,20 +92,20 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
-      min_vel_x: -0.2
-      min_vel_y: 0.0
-      max_vel_x: 0.6
-      max_vel_y: 0.0
+      min_vel_x: -0.3
+      min_vel_y: -0.3
+      max_vel_x:  0.3
+      max_vel_y:  0.3
       max_vel_theta: 0.5
-      min_speed_xy:  0.0
-      max_speed_xy:  0.6
+      min_speed_xy:  -0.3
+      max_speed_xy:   0.3
       min_speed_theta: -0.5
-      acc_lim_x: 1.5
-      acc_lim_y: 0.0
-      acc_lim_theta: 2.0
-      decel_lim_x: -2.0
-      decel_lim_y:  0.0
-      decel_lim_theta: -2.2
+      acc_lim_x: 1.0
+      acc_lim_y: 1.0
+      acc_lim_theta: 1.0
+      decel_lim_x: -1.0
+      decel_lim_y:  1.0
+      decel_lim_theta: -1.0
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
@@ -148,7 +148,7 @@ local_costmap:
       width: 9
       height: 9
       resolution: 0.05
-      footprint: "[ [0.4, 0.3],[0.4, -0.3],[-0.4, -0.3],[-0.4, 0.3] ]"
+      footprint: "[ [0.45, 0.7],[0.45, -0.7],[-0.45, -0.7],[-0.45, 0.7] ]"
       origin_x: 33.0
       origin_y: 33.0
       plugins: ["obstacle_layer", "inflation_layer"]
@@ -161,7 +161,7 @@ local_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          sensor_frame: map
+          sensor_frame: azrael/laser
           topic: /azrael/scan
           obstacle_max_range: 3.5
           obstacle_min_range: 0.0
@@ -182,11 +182,13 @@ global_costmap:
     ros__parameters:
       update_frequency: 1.0
       publish_frequency: 1.0
+      height: 20
+      width: 20
       global_frame: map
       robot_base_frame: azrael/base_footprint
       map_topic: /azrael/map
       use_sim_time: False
-      footprint: "[ [0.4, 0.3],[0.4, -0.3],[-0.4, -0.3],[-0.4, 0.3] ]"
+      footprint: "[ [0.45, 0.7],[0.45, -0.7],[-0.45, -0.7],[-0.45, 0.7] ]"
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -195,7 +197,7 @@ global_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          sensor_frame: map
+          sensor_frame: azrael/laser
           topic: /azrael/scan
           max_obstacle_height: 2.0
           clearing: True

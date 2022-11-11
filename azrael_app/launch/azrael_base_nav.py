@@ -139,14 +139,14 @@ def generate_launch_description():
         param_rewrites={'autostart': "True"},
         convert_types=True)
 
-    lifecycle_nodes = [#'controller_server',
-                    #    'smoother_server',
-                    #    'planner_server',
-                    #    'behavior_server',
-                    #    'bt_navigator',
-                       'map_server',
-                       'amcl',]
-                    #    'waypoint_follower']
+    lifecycle_nodes = ['map_server',
+                       'amcl',
+                       'controller_server',
+                       'smoother_server',
+                       'planner_server',
+                       'behavior_server',
+                       'bt_navigator',
+                       'waypoint_follower']
                     #    'velocity_smoother']
 
     # lifecycle_nodes = ['map_server',
