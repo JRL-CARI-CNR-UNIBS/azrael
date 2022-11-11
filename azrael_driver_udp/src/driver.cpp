@@ -133,14 +133,14 @@ void azrael_driver::timer_udp_call()
         n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
     }
 
-    // std::unique_lock<std::mutex> lock2(v_robot_mutex_);
-    if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now();-last_cmd_).count() / 1e6) < 50)
+    std::unique_lock<std::mutex> lock2(v_robot_mutex_);
+    if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 50)
     {
         v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
         v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
         v_robot_[2] = std::clamp(v_robot_[2], -1 * vw_max_, vw_max_);
     }
-    else if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now();-last_cmd_).count() / 1e6) > 500)
+    else if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) > 500)
     {
         v_robot_[0] = 0.0;
         v_robot_[1] = 0.0;
