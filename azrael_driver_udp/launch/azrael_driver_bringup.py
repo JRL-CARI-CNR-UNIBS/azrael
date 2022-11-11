@@ -9,7 +9,6 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, TimerAction
 from launch.actions import LogInfo
 from launch_ros.actions import Node
-from nav2_common.launch import RewrittenYaml
 
 
 
