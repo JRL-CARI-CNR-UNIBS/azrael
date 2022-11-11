@@ -41,11 +41,13 @@ class azrael_driver : public rclcpp::Node
     void call_odom();
     void timer_udp_call();
 
+
     void cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
 
     const double radius = 0.1016;
     const double lxy    = 0.71;
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> last_cmd_ ;
 
     int sockfd_;
     double v_wheels_[4]  = {0.0,0.0,0.0,0.0};

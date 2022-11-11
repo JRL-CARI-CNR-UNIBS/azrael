@@ -51,7 +51,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
         qos_profile);
 
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
-    timer_odom_  = this->create_wall_timer(50ms, std::bind(&azrael_driver::call_odom, this));
+    timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
     timer_udp_   = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_call, this));
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
@@ -124,6 +124,7 @@ void azrael_driver::call_odom()
 
 }
 
+
 void azrael_driver::timer_udp_call()
 {
     len_addr_ = sizeof(cliaddr_);
@@ -133,21 +134,38 @@ void azrael_driver::timer_udp_call()
     }
 
     // std::unique_lock<std::mutex> lock2(v_robot_mutex_);
-    v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
-    v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
-    v_robot_[2] = std::clamp(v_robot_[2], -1 * vw_max_, vw_max_);
+    if((std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e6) < 50)
+    {
+        v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
+        v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
+        v_robot_[2] = std::clamp(v_robot_[2], -1 * vw_max_, vw_max_);
+    }
+    else if((std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e6) > 500)
+    {
+        v_robot_[0] = 0.0;
+        v_robot_[1] = 0.0;
+        v_robot_[2] = 0.0;
+    }
+    else
+    {
+        v_robot_[0] = v_robot_[0]/2.0;
+        v_robot_[1] = v_robot_[1]/2.0;
+        v_robot_[2] = v_robot_[2]/2.0;
+    }
+    
     sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_DONTWAIT, (const struct sockaddr *) &cliaddr_, len_addr_);
 }
 
 void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
+    last_cmd_ = std::chrono::high_resolution_clock::now();
     std::unique_lock<std::mutex> lock3(v_robot_mutex_);
-    // this->v_robot_[0] = msg->linear.x;
-    // this->v_robot_[1] = msg->linear.y;
-    // this->v_robot_[2] = msg->angular.z;
-    this->v_robot_[0] = fx.filter(msg->linear.x);
-    this->v_robot_[1] = fy.filter(msg->linear.y);
-    this->v_robot_[2] = fw.filter(msg->angular.z);
+    this->v_robot_[0] = msg->linear.x;
+    this->v_robot_[1] = msg->linear.y;
+    this->v_robot_[2] = msg->angular.z;
+    // this->v_robot_[0] = fx.filter(msg->linear.x);
+    // this->v_robot_[1] = fy.filter(msg->linear.y);
+    // this->v_robot_[2] = fw.filter(msg->angular.z);
     // RCLCPP_INFO_STREAM(this->get_logger(), "cme " << this->v_robot_[0] << " " << this->v_robot_[1] << " " << this->v_robot_[2] << "\n");
 }
 

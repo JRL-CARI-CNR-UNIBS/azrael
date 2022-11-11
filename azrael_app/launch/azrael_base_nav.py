@@ -231,10 +231,11 @@ def generate_launch_description():
         # joint_state_publisher_node,
         map_server,
         amcl_node,
+        load_nodes,
 
         TimerAction(
-                period=2.0,
-                actions=[load_nodes,lf_manager],
+                period=4.0,
+                actions=[lf_manager],
                 ),
 
     ]
