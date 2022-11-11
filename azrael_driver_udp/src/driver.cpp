@@ -72,7 +72,7 @@ void azrael_driver::call_odom()
 
     double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
     {
-        std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+        // std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
         this->velx_odom = ( -1 * this->v_wheels_[0] + this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.5);
         this->vely_odom = (      this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.5);
         this->velw_odom = (      this->v_wheels_[0] - this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius / ( 4 * lxy));
@@ -129,7 +129,7 @@ void azrael_driver::timer_udp_call()
 {
     len_addr_ = sizeof(cliaddr_);
     {
-        std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+        // std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
         n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
     }
 
