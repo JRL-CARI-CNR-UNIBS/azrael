@@ -134,7 +134,7 @@ void azrael_driver::timer_udp_call()
     }
 
     std::unique_lock<std::mutex> lock2(v_robot_mutex_);
-    if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 50)
+    if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 100)
     {
         v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
         v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
@@ -142,12 +142,14 @@ void azrael_driver::timer_udp_call()
     }
     else if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) > 500)
     {
+        RCLCPP_INFO_STREAM(this->get_logger(), "stopped\n");
         v_robot_[0] = 0.0;
         v_robot_[1] = 0.0;
         v_robot_[2] = 0.0;
     }
     else
     {
+        RCLCPP_INFO_STREAM(this->get_logger(), "Cmd too slow\n");
         v_robot_[0] = v_robot_[0]/2.0;
         v_robot_[1] = v_robot_[1]/2.0;
         v_robot_[2] = v_robot_[2]/2.0;
