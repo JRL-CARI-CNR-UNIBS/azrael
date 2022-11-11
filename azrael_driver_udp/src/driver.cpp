@@ -142,14 +142,14 @@ void azrael_driver::timer_udp_call()
     }
     else if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) > 1000)
     {
-        RCLCPP_INFO_STREAM(this->get_logger(), "stopped\n");
+        // RCLCPP_INFO_STREAM(this->get_logger(), "stopped\n");
         v_robot_[0] = 0.0;
         v_robot_[1] = 0.0;
         v_robot_[2] = 0.0;
     }
     else
     {
-        RCLCPP_INFO_STREAM(this->get_logger(), "Cmd too slow\n");
+        // RCLCPP_INFO_STREAM(this->get_logger(), "Cmd too slow\n");
         v_robot_[0] = v_robot_[0]/1.05;
         v_robot_[1] = v_robot_[1]/1.05;
         v_robot_[2] = v_robot_[2]/1.05;
