@@ -168,7 +168,8 @@ int main(int argc, char * argv[])
 
   std::cout << "Init\n" << std::flush;
 
-  rclcpp::executors::MultiThreadedExecutor exec ;
+//   rclcpp::executors::MultiThreadedExecutor exec ;
+rclcpp::executors::StaticSingleThreadedExecutor exec ;
   rclcpp::Node::SharedPtr node1 = std::make_shared<azrael_driver>();
 
   exec.add_node(node1);
