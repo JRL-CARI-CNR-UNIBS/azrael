@@ -38,7 +38,7 @@ def generate_launch_description():
                         'udp_ip': "1.1.1.1",
                         'tcp_port': 11,
                         'udp_port': 11,
-                        'scan_frequency': 10.0,
+                        'scan_frequency': 20.0,
                         'scan_mode': "Sensitivity"}],
 
         output='log')

@@ -159,6 +159,7 @@ local_costmap:
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
+        footprint_clearing_enabled: True
         observation_sources: scan
         scan:
           sensor_frame: azrael/laser
@@ -169,6 +170,7 @@ local_costmap:
           raytrace_min_range: 0.0
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
+          inf_is_valid: True
           clearing: True
           marking: True
           data_type: "LaserScan"
@@ -195,6 +197,7 @@ global_costmap:
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
+        footprint_clearing_enabled: True
         observation_sources: scan
         scan:
           sensor_frame: azrael/laser
@@ -202,6 +205,7 @@ global_costmap:
           max_obstacle_height: 2.0
           clearing: True
           marking: True
+          inf_is_valid: True
           data_type: "LaserScan"
           raytrace_max_range: 300.0
           raytrace_min_range: 0.0
