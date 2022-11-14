@@ -67,9 +67,9 @@ controller_server:
   ros__parameters:
     use_sim_time: False
     controller_frequency: 20.0
-    min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.001
-    min_theta_velocity_threshold: 0.001
+    min_x_velocity_threshold: 0.1
+    min_y_velocity_threshold: 0.02
+    min_theta_velocity_threshold: 0.01
     failure_tolerance: 0.0
     odom_topic: odom
     progress_checker_plugin: "progress_checker"
@@ -80,7 +80,7 @@ controller_server:
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
       required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      movement_time_allowance: 100.0
     
     general_goal_checker:
       stateful: True
@@ -92,13 +92,15 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
+      lookahead_time : 2
+      lookahead_dist : 1
       min_vel_x: -0.1
-      min_vel_y: -0.1
+      min_vel_y: -0.2
       max_vel_x:  0.1
-      max_vel_y:  0.1
+      max_vel_y:  0.2
       max_vel_theta: 0.3
-      min_speed_xy:  -0.1
-      max_speed_xy:   0.1
+      min_speed_xy:   0.05
+      max_speed_xy:   0.2
       min_speed_theta: -0.3
       acc_lim_x: 0.3
       acc_lim_y: 0.3
@@ -207,7 +209,7 @@ global_costmap:
           marking: True
           inf_is_valid: True
           data_type: "LaserScan"
-          raytrace_max_range: 300.0
+          raytrace_max_range: 30.0
           raytrace_min_range: 0.0
           obstacle_max_range: 25.0
           obstacle_min_range: 0.0
