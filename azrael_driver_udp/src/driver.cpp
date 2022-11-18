@@ -133,6 +133,8 @@ void azrael_driver::timer_udp_call()
         n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
     }
 
+    std::cout << v_wheels_[0] << " " << v_wheels_[1] << "\n";
+
     std::unique_lock<std::mutex> lock2(v_robot_mutex_);
     if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 200)
     {

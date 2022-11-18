@@ -35,10 +35,10 @@ def generate_launch_description():
     #     )
     # )
 
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #     'log_level', default_value='info',
-    #     description='log level'))
+    declared_arguments.append(
+        DeclareLaunchArgument(
+        'log_level', default_value='info',
+        description='log level'))
 
     log_level                = LaunchConfiguration('log_level')
     # description_package      = LaunchConfiguration("description_package")
