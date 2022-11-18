@@ -94,5 +94,5 @@ def generate_launch_description():
         robot_state_publisher_node_1
     ]
 
-    return LaunchDescription(nodes_to_start)
+    return LaunchDescription(declared_arguments + nodes_to_start)
 
