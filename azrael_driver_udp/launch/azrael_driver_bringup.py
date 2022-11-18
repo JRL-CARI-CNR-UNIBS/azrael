@@ -86,7 +86,7 @@ def generate_launch_description():
         executable="robot_state_publisher",
         namespace='azrael',
         output="log",
-        parameters=[robot_description_1,frame_prefix_param_1],
+        parameters=[robot_description_1,frame_prefix_param_1]()
 
     nodes_to_start = [
         rplidar,

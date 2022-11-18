@@ -72,7 +72,7 @@ def generate_launch_description():
     #     namespace='azrael',
     #     output="log",
     #     parameters=[robot_description_1,frame_prefix_param_1],
-    )
+    # )
 
 
     joint_state_publisher_node = Node(
