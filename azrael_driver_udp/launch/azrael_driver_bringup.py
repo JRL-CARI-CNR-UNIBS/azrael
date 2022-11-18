@@ -46,6 +46,7 @@ def generate_launch_description():
     rplidar =   Node(
             name='sllidar_ros2',
             package='sllidar_ros2',
+            namespace='azrael',
             executable='sllidar_node',
             output='screen',
             parameters=[{
