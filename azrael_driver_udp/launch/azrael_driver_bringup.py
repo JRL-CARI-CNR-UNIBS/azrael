@@ -23,25 +23,41 @@ def generate_launch_description():
         executable="azrael_driver_udp_node",
         output="log")
 
-    rplidar = Node(
-        package='rplidar_ros2',
-        executable='rplidar_scan_publisher',
-        namespace='azrael',
-        name='rplidar_scan_publisher',
-        parameters=[{'serial_port': "/dev/ttyUSB0", 
-                        'serial_baudrate': 256000, 
-                        'frame_id': "azrael/laser",
-                        'inverted': False, 
-                        'angle_compensate': True, 
-                        'channel_type': "",
-                        'tcp_ip': "1.1.1.1",
-                        'udp_ip': "1.1.1.1",
-                        'tcp_port': 11,
-                        'udp_port': 11,
-                        'scan_frequency': 10.0,
-                        'scan_mode': "Sensitivity"}],
+    # rplidar = Node(
+    #     package='rplidar_ros2',
+    #     executable='rplidar_scan_publisher',
+    #     namespace='azrael',
+    #     name='rplidar_scan_publisher',
+    #     parameters=[{'serial_port': "/dev/ttyUSB0", 
+    #                     'serial_baudrate': 256000, 
+    #                     'frame_id': "azrael/laser",
+    #                     'inverted': False, 
+    #                     'angle_compensate': True, 
+    #                     'channel_type': "",
+    #                     'tcp_ip': "1.1.1.1",
+    #                     'udp_ip': "1.1.1.1",
+    #                     'tcp_port': 11,
+    #                     'udp_port': 11,
+    #                     'scan_frequency': 10.0,
+    #                     'scan_mode': "Sensitivity"}],
 
-        output='log')
+    #     output='log')
+
+
+    rplidar =   Node(
+            name='rplidar_composition',
+            package='rplidar_ros',
+            executable='rplidar_composition',
+            output='screen',
+            parameters=[{
+                'serial_port': '/dev/ttyUSB0',
+                'serial_baudrate': 256000,  # A3
+                'frame_id': 'azrael/laser',
+                'inverted': False,
+                'angle_compensate': True,
+                'scan_mode': 'Sensitivity',
+            }],
+        )
 
 
     nodes_to_start = [
