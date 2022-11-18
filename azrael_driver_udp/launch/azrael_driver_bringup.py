@@ -43,11 +43,10 @@ def generate_launch_description():
 
     #     output='log')
 
-
     rplidar =   Node(
-            name='rplidar_composition',
-            package='rplidar_ros',
-            executable='rplidar_composition',
+            name='sllidar_ros2',
+            package='sllidar_ros2',
+            executable='sllidar_node',
             output='screen',
             parameters=[{
                 'serial_port': '/dev/ttyUSB0',
