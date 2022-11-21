@@ -39,7 +39,8 @@ class azrael_driver : public rclcpp::Node
 
   private:
     void call_odom();
-    void timer_udp_call();
+    void timer_udp_receive();
+    void timer_udp_send();
 
 
     void cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
@@ -75,7 +76,7 @@ class azrael_driver : public rclcpp::Node
     int  n_out_;
     unsigned int len_addr_ = sizeof(cliaddr_) ;
 
-    rclcpp::TimerBase::SharedPtr                               timer_odom_, timer_udp_;
+    rclcpp::TimerBase::SharedPtr                               timer_odom_, timer_udp_rec, timer_udp_send;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr      odom_pub_;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
 

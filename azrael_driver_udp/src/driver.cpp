@@ -52,7 +52,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
-    timer_udp_   = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_call, this));
+    timer_udp_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
+    timer_udp_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
@@ -124,15 +125,20 @@ void azrael_driver::call_odom()
 
 }
 
-
-void azrael_driver::timer_udp_call()
+void azrael_driver::timer_udp_receive()
 {
     len_addr_ = sizeof(cliaddr_);
     {
         std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-        n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_DONTWAIT, ( struct sockaddr *) &cliaddr_,  &len_addr_);
+        n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_WAITALL, ( struct sockaddr *) &cliaddr_,  &len_addr_);
     }
+}
 
+
+void azrael_driver::timer_udp_send()
+{
+
+    {
     std::unique_lock<std::mutex> lock2(v_robot_mutex_);
     if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 200)
     {
