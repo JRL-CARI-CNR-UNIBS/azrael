@@ -64,8 +64,6 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     RCLCPP_INFO(this->get_logger(), "Constructor End");
 }
     
-
-
 void azrael_driver::call_odom()
 {
     // auto message = nav_msgs::msg::Odometry();
@@ -134,7 +132,6 @@ void azrael_driver::timer_udp_receive()
     }
 }
 
-
 void azrael_driver::timer_udp_send()
 {
 
@@ -161,7 +158,7 @@ void azrael_driver::timer_udp_send()
         v_robot_[2] = v_robot_[2]/1.05;
     }
 
-    sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_DONTWAIT, (const struct sockaddr *) &cliaddr_, len_addr_);
+    sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
 }
 
 void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
