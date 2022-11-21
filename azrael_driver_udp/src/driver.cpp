@@ -52,8 +52,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
-    timer_udp_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
-    timer_udp_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
+    timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
+    timer_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
@@ -138,7 +138,7 @@ void azrael_driver::timer_udp_receive()
 void azrael_driver::timer_udp_send()
 {
 
-    {
+    
     std::unique_lock<std::mutex> lock2(v_robot_mutex_);
     if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 200)
     {
