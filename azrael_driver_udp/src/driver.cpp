@@ -52,14 +52,21 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
-    timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
-    timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
+    // timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
+    // timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
+    
+    std::thread t1(&azrael_driver::timer_udp_send, this);
+    std::thread t2(&azrael_driver::timer_udp_receive, this);
+
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
     current_time = std::chrono::high_resolution_clock::now();
     last_time    = std::chrono::high_resolution_clock::now();
+
+    t1.join();
+    t2.join();
 
     RCLCPP_INFO(this->get_logger(), "Constructor End");
 }
@@ -159,6 +166,7 @@ void azrael_driver::timer_udp_send()
     }
 
     sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
+    std::this_thread::sleep_for(std::chrono::microseconds(20000));
 }
 
 void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
