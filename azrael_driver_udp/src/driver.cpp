@@ -132,41 +132,48 @@ void azrael_driver::call_odom()
 
 void azrael_driver::timer_udp_receive()
 {
-    len_addr_ = sizeof(cliaddr_);
+    while(rclcpp::ok())
     {
-        std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-        n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_WAITALL, ( struct sockaddr *) &cliaddr_,  &len_addr_);
+        len_addr_ = sizeof(cliaddr_);
+        {
+            std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+            n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_WAITALL, ( struct sockaddr *) &cliaddr_,  &len_addr_);
+        }
     }
 }
 
 void azrael_driver::timer_udp_send()
 {
 
-    
-    std::unique_lock<std::mutex> lock2(v_robot_mutex_);
-    if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 200)
+    while(rclcpp::ok())
     {
-        v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
-        v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
-        v_robot_[2] = std::clamp(v_robot_[2], -1 * vw_max_, vw_max_);
-    }
-    else if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) > 1000)
-    {
-        // RCLCPP_INFO_STREAM(this->get_logger(), "stopped\n");
-        v_robot_[0] = 0.0;
-        v_robot_[1] = 0.0;
-        v_robot_[2] = 0.0;
-    }
-    else
-    {
-        // RCLCPP_INFO_STREAM(this->get_logger(), "Cmd too slow\n");
-        v_robot_[0] = v_robot_[0]/1.05;
-        v_robot_[1] = v_robot_[1]/1.05;
-        v_robot_[2] = v_robot_[2]/1.05;
-    }
+        {
+            std::unique_lock<std::mutex> lock2(v_robot_mutex_);
+            if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 200)
+            {
+                v_robot_[0] = std::clamp(v_robot_[0], -1 * vx_max_, vx_max_);
+                v_robot_[1] = std::clamp(v_robot_[1], -1 * vy_max_, vy_max_);
+                v_robot_[2] = std::clamp(v_robot_[2], -1 * vw_max_, vw_max_);
+            }
+            else if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) > 1000)
+            {
+                // RCLCPP_INFO_STREAM(this->get_logger(), "stopped\n");
+                v_robot_[0] = 0.0;
+                v_robot_[1] = 0.0;
+                v_robot_[2] = 0.0;
+            }
+            else
+            {
+                // RCLCPP_INFO_STREAM(this->get_logger(), "Cmd too slow\n");
+                v_robot_[0] = v_robot_[0]/1.05;
+                v_robot_[1] = v_robot_[1]/1.05;
+                v_robot_[2] = v_robot_[2]/1.05;
+            }
 
-    sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
-    std::this_thread::sleep_for(std::chrono::microseconds(20000));
+            sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
+        }
+        std::this_thread::sleep_for(std::chrono::microseconds(20000));
+    }
 }
 
 void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
