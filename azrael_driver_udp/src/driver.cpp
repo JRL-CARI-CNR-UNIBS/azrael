@@ -36,8 +36,9 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     socket = new udp::socket(io_context);
     remote_endpoint = udp::endpoint(address::from_string(IPADDRESS_REMOTE), UDP_PORT);
-    socket->bind(udp::endpoint(address::from_string(IPADDRESS), UDP_PORT));
     socket->open(udp::v4());
+    socket->bind(udp::endpoint(address::from_string(IPADDRESS), UDP_PORT));
+    
 
     const float samplingrate     = 50; // Hz
     const float cutoff_frequency = 10; // Hz
