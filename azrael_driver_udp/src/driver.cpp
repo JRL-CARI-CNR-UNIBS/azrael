@@ -174,7 +174,7 @@ void azrael_driver::timer_udp_send()
 
             // sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
             boost::system::error_code ignored_error;
-            socket_.send_to(boost::asio::buffer(message),remote_endpoint_, 0, ignored_error);
+            socket_.send_to(boost::asio::buffer(v_robot_),remote_endpoint_, 0, ignored_error);
         }
         // std::this_thread::sleep_for(std::chrono::microseconds(20000));
     // }

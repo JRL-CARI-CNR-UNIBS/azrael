@@ -34,6 +34,8 @@
 
 #define PORT     44100
 
+using boost::asio::ip::udp;
+
 
 class azrael_driver : public rclcpp::Node
 {
