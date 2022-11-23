@@ -62,7 +62,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
     timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
-    // timer_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
+    timer_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
     
     // std::thread t1(&azrael_driver::timer_udp_send, this);
     // t2 = new std::thread(&azrael_driver::timer_udp_receive, this);
@@ -82,7 +82,6 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     
 void azrael_driver::call_odom()
 {
-    std::cout << "PD";
     current_time = std::chrono::high_resolution_clock::now();
     double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
     {
@@ -141,14 +140,14 @@ void azrael_driver::call_odom()
 
 void azrael_driver::timer_udp_receive()
 {
-    while(rclcpp::ok())
-    {
+    // while(rclcpp::ok())
+    // {
         {
-            // std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+            std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
             socket->receive_from(boost::asio::buffer(v_wheels_), local_endpoint);
-            std::this_thread::sleep_for(std::chrono::microseconds(20000));
+            // std::this_thread::sleep_for(std::chrono::microseconds(20000));
         }
-    }
+    // }
 
 }
 
