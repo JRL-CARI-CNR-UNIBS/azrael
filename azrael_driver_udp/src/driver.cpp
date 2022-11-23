@@ -82,7 +82,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     
 void azrael_driver::call_odom()
 {
-    // auto message = nav_msgs::msg::Odometry();
+    std::cout << "PD";
     current_time = std::chrono::high_resolution_clock::now();
     double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
     {
@@ -211,8 +211,8 @@ int main(int argc, char * argv[])
 
   std::cout << "Init\n" << std::flush;
 
-  rclcpp::executors::MultiThreadedExecutor exec ;
-    // rclcpp::executors::StaticSingleThreadedExecutor exec ;
+//   rclcpp::executors::MultiThreadedExecutor exec ;
+  rclcpp::executors::StaticSingleThreadedExecutor exec ;
   rclcpp::Node::SharedPtr node1 = std::make_shared<azrael_driver>();
 
   exec.add_node(node1);
