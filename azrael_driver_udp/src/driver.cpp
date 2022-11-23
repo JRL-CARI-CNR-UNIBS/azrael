@@ -143,10 +143,10 @@ void azrael_driver::timer_udp_receive()
 {
     while(rclcpp::ok())
     {
-        // {
+        {
             // std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
             socket->receive_from(boost::asio::buffer(v_wheels_), local_endpoint);
-        // }
+        }
     }
 
 }
@@ -184,7 +184,7 @@ void azrael_driver::timer_udp_send()
 
             auto sent = socket->send_to(boost::asio::buffer(v_robot_), remote_endpoint, 0, err);
         }
-        // std::this_thread::sleep_for(std::chrono::microseconds(20000));
+        std::this_thread::sleep_for(std::chrono::microseconds(20000));
     // }
 }
 
