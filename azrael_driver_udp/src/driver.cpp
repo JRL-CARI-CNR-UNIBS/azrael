@@ -61,8 +61,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
-    timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
-    timer_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
+    // timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
+    // timer_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
     
     // std::thread t1(&azrael_driver::timer_udp_send, this);
     // t2 = new std::thread(&azrael_driver::timer_udp_receive, this);
