@@ -91,7 +91,7 @@ class azrael_driver : public rclcpp::Node
 
     boost::asio::io_context io_context;
    
-    udp::socket socket;
+    udp::socket * socket;
     udp::endpoint remote_endpoint;
 
 
