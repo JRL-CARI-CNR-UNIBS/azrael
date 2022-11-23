@@ -36,8 +36,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     socket = new udp::socket socket(io_context);
     remote_endpoint = udp::endpoint(address::from_string(IPADDRESS_REMOTE), UDP_PORT);
-    socket.bind(udp::endpoint(address::from_string(IPADDRESS), UDP_PORT));
-    socket.open(udp::v4());
+    socket->bind(udp::endpoint(address::from_string(IPADDRESS), UDP_PORT));
+    socket->open(udp::v4());
 
     const float samplingrate     = 50; // Hz
     const float cutoff_frequency = 10; // Hz
@@ -146,7 +146,7 @@ void azrael_driver::timer_udp_receive()
     //     }
     // }
     std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-    socket.receive_from(boost::asio::buffer(v_wheels_), remote_endpoint);
+    socket->receive_from(boost::asio::buffer(v_wheels_), remote_endpoint);
 }
 
 void azrael_driver::timer_udp_send()
@@ -179,7 +179,7 @@ void azrael_driver::timer_udp_send()
 
             // sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
             boost::system::error_code err;
-            auto sent = socket.send_to(boost::asio::buffer(v_robot_), remote_endpoint, 0, err);
+            auto sent = socket->send_to(boost::asio::buffer(v_robot_), remote_endpoint, 0, err);
         }
         // std::this_thread::sleep_for(std::chrono::microseconds(20000));
     // }
