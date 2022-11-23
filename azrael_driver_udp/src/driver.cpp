@@ -33,6 +33,9 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     //     perror("bind failed");
     //     exit(EXIT_FAILURE);
     // }
+
+    udp::socket socket(io_context);
+    udp::endpoint remote_endpoint = udp::endpoint(address::from_string(IPADDRESS_REMOTE), UDP_PORT);
     socket.bind(udp::endpoint(address::from_string(IPADDRESS), UDP_PORT));
     socket.open(udp::v4());
 
