@@ -182,7 +182,7 @@ void azrael_driver::timer_udp_send()
             // sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
             boost::system::error_code err;
 
-            auto sent = socket->send_to(boost::asio::buffer(v_robot_), remote_endpoint, 0, err);
+            auto sent = socket->async_send_to(boost::asio::buffer(v_robot_), remote_endpoint, 0, err);
         }
         // std::this_thread::sleep_for(std::chrono::microseconds(20000));
     // }
