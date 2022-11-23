@@ -75,7 +75,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     last_time    = std::chrono::high_resolution_clock::now();
 
     // t1.join();
-    t2.join();
+    // t2.join();
 
     RCLCPP_INFO(this->get_logger(), "Constructor End");
 }
