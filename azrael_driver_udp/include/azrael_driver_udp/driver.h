@@ -32,9 +32,14 @@
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
-#define PORT     44100
+
+
+#define IPADDRESS "192.169.1.2"
+#define IPADDRESS_REMOTE "192.169.1.1"
+#define UDP_PORT 44100
 
 using boost::asio::ip::udp;
+using boost::asio::ip::address;
 
 
 class azrael_driver : public rclcpp::Node
@@ -84,9 +89,10 @@ class azrael_driver : public rclcpp::Node
     // int  n_out_;
     // unsigned int len_addr_ = sizeof(cliaddr_) ;
 
-    boost::asio::io_context io_context_;
-    udp::socket socket_;
-    udp::endpoint remote_endpoint_;
+    boost::asio::io_service io_service;
+    udp::socket socket(io_service);
+    udp::endpoint remote_endpoint = udp::endpoint(address::from_string(IPADDRESS_REMOTE), UDP_PORT);
+   
 
 
     rclcpp::TimerBase::SharedPtr                               timer_odom_, timer_rec, timer_send;
