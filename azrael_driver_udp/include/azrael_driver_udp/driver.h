@@ -112,6 +112,6 @@ class azrael_driver : public rclcpp::Node
     rclcpp::TimerBase::SharedPtr timer_;
 
     std::thread t1;
-    std::thread t2;
+    std::thread *t2;
 
 };
