@@ -36,6 +36,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     socket = new udp::socket(io_context);
     remote_endpoint = udp::endpoint(address::from_string(IPADDRESS_REMOTE), UDP_PORT);
+    local_endpoint = udp::endpoint(address::from_string(IPADDRESS_LOCAL), UDP_PORT);
     socket->open(udp::v4());
     // socket->bind(udp::endpoint(address::from_string(IPADDRESS), UDP_PORT));
     socket->bind(local_endpoint);

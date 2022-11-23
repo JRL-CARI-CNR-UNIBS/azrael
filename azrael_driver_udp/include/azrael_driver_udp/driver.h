@@ -34,7 +34,7 @@
 
 
 
-#define IPADDRESS "192.169.1.2"
+#define IPADDRESS_LOCAL "192.169.1.2"
 #define IPADDRESS_REMOTE "192.169.1.1"
 #define UDP_PORT 44100
 
