@@ -34,6 +34,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     //     exit(EXIT_FAILURE);
     // }
 
+    socket_ = udp::socket socket_(io_context_, udp::endpoint(udp::v4(), PORT));
+
     const float samplingrate     = 50; // Hz
     const float cutoff_frequency = 10; // Hz
     fx.setup (samplingrate, cutoff_frequency);
