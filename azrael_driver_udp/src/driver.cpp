@@ -151,6 +151,7 @@ void azrael_driver::timer_udp_receive()
     // }
     std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
     socket->receive_from(boost::asio::buffer(v_wheels_), local_endpoint);
+    std::cout << "received : " << v_wheels_[0] << "\n";
 }
 
 void azrael_driver::timer_udp_send()
@@ -183,10 +184,10 @@ void azrael_driver::timer_udp_send()
 
             // sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
             boost::system::error_code err;
-            std::cout << "Sending upd \n";
             boost::array<double, 3> send_buf  = {{ 0.1,0.1,0.1 }};
 
             auto sent = socket->send_to(boost::asio::buffer(send_buf), remote_endpoint, 0, err);
+            std::cout << "sent : " << send_buf[0] << "\n";
         }
         // std::this_thread::sleep_for(std::chrono::microseconds(20000));
     // }
