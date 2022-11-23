@@ -146,7 +146,7 @@ void azrael_driver::timer_udp_receive()
     //     }
     // }
     std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-    socket->receive_from(boost::asio::buffer(v_wheels_), remote_endpoint);
+    socket->receive_from(boost::asio::buffer(v_wheels_), local_endpoint);
 }
 
 void azrael_driver::timer_udp_send()

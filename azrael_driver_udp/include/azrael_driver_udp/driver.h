@@ -93,6 +93,7 @@ class azrael_driver : public rclcpp::Node
    
     udp::socket * socket;
     udp::endpoint remote_endpoint;
+    udp::endpoint local_endpoint;
 
 
     rclcpp::TimerBase::SharedPtr                               timer_odom_, timer_rec, timer_send;
