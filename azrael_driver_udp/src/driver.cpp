@@ -86,7 +86,7 @@ void azrael_driver::call_odom()
     current_time = std::chrono::high_resolution_clock::now();
     double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
     {
-        // std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+        std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
         this->velx_odom = ( -1 * this->v_wheels_[0] + this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
         this->vely_odom = (      this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
         this->velw_odom = (      this->v_wheels_[0] - this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius / ( 4 * lxy));
@@ -211,8 +211,8 @@ int main(int argc, char * argv[])
 
   std::cout << "Init\n" << std::flush;
 
-//   rclcpp::executors::MultiThreadedExecutor exec ;
-rclcpp::executors::StaticSingleThreadedExecutor exec ;
+  rclcpp::executors::MultiThreadedExecutor exec ;
+    // rclcpp::executors::StaticSingleThreadedExecutor exec ;
   rclcpp::Node::SharedPtr node1 = std::make_shared<azrael_driver>();
 
   exec.add_node(node1);
