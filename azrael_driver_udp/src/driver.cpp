@@ -10,29 +10,29 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     RCLCPP_INFO(this->get_logger(), "Constructor init");
 
-    if ( (sockfd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
-        perror("socket creation failed");
-        exit(EXIT_FAILURE);
-    }
+    // if ( (sockfd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+    //     perror("socket creation failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
-    memset(&servaddr_, 0, sizeof(servaddr_));
-    memset(&cliaddr_ , 0, sizeof(cliaddr_));
+    // memset(&servaddr_, 0, sizeof(servaddr_));
+    // memset(&cliaddr_ , 0, sizeof(cliaddr_));
 
-    // Filling server information 
-    servaddr_.sin_family    = AF_INET; // IPv4 
-    servaddr_.sin_addr.s_addr = inet_addr("192.169.1.2");
-    servaddr_.sin_port = htons(PORT);
+    // // Filling server information 
+    // servaddr_.sin_family    = AF_INET; // IPv4 
+    // servaddr_.sin_addr.s_addr = inet_addr("192.169.1.2");
+    // servaddr_.sin_port = htons(PORT);
 
-    cliaddr_.sin_family    = AF_INET; // IPv4 
-    cliaddr_.sin_addr.s_addr = inet_addr("192.169.1.1");
-    cliaddr_.sin_port = htons(PORT);
+    // cliaddr_.sin_family    = AF_INET; // IPv4 
+    // cliaddr_.sin_addr.s_addr = inet_addr("192.169.1.1");
+    // cliaddr_.sin_port = htons(PORT);
 
-    if ( bind(sockfd_, (const struct sockaddr *)&servaddr_,
-            sizeof(servaddr_)) < 0 )
-    {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
-    }
+    // if ( bind(sockfd_, (const struct sockaddr *)&servaddr_,
+    //         sizeof(servaddr_)) < 0 )
+    // {
+    //     perror("bind failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
     const float samplingrate     = 50; // Hz
     const float cutoff_frequency = 10; // Hz
@@ -52,11 +52,11 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
-    // timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
-    // timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
+    timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
+    timer_rec    = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_receive, this));
     
-    std::thread t1(&azrael_driver::timer_udp_send, this);
-    std::thread t2(&azrael_driver::timer_udp_receive, this);
+    // std::thread t1(&azrael_driver::timer_udp_send, this);
+    // std::thread t2(&azrael_driver::timer_udp_receive, this);
 
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
@@ -65,8 +65,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     current_time = std::chrono::high_resolution_clock::now();
     last_time    = std::chrono::high_resolution_clock::now();
 
-    t1.join();
-    t2.join();
+    // t1.join();
+    // t2.join();
 
     RCLCPP_INFO(this->get_logger(), "Constructor End");
 }
@@ -132,21 +132,23 @@ void azrael_driver::call_odom()
 
 void azrael_driver::timer_udp_receive()
 {
-    while(rclcpp::ok())
-    {
-        len_addr_ = sizeof(cliaddr_);
-        {
-            std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-            n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_WAITALL, ( struct sockaddr *) &cliaddr_,  &len_addr_);
-        }
-    }
+    // while(rclcpp::ok())
+    // {
+    //     len_addr_ = sizeof(cliaddr_);
+    //     {
+    //         std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+    //         n_out_ = recvfrom(sockfd_, (void *)v_wheels_, sizeof(double)*4, MSG_WAITALL, ( struct sockaddr *) &cliaddr_,  &len_addr_);
+    //     }
+    // }
+    std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
+    socket_.receive_from(boost::asio::buffer(v_wheels_), remote_endpoint_);
 }
 
 void azrael_driver::timer_udp_send()
 {
 
-    while(rclcpp::ok())
-    {
+    // while(rclcpp::ok())
+    // {
         {
             std::unique_lock<std::mutex> lock2(v_robot_mutex_);
             if((std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()-last_cmd_).count() / 1e6) < 200)
@@ -170,10 +172,12 @@ void azrael_driver::timer_udp_send()
                 v_robot_[2] = v_robot_[2]/1.05;
             }
 
-            sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
+            // sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
+            boost::system::error_code ignored_error;
+            socket_.send_to(boost::asio::buffer(message),remote_endpoint_, 0, ignored_error);
         }
-        std::this_thread::sleep_for(std::chrono::microseconds(20000));
-    }
+        // std::this_thread::sleep_for(std::chrono::microseconds(20000));
+    // }
 }
 
 void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg)

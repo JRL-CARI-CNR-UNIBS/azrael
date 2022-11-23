@@ -26,6 +26,11 @@
 #include "Iir.h"
 #include <algorithm>
 
+#include <ctime>
+#include <iostream>
+#include <string>
+#include <boost/array.hpp>
+#include <boost/asio.hpp>
 
 #define PORT     44100
 
@@ -50,7 +55,7 @@ class azrael_driver : public rclcpp::Node
 
     std::chrono::time_point<std::chrono::high_resolution_clock> last_cmd_ ;
 
-    int sockfd_;
+    
     double v_wheels_[4]  = {0.0,0.0,0.0,0.0};
     double v_robot_[3]   = {0.0,0.0,0.0};
 
@@ -71,10 +76,16 @@ class azrael_driver : public rclcpp::Node
     double vy_max_ = 0.4;
     double vw_max_ = 1.0;
 
-    struct sockaddr_in servaddr_, cliaddr_;
+    // int sockfd_;
+    // struct sockaddr_in servaddr_, cliaddr_;
 
-    int  n_out_;
-    unsigned int len_addr_ = sizeof(cliaddr_) ;
+    // int  n_out_;
+    // unsigned int len_addr_ = sizeof(cliaddr_) ;
+
+    boost::asio::io_context io_context_;
+    udp::socket socket_(io_context_, udp::endpoint(udp::v4(), PORT));
+    udp::endpoint remote_endpoint_;
+
 
     rclcpp::TimerBase::SharedPtr                               timer_odom_, timer_rec, timer_send;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr      odom_pub_;
