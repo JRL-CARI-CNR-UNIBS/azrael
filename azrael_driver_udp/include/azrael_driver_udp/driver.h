@@ -89,8 +89,9 @@ class azrael_driver : public rclcpp::Node
     // int  n_out_;
     // unsigned int len_addr_ = sizeof(cliaddr_) ;
 
-    boost::asio::io_service io_service;
-    udp::socket socket(io_service);
+    boost::asio::io_context io_context;
+
+    udp::socket socket(io_context);
     udp::endpoint remote_endpoint = udp::endpoint(address::from_string(IPADDRESS_REMOTE), UDP_PORT);
    
 
