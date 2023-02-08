@@ -95,14 +95,14 @@ def generate_launch_description():
 
     param_map = {'yaml_filename': map_yaml_file}
 
-    map_server = Node(
-            package='nav2_map_server',
-            executable='map_server',
-            name='map_server',
-            namespace='azrael',
-            output='screen',
-            parameters=[param_map],
-            )
+    # map_server = Node(
+    #         package='nav2_map_server',
+    #         executable='map_server',
+    #         name='map_server',
+    #         namespace='azrael',
+    #         output='screen',
+    #         parameters=[param_map],
+    #         )
 
     ##AMCL
 
@@ -139,19 +139,18 @@ def generate_launch_description():
         param_rewrites={'autostart': "True"},
         convert_types=True)
 
-    lifecycle_nodes = ['map_server',
-                       'amcl',
-                       'controller_server',
-                       'smoother_server',
-                       'planner_server',
-                       'behavior_server',
-                       'bt_navigator',
-                       'waypoint_follower']
-                    #    'velocity_smoother']
+    # lifecycle_nodes = [#'map_server',
+    #                    'amcl',
+    #                    'controller_server',
+    #                    'smoother_server',
+    #                    'planner_server',
+    #                    'behavior_server',
+    #                    'bt_navigator',
+    #                    'waypoint_follower']
+    #                 #    'velocity_smoother']
 
-    # lifecycle_nodes = ['map_server',
-                    #    'amcl',
-                    #    ]
+    lifecycle_nodes = ['amcl',
+                       ]
 
     load_nodes = GroupAction(
         actions=[PushRosNamespace('azrael'),
@@ -229,9 +228,9 @@ def generate_launch_description():
     nodes_to_start = [
         # robot_state_publisher_node_1,
         # joint_state_publisher_node,
-        map_server,
+        # map_server,
         amcl_node,
-        load_nodes,
+        # load_nodes,
 
         TimerAction(
                 period=4.0,

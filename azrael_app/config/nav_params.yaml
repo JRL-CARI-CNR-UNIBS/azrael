@@ -146,7 +146,7 @@ local_costmap:
       publish_frequency: 2.0
       global_frame: azrael/odom
       robot_base_frame: azrael/base_footprint
-      map_topic: /azrael/map
+      map_topic: /map
       use_sim_time: False
       rolling_window: true
       width: 9
@@ -192,7 +192,7 @@ global_costmap:
       width: 20
       global_frame: map
       robot_base_frame: azrael/base_footprint
-      map_topic: /azrael/map
+      map_topic: /map
       use_sim_time: False
       footprint: "[ [0.45, 0.7],[0.45, -0.7],[-0.45, -0.7],[-0.45, 0.7] ]"
       resolution: 0.05
