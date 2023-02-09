@@ -61,21 +61,35 @@ def generate_launch_description():
         executable="azrael_driver_udp_node",
         output="log")
 
-    rplidar =   Node(
-            name='sllidar_ros2',
-            package='sllidar_ros2',
-            namespace='azrael',
-            executable='sllidar_node',
+    # rplidar =   Node(
+    #         name='sllidar_ros2',
+    #         package='sllidar_ros2',
+    #         namespace='azrael',
+    #         executable='sllidar_node',
+    #         output='screen',
+    #         parameters=[{
+    #             'serial_port': '/dev/ttyUSB0',
+    #             'serial_baudrate': 256000,  # A3
+    #             'frame_id': 'azrael/laser',
+    #             'inverted': False,
+    #             'angle_compensate': True,
+    #             'scan_mode': 'Sensitivity',
+    #         }],
+    #     )
+
+    sick_scan_pkg_prefix = get_package_share_directory('sick_scan')
+    launchfile = os.path.basename(__file__)[:-3] # convert "<lidar_name>.launch.py" to "<lidar_name>.launch"
+    launch_file_path = os.path.join(sick_scan_pkg_prefix, 'launch/' + launchfile) # 'launch/sick_lms_1xx.launch')
+    node_arguments=[launch_file_path]
+
+
+    sick = Node(
+            package='sick_scan',
+            executable='sick_generic_caller',
             output='screen',
-            parameters=[{
-                'serial_port': '/dev/ttyUSB0',
-                'serial_baudrate': 256000,  # A3
-                'frame_id': 'azrael/laser',
-                'inverted': False,
-                'angle_compensate': True,
-                'scan_mode': 'Sensitivity',
-            }],
+            arguments=node_arguments
         )
+
 
     robot_description_1  = {"robot_description": robot_description_content}
     frame_prefix_param_1 = {"frame_prefix": ""}
@@ -89,7 +103,8 @@ def generate_launch_description():
         parameters=[robot_description_1,frame_prefix_param_1])
 
     nodes_to_start = [
-        rplidar,
+        # rplidar,
+        sick,
         azrael_driver_udp,
         robot_state_publisher_node_1
     ]

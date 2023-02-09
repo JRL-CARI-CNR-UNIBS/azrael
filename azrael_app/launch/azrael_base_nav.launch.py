@@ -12,6 +12,7 @@ from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
+from launch.conditions import IfCondition
 
 
 
@@ -19,71 +20,26 @@ def generate_launch_description():
 
     declared_arguments = []
 
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         "description_package",
-    #         default_value="azrael_description",
-    #         description="mobile manip description",
-    #     )
-    # )
-
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         "description_file",
-    #         default_value="system.urdf.xacro",
-    #         description="URDF/XACRO description file with the robot.",
-    #     )
-    # )
-
     declared_arguments.append(
         DeclareLaunchArgument(
         'log_level', default_value='info',
         description='log level'))
 
+    declared_arguments.append(
+            DeclareLaunchArgument(
+        'nav',
+        default_value='True',
+        description='Whether run nav too'))
+
+    declared_arguments.append(
+            DeclareLaunchArgument(
+        'map',
+        default_value='False',
+        description='Whether to pub map'))
+
     log_level                = LaunchConfiguration('log_level')
-    # description_package      = LaunchConfiguration("description_package")
-    # description_file         = LaunchConfiguration("description_file")
-
-    # robot_description_content = Command(
-    #     [
-    #         PathJoinSubstitution([FindExecutable(name="xacro")]),
-    #         " ",
-    #         PathJoinSubstitution([FindPackageShare(description_package), "urdf", description_file]),
-    #         # " ","safety_limits:=",safety_limits,
-    #         # " ","safety_pos_margin:=",safety_pos_margin,
-    #         # " ","safety_k_position:=",safety_k_position,
-    #         " ","name:=","azrael",
-    #         " ","ur_type:=","ur10",
-    #         " ","prefix:=","azrael/",
-    #         # " ","prefix_rc:=","azrael",
-    #         # " ","simulation_controllers:=",initial_joint_controllers_1,
-    #         # " ","use_fake_hardware:=",use_fake_hardware,
-    #         # " ","sim_gazebo:=",sim_gazebo,
-    #     ]
-    # )
-
-    # robot_description_1  = {"robot_description": robot_description_content}
-    # frame_prefix_param_1 = {"frame_prefix": ""}
-
-
-    # robot_state_publisher_node_1 = Node(
-    #     package="robot_state_publisher",
-    #     executable="robot_state_publisher",
-    #     namespace='azrael',
-    #     output="log",
-    #     parameters=[robot_description_1,frame_prefix_param_1],
-    # )
-
-
-    joint_state_publisher_node = Node(
-        package="joint_state_publisher",
-        # namespace='azrael',
-        executable="joint_state_publisher",
-        output="screen",
-        remappings=[
-            ("/robot_description", "/azrael/robot_description")
-        ]
-    )
+    nav                      = LaunchConfiguration('nav')
+    map                      = LaunchConfiguration('map')
 
 
     ##MAP
@@ -95,14 +51,15 @@ def generate_launch_description():
 
     param_map = {'yaml_filename': map_yaml_file}
 
-    # map_server = Node(
-    #         package='nav2_map_server',
-    #         executable='map_server',
-    #         name='map_server',
-    #         namespace='azrael',
-    #         output='screen',
-    #         parameters=[param_map],
-    #         )
+    map_server = Node(
+            package='nav2_map_server',
+            executable='map_server',
+            condition=IfCondition(map),
+            name='map_server',
+            output='screen',
+            parameters=[param_map],
+            remappings= [('/azrael/map', '/map'),('/azrael/map_metadata','/map_metadata')],
+            )
 
     ##AMCL
 
@@ -139,20 +96,20 @@ def generate_launch_description():
         param_rewrites={'autostart': "True"},
         convert_types=True)
 
-    # lifecycle_nodes = [#'map_server',
-    #                    'amcl',
-    #                    'controller_server',
-    #                    'smoother_server',
-    #                    'planner_server',
-    #                    'behavior_server',
-    #                    'bt_navigator',
-    #                    'waypoint_follower']
-    #                 #    'velocity_smoother']
+    lifecycle_nodes = ['controller_server',
+                       'smoother_server',
+                       'planner_server',
+                       'behavior_server',
+                       'bt_navigator',
+                       'waypoint_follower']
+                    #    'velocity_smoother']
 
-    lifecycle_nodes = ['amcl',
-                       ]
+    lifecycle_map  = ['map_server']
+    lifecycle_amcl = ['amcl']
+
 
     load_nodes = GroupAction(
+        condition=IfCondition(nav),
         actions=[PushRosNamespace('azrael'),
             Node(
                 package='nav2_controller',
@@ -219,19 +176,42 @@ def generate_launch_description():
             package='nav2_lifecycle_manager',
             executable='lifecycle_manager',
             name='lifecycle_manager_navigation',
+            condition=IfCondition(nav),
             namespace='azrael',
             output='screen',
             arguments=['--ros-args', '--log-level', log_level],
             parameters=[{'autostart': True},
                         {'node_names': lifecycle_nodes}])
 
-    nodes_to_start = [
-        # robot_state_publisher_node_1,
-        # joint_state_publisher_node,
-        # map_server,
-        amcl_node,
-        # load_nodes,
+    lf_manager_map = Node(
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager_navigation_map',
+            condition=IfCondition(map),
+            output='screen',
+            arguments=['--ros-args', '--log-level', log_level],
+            parameters=[{'autostart': True},
+                        {'node_names': lifecycle_map}])
 
+    lf_manager_amcl = Node(
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager_navigation_amcl',
+            namespace='azrael',
+            output='screen',
+            arguments=['--ros-args', '--log-level', log_level],
+            parameters=[{'autostart': True},
+                        {'node_names': lifecycle_amcl}])
+
+    nodes_to_start = [
+        map_server,
+        amcl_node,
+        load_nodes,
+
+        TimerAction(
+                period=2.0,
+                actions=[lf_manager_map,lf_manager_amcl],
+                ),
         TimerAction(
                 period=4.0,
                 actions=[lf_manager],
