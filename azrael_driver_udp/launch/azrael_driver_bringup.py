@@ -115,7 +115,7 @@ def generate_launch_description():
             {"read_timeout_millisec_startup"        : 120000},
             {"read_timeout_millisec_kill_node"      : 150000},
             {"client_authorization_pw"              :"F4724744"},
-            {"ros_qos"                              :"-1"}])
+            {"ros_qos"                              : -1}])
 
 
     robot_description_1  = {"robot_description": robot_description_content}
