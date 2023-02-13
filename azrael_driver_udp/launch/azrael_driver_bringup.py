@@ -88,6 +88,7 @@ def generate_launch_description():
             executable='sick_generic_caller',
             namespace='azrael',
             output='screen',
+            remappings= [('/azrael/sick_lms_1xx/scan', '/azrael/scan')],
             parameters=
             [{"intensity"                           : False},
             {"intensity_resolution_16bit"           : False},
@@ -97,7 +98,7 @@ def generate_launch_description():
             {"use_binary_protocol"                  : True},
             {"scanner_type"                         :"sick_lms_1xx"},
             {"hostname"                             :"192.170.1.1"},
-            {"cloud_topic"                          :"scan"},
+            {"cloud_topic"                          :"cloud"},
             {"port"                                 :"2112"},
             {"timelimit"                            : 5},
             {"min_intensity"                        : 0.0},
