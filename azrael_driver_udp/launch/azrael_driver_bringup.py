@@ -86,8 +86,10 @@ def generate_launch_description():
     sick = Node(
             package='sick_scan',
             executable='sick_generic_caller',
+            namespace='azrael',
             output='screen',
-            arguments=node_arguments
+            arguments=node_arguments,
+            # remappings= [('scan', '/azrael/cmd_vel')],
         )
 
 
