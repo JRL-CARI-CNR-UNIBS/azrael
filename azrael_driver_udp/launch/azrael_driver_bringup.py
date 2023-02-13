@@ -107,7 +107,7 @@ def generate_launch_description():
             {"scan_freq"                            : 50},
             {"ang_res"                              : 0.5},
             {"range_filter_handling"                : 0},
-            {"add_transform_xyz_rpy"                : [0,0,0,0,0,0]},
+            {"add_transform_xyz_rpy"                : "0,0,0,0,0,0"},
             {"add_transform_check_dynamic_updates"  : False},
             {"start_services"                       : True},
             {"message_monitoring_enabled"           : True},
