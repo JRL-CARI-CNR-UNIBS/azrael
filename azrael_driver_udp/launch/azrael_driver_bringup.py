@@ -104,7 +104,7 @@ def generate_launch_description():
             {"use_generation_timestamp"             : True},
             {"range_min"                            : 0.05},
             {"range_max"                            : 25.0},
-            {"scan_freq"                            : 50},
+            {"scan_freq"                            : 50.0},
             {"ang_res"                              : 0.5},
             {"range_filter_handling"                : 0},
             {"add_transform_xyz_rpy"                : "0,0,0,0,0,0"},
