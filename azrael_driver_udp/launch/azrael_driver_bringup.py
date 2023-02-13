@@ -91,8 +91,8 @@ def generate_launch_description():
             parameters=
             [{"intensity"                           : False},
             {"intensity_resolution_16bit"           : False},
-            {"min_ang"                              :"-2.35619"},
-            {"max_ang"                              :"2.35619"},
+            {"min_ang"                              : -2.35619},
+            {"max_ang"                              : 2.35619},
             {"frame_id"                             :"azrael/laser"},
             {"use_binary_protocol"                  : True},
             {"scanner_type"                         :"sick_lms_1xx"},
