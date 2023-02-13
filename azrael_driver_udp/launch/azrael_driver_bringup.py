@@ -88,9 +88,34 @@ def generate_launch_description():
             executable='sick_generic_caller',
             namespace='azrael',
             output='screen',
-            arguments=node_arguments,
-            # remappings= [('scan', '/azrael/cmd_vel')],
-        )
+            parameters=
+            [{"intensity"                           ,"False"},
+            {"intensity_resolution_16bit"           ,"False"},
+            {"min_ang"                              ,"-2.35619"},
+            {"max_ang"                              ,"2.35619"},
+            {"frame_id"                             ,"azrael/laser"},
+            {"use_binary_protocol"                  ,"true"},
+            {"scanner_type"                         ,"sick_lms_1xx"},
+            {"hostname"                             ,"192.170.1.1"},
+            {"cloud_topic"                          ,"scan"},
+            {"port"                                 ,"2112"},
+            {"timelimit"                            ,"5"},
+            {"min_intensity"                        ,"0.0"},
+            {"use_generation_timestamp"             ,"true"},
+            {"range_min"                            ,"0.05"},
+            {"range_max"                            ,"25.0"},
+            {"scan_freq"                            ,"50"},
+            {"ang_res"                              ,"0.5"},
+            {"range_filter_handling"                ,"0"},
+            {"add_transform_xyz_rpy"                ,"$(arg add_transform_xyz_rpy)"},
+            {"add_transform_check_dynamic_updates"  ,"$(arg add_transform_check_dynamic_updates)"},
+            {"start_services"                       ,"True"},
+            {"message_monitoring_enabled"           ,"True"},
+            {"read_timeout_millisec_default"        ,"5000"},
+            {"read_timeout_millisec_startup"        ,"120000"},
+            {"read_timeout_millisec_kill_node"      ,"150000"},
+            {"client_authorization_pw"              ,"F4724744"},
+            {"ros_qos"                              ,"-1"}])
 
 
     robot_description_1  = {"robot_description": robot_description_content}
