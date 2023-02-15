@@ -49,17 +49,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     fy.setup (samplingrate, cutoff_frequency);
     fw.setup (samplingrate, cutoff_frequency);
 
-    rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
-
-    //example1.cpp
-    auto qos = rclcpp::QoS(
-        rclcpp::QoSInitialization(
-        qos_profile.history,
-        qos_profile.depth
-        ),
-        qos_profile);
-
-    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
+    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::SensorDataQoS());
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
     timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
     timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
