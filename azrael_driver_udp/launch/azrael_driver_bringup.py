@@ -120,6 +120,19 @@ def generate_launch_description():
             {"ros_qos"                              : 4}])
 
 
+    laser_throttle = Node(
+            package='topic_tools',
+            executable='throttle',
+            namespace='azrael',
+            parameters=[{
+                'input_topic': 'scan',
+                'throttle_type': 'messages',
+                'msgs_per_sec': 2.0,
+                'output_topic': 'scan_rviz'
+            }],
+            arguments=['messages scan 2 scan_rviz'],
+            output='screen')
+
     robot_description_1  = {"robot_description": robot_description_content}
     frame_prefix_param_1 = {"frame_prefix": ""}
 
@@ -134,6 +147,7 @@ def generate_launch_description():
     nodes_to_start = [
         # rplidar,
         sick,
+        laser_throttle,
         azrael_driver_udp,
         robot_state_publisher_node_1
     ]
