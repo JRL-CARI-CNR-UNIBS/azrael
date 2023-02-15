@@ -116,6 +116,7 @@ def generate_launch_description():
             {"read_timeout_millisec_startup"        : 120000},
             {"read_timeout_millisec_kill_node"      : 15000000},
             {"client_authorization_pw"              :"F4724744"},
+            {"imu_enable"                           : False},
             {"ros_qos"                              : 4}])
 
 
