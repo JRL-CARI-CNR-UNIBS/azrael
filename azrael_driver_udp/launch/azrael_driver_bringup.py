@@ -114,7 +114,7 @@ def generate_launch_description():
             {"message_monitoring_enabled"           : True},
             {"read_timeout_millisec_default"        : 5000},
             {"read_timeout_millisec_startup"        : 120000},
-            {"read_timeout_millisec_kill_node"      : 150000},
+            {"read_timeout_millisec_kill_node"      : 15000000},
             {"client_authorization_pw"              :"F4724744"},
             {"ros_qos"                              : 4}])
 
