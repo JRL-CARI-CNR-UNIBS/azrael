@@ -5,17 +5,17 @@
   <xacro:include filename="$(find azrael_description)/urdf/azrael/azrael.xacro" />
   
   <xacro:arg name="name" default="ur"/>
-  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+  <xacro:include filename="$(find azrael_description)/urdf/ur_macro.xacro"/>
 
   <xacro:arg name="ur_type" default="ur10"/>
 
   <!-- parameters -->
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="prefix_rc" default="" />
-  <xacro:arg name="joint_limit_params" default="$(find ur_description)/config/$(arg ur_type)/joint_limits.yaml"/>
-  <xacro:arg name="kinematics_params" default="$(find ur_description)/config/$(arg ur_type)/default_kinematics.yaml"/>
-  <xacro:arg name="physical_params" default="$(find ur_description)/config/$(arg ur_type)/physical_parameters.yaml"/>
-  <xacro:arg name="visual_params" default="$(find ur_description)/config/$(arg ur_type)/visual_parameters.yaml"/>
+  <xacro:arg name="joint_limit_params" default="$(find azrael_description)/config/$(arg ur_type)/joint_limits.yaml"/>
+  <xacro:arg name="kinematics_params" default="$(find azrael_description)/config/$(arg ur_type)/default_kinematics.yaml"/>
+  <xacro:arg name="physical_params" default="$(find azrael_description)/config/$(arg ur_type)/physical_parameters.yaml"/>
+  <xacro:arg name="visual_params" default="$(find azrael_description)/config/$(arg ur_type)/visual_parameters.yaml"/>
   <xacro:arg name="transmission_hw_interface" default=""/>
   <xacro:arg name="safety_limits" default="false"/>
   <xacro:arg name="safety_pos_margin" default="0.15"/>
@@ -23,9 +23,6 @@
   <!-- ros2_control related parameters -->
   <xacro:arg name="headless_mode" default="false" />
   <xacro:arg name="robot_ip" default="0.0.0.0" />
-  <xacro:arg name="script_filename" default=""/>
-  <xacro:arg name="output_recipe_filename" default=""/>
-  <xacro:arg name="input_recipe_filename" default=""/>
   <!--   tool communication related parameters-->
   <xacro:arg name="use_tool_communication" default="false" />
   <xacro:arg name="tool_voltage" default="24" />
@@ -38,17 +35,12 @@
   <xacro:arg name="tool_tcp_port" default="54321" />
 
     <!-- Simulation parameters -->
-  <xacro:arg name="use_fake_hardware" default="true" />
+  <xacro:arg name="use_fake_hardware" default="false" />
   <xacro:arg name="fake_sensor_commands" default="false" />
   <xacro:arg name="sim_gazebo" default="false" />
   <xacro:arg name="sim_ignition" default="false" />
   <xacro:arg name="simulation_controllers" default="error_default" />
 
-  <!-- initial position for simulations (Fake Hardware, Gazebo, Ignition) -->
-  <xacro:arg name="initial_positions_file" default="$(find ur_description)/config/initial_positions.yaml"/>
-
-  <!-- convert to property to use substitution in function -->
-  <xacro:property name="initial_positions_file" default="$(arg initial_positions_file)"/>
 
   <xacro:property name="M_PI" value="3.14159"/>
 
@@ -75,7 +67,6 @@
     sim_gazebo="$(arg sim_gazebo)"
     sim_ignition="$(arg sim_ignition)"
     headless_mode="$(arg headless_mode)"
-    initial_positions="${xacro.load_yaml(initial_positions_file)}"
     use_tool_communication="$(arg use_tool_communication)"
     tool_voltage="$(arg tool_voltage)"
     tool_parity="$(arg tool_parity)"
@@ -86,9 +77,6 @@
     tool_device_name="$(arg tool_device_name)"
     tool_tcp_port="$(arg tool_tcp_port)"
     robot_ip="$(arg robot_ip)"
-    script_filename="$(arg script_filename)"
-    output_recipe_filename="$(arg output_recipe_filename)"
-    input_recipe_filename="$(arg input_recipe_filename)"
     >
     <origin xyz="0 0 0" rpy="0 0 0" />          
   </xacro:ur_robot>
@@ -97,7 +85,7 @@
   <joint name="$(arg prefix)lifter" type="fixed">
     <parent link="$(arg prefix)base_footprint"/>
     <child link="$(arg prefix)base_link"/>
-    <origin xyz="0 0 0.28" rpy=" 0 0 0"/>
+    <origin xyz="0.1 0 0.28" rpy=" 0 0 ${-M_PI/2}"/>
     <axis xyz="0 0 1"/>
   </joint>
 

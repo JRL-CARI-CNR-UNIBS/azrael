@@ -16,43 +16,6 @@ def generate_launch_description():
 
     declared_arguments = []
 
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "description_package",
-            default_value="azrael_description",
-            description="mobile manip description",
-        )
-    )
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "description_file",
-            default_value="system.urdf.xacro",
-            description="URDF/XACRO description file with the robot.",
-        )
-    )
-
-    description_package      = LaunchConfiguration("description_package")
-    description_file         = LaunchConfiguration("description_file")
-
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution([FindPackageShare(description_package), "urdf", description_file]),
-            # " ","safety_limits:=",safety_limits,
-            # " ","safety_pos_margin:=",safety_pos_margin,
-            # " ","safety_k_position:=",safety_k_position,
-            " ","name:=","azrael",
-            " ","ur_type:=","ur10",
-            " ","prefix:=","azrael/",
-            # " ","prefix_rc:=","azrael",
-            # " ","simulation_controllers:=",initial_joint_controllers_1,
-            # " ","use_fake_hardware:=",use_fake_hardware,
-            # " ","sim_gazebo:=",sim_gazebo,
-        ]
-    )
-
 
 
     azrael_driver_udp = Node(
@@ -133,23 +96,11 @@ def generate_launch_description():
             arguments=['messages scan 2 scan_rviz'],
             output='screen')
 
-    robot_description_1  = {"robot_description": robot_description_content}
-    frame_prefix_param_1 = {"frame_prefix": ""}
-
-
-    robot_state_publisher_node_1 = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        namespace='azrael',
-        output="log",
-        parameters=[robot_description_1,frame_prefix_param_1])
-
     nodes_to_start = [
         # rplidar,
         sick,
         laser_throttle,
         azrael_driver_udp,
-        robot_state_publisher_node_1
     ]
 
     return LaunchDescription(declared_arguments + nodes_to_start)

@@ -18,12 +18,6 @@
           <mass value="1000" />
           <inertia ixx="0.001" ixy="0.01" ixz="0.01" iyy="0.001" iyz="0.01" izz="0.001" />
       </inertial>
-      <collision>
-        <origin xyz="0 0 0.005" rpy="0 0 0" />
-        <geometry>
-          <box size="${base_x_size} ${base_y_size} 0.01"/>
-        </geometry>
-      </collision>
     </link>  
     <!-- Base link is the center of the robot's bottom plate -->
     <link name="${prefix}base_link_azrael">
@@ -55,13 +49,12 @@
       <xacro:insert_block name="origin"/> 
       <parent link="${prefix}base_footprint" />
       <child link="${prefix}base_link_azrael" />
-      <dynamics damping="0.7"/>
     </joint>
 
     <link name="${prefix}laser" />
     <joint name="${prefix}laser_joint" type="fixed">
       <!-- <origin xyz="0.0 -0.65 0.3" rpy="0 0 -${M_PI/2}" /> -->
-      <origin xyz="0.0 0.65 0.3" rpy="0 0 ${M_PI/2}" />
+      <origin xyz="0.65 0.0 0.3" rpy="0 0 0" />
       <parent link="${prefix}base_link_azrael" />
       <child link="${prefix}laser" />
     </joint>
