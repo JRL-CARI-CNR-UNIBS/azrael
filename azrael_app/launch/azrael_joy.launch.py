@@ -30,7 +30,7 @@ def generate_launch_description():
         executable='joy_node',
         name='joy_node',
         parameters=[{
-            'deadzone': 0.3,
+            'deadzone': 0.05,
             'autorepeat_rate': 20.0,
         }])
 

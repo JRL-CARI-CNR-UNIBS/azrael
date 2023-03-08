@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<robot name="eureca" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="tm12" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:include filename="$(find azrael_description)/urdf/azrael/azrael.xacro" />
   
