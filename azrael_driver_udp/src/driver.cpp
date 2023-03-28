@@ -167,9 +167,9 @@ void azrael_driver::timer_udp_send()
             else
             {
                 // RCLCPP_INFO_STREAM(this->get_logger(), "Cmd too slow\n");
-                v_robot_[0] = v_robot_[0]/1.05;
-                v_robot_[1] = v_robot_[1]/1.05;
-                v_robot_[2] = v_robot_[2]/1.05;
+                v_robot_[0] = v_robot_[0]/1.5;
+                v_robot_[1] = v_robot_[1]/1.5;
+                v_robot_[2] = v_robot_[2]/1.5;
             }
 
             // sendto(sockfd_, (const void *)v_robot_, sizeof(double)*3, MSG_WAITALL, (const struct sockaddr *) &cliaddr_, len_addr_);
