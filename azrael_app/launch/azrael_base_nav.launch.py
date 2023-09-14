@@ -203,10 +203,33 @@ def generate_launch_description():
             parameters=[{'autostart': True},
                         {'node_names': lifecycle_amcl}])
 
+    # robot_description_content = Command(
+    #     [
+    #         PathJoinSubstitution([FindExecutable(name="xacro")]),
+    #         " ",
+    #         PathJoinSubstitution([FindPackageShare("azrael_description"), "urdf", "system.urdf.xacro"]),
+    #         " ","name:=","azrael",
+    #         " ","ur_type:=","ur10",
+    #         " ","prefix:=","azrael/",
+    #     ]
+    # )
+
+    # robot_description = {"robot_description": robot_description_content}
+
+
+    # robot_state_publisher_node = Node(
+    #     package="robot_state_publisher",
+    #     executable="robot_state_publisher",
+    #     namespace='azrael',
+    #     output="screen",
+    #     parameters=[robot_description],
+    # )
+
     nodes_to_start = [
         map_server,
         amcl_node,
         load_nodes,
+        # robot_state_publisher_node,
 
         TimerAction(
                 period=2.0,

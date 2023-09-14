@@ -96,8 +96,31 @@ def generate_launch_description():
             arguments=['messages scan 2 scan_rviz'],
             output='screen')
 
+    robot_description_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution([FindPackageShare("azrael_description"), "urdf", "system.urdf.xacro"]),
+            " ","name:=","azrael",
+            " ","ur_type:=","ur10",
+            " ","prefix:=","azrael/",
+        ]
+    )
+
+    robot_description = {"robot_description": robot_description_content}
+
+
+    robot_state_publisher_node = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        namespace='azrael',
+        output="screen",
+        parameters=[robot_description],
+    )
+
     nodes_to_start = [
         # rplidar,
+        robot_state_publisher_node,
         sick,
         laser_throttle,
         azrael_driver_udp,
