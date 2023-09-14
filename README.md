@@ -1,6 +1,6 @@
 Collection of ROS2 packages for the Azrael mobile manipulator developed in STIIMA-CNR
 
-[![stiima](doc/azrael.jpeg)](https://www.stiima.cnr.it/)
+[![stiima](docs/azrael.jpeg)](https://www.stiima.cnr.it/)
 
 
 RPI4  : ubuntu@192.168.1.10(raspberry)
