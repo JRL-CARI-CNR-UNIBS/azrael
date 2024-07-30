@@ -1,5 +1,13 @@
 {
-    "files.associations": {
-        "chrono": "cpp"
-    }
+  "ros.distro": "humble",
+  "python.autoComplete.extraPaths": [
+    "/home/laplace/projects/impedance_ws/install/robotiq_ft_sensor_interfaces/local/lib/python3.10/dist-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/home/laplace/projects/impedance_ws/install/robotiq_ft_sensor_interfaces/local/lib/python3.10/dist-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ]
 }
