@@ -1,0 +1,27 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+    
+    joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - az_shoulder_pan_joint
+      - az_shoulder_lift_joint
+      - az_elbow_joint
+      - az_wrist_1_joint
+      - az_wrist_2_joint
+      - az_wrist_3_joint
+    
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+

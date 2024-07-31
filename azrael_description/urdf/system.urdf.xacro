@@ -26,8 +26,7 @@
   <xacro:arg name="gripper_ros2_control" default="false"/>
 
   <!-- parameters -->
-  <xacro:arg name="prefix" default="" />
-  <xacro:arg name="prefix_rc" default="" />
+  <xacro:arg name="prefix" default="az_" />
   <xacro:arg name="joint_limit_params" default="$(find azrael_description)/config/$(arg ur_type)/joint_limits.yaml"/>
   <xacro:arg name="kinematics_params" default="$(find azrael_description)/config/$(arg ur_type)/default_kinematics.yaml"/>
   <xacro:arg name="physical_params" default="$(find azrael_description)/config/$(arg ur_type)/physical_parameters.yaml"/>
@@ -63,7 +62,7 @@
   <xacro:azrael  prefix="$(arg prefix)">
     <origin xyz="0 0 0" rpy="0 0 0" />
   </xacro:azrael>
-
+  <!-- <link name="$(arg prefix)base_footprint"/> -->
 
    <!-- arm -->
   <xacro:ur_robot
@@ -94,27 +93,19 @@
     tool_tcp_port="$(arg tool_tcp_port)"
     robot_ip="$(arg robot_ip)"
     >
-    <origin xyz="0 0 0" rpy="0 0 0" />          
+    <origin xyz="0.0 0.1 0.28" rpy="0 0 0"/>
   </xacro:ur_robot>
 
-
-  <joint name="$(arg prefix)lifter" type="fixed">
-    <parent link="$(arg prefix)base_footprint"/>
-    <child link="$(arg prefix)base_link"/>
-    <origin xyz="0.0 0.1 0.28" rpy=" 0 0 0"/>
-    <axis xyz="0 0 1"/>
-  </joint>
-
-  <link name="tcp" />
+  <link name="$(arg prefix)tcp" />
   <joint name="$(arg prefix)tcpjoint" type="fixed">
     <parent link="$(arg prefix)tool0"/>
-    <child link="tcp"/>
+    <child link="$(arg prefix)tcp"/>
     <origin xyz="0.02 0.00 0.34" rpy=" 0 0 -${M_PI/2}"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <!-- <link name="camera_base" /> -->
-  <joint name="$(arg prefix)tcpcamera" type="fixed">
+  <!-- <joint name="$(arg prefix)tcpcamera" type="fixed">
     <parent link="tcp"/>
     <child link="camera_base"/>
     <origin xyz="0 0.31 -0.707" rpy=" 3.14 -0.785 1.571"/>
@@ -161,18 +152,18 @@
     <parent link="camera_base" />
     <child link="camera_visor" />
     <origin xyz="0. 0. 0." rpy="0. 0. 0." />
-  </joint>
+  </joint> -->
 
   <xacro:include filename="$(find robotiq_ft_sensor_description)/urdf/robotiq_ft300s.urdf.xacro"/>
-  <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_140_macro.urdf.xacro"/>
+  <!-- <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_140_macro.urdf.xacro"/> -->
 
   <xacro:robotiq_ft300s parent="tool0" tf_prefix="$(arg prefix)">
-    <origin xyz="0 0 -0.04875" rpy="0 0 0"/>
+    <origin xyz="0 0 ${-6.5/1000}" rpy="0 0 0"/>
   </xacro:robotiq_ft300s>
 
-  <xacro:robotiq_gripper name="azrael_gripper" prefix="$(arg prefix)" parent="$(arg prefix)robotiq_ft_frame_id" include_ros2_control="false">
+  <!-- <xacro:robotiq_gripper name="azrael_gripper" prefix="$(arg prefix)" parent="$(arg prefix)robotiq_ft_frame_id" include_ros2_control="false">
     <origin xyz="0 0 -0.00695" rpy="0 0 ${pi/2}"/>
-  </xacro:robotiq_gripper>
+  </xacro:robotiq_gripper> -->
 
   <xacro:include filename="tools.ros2_control.xacro"/>
   <xacro:tools_ros2_control prefix="$(arg prefix)" ft_sensor="$(arg ft_sensor_ros2_control)" gripper="$(arg gripper_ros2_control)"/>
