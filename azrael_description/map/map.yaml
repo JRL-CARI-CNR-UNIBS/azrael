@@ -1,7 +1,8 @@
-image: map.pgm
+image: i2ford.pgm
 mode: trinary
 resolution: 0.02
-origin: [-4.16, -8.14, 0]
+# origin: [-4.16, -8.14, 0]
+origin: [-6.220, -16.500, 0]
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.25

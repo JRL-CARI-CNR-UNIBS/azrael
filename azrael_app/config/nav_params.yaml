@@ -58,10 +58,10 @@ bt_navigator:
       - nav2_spin_cancel_bt_node
       - nav2_back_up_cancel_bt_node
       - nav2_drive_on_heading_cancel_bt_node
-      - nav2_are_error_codes_active_condition_bt_node
-      - nav2_would_a_controller_recovery_help_condition_bt_node
-      - nav2_would_a_planner_recovery_help_condition_bt_node
-      - nav2_would_a_smoother_recovery_help_condition_bt_node
+      # - nav2_are_error_codes_active_condition_bt_node
+      # - nav2_would_a_controller_recovery_help_condition_bt_node
+      # - nav2_would_a_planner_recovery_help_condition_bt_node
+      # - nav2_would_a_smoother_recovery_help_condition_bt_node
     error_code_names:
       - compute_path_error_code
       - follow_path_error_code
