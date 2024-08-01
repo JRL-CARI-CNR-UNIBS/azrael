@@ -39,7 +39,9 @@ def launch_setup(context):
     MoveItConfigsBuilder("azrael", package_name="azrael_moveit_config")
     .robot_description(file_path=robot_description_path, mappings=robot_description_args)
     .robot_description_semantic(file_path=srdf_path)
-    .planning_scene_monitor(publish_robot_description=True)
+    .planning_scene_monitor(publish_robot_description=False,
+                            publish_robot_description_semantic=True,
+                            publish_planning_scene=True)
     .planning_pipelines(default_planning_pipeline="ompl", pipelines=["ompl"])
     .joint_limits(file_path=joint_limits_path)
     .trajectory_execution(file_path=moveit_controllers_path)
