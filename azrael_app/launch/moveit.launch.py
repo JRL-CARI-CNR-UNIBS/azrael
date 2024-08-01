@@ -33,8 +33,6 @@ def launch_setup(context):
   joint_limits_path = PathJoinSubstitution([FindPackageShare("azrael_moveit_config"), "config", "joint_limits.yaml"]).perform(context)
   moveit_controllers_path = PathJoinSubstitution([FindPackageShare("azrael_moveit_config"), "config", "moveit_controllers.yaml"]).perform(context)
 
-  ros2_control_config_path = PathJoinSubstitution([FindPackageShare("azrael_app"), "config", "ros2_controllers.yaml"])
-
   rviz_config_path = PathJoinSubstitution([FindPackageShare("azrael_moveit_config"), "config", "moveit.rviz"])
 
   moveit_config = (
@@ -75,34 +73,8 @@ def launch_setup(context):
     parameters=[moveit_config.robot_description]
   )
 
-  controller_manager_node = Node(
-    package="controller_manager",
-    executable="ros2_control_node",
-    parameters=[ros2_control_config_path],
-    # prefix="gnome-terminal -- cgdb -ex run --args",
-    output="screen",
-    remappings=[("/controller_manager/robot_description","/robot_description")],
-  )
-
-  joint_trajectory_controller_spawner = Node(
-    package="controller_manager",
-    executable="spawner",
-    arguments=["joint_trajectory_controller", 
-               "--controller-manager", "/controller_manager"],
-  )
-
-  joint_state_broadcaster_spawner = Node(
-    package="controller_manager",
-    executable="spawner",
-    arguments=["joint_state_broadcaster",
-               "--controller-manager","/controller_manager"],
-  )
-
   return [
     move_group_node,
     rviz_node,
     robot_state_publisher_node,
-    controller_manager_node,
-    joint_trajectory_controller_spawner,
-    joint_state_broadcaster_spawner,
   ]
