@@ -71,7 +71,7 @@ def launch_setup(context):
     package="robot_state_publisher",
     executable="robot_state_publisher",
     output="screen",
-    condition=IfCondition(LaunchConfiguration("use_fake_hardware")),
+    # condition=IfCondition(LaunchConfiguration("use_fake_hardware")),
     parameters=[moveit_config.robot_description]
   )
 
