@@ -73,6 +73,7 @@
     kinematics_parameters_file="$(arg kinematics_params)"
     physical_parameters_file="$(arg physical_params)"
     visual_parameters_file="$(arg visual_params)"
+    initial_positions="${dict(shoulder_pan_joint=0.0,shoulder_lift_joint=-2.3,elbow_joint=1.7,wrist_1_joint=-2.57,wrist_2_joint=0.5,wrist_3_joint=0.0)}"
     transmission_hw_interface="$(arg transmission_hw_interface)"
     safety_limits="$(arg safety_limits)"
     safety_pos_margin="$(arg safety_pos_margin)"
