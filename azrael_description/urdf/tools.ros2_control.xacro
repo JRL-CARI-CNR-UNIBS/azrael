@@ -1,15 +1,20 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="tools_ros2_control" params="prefix ft_sensor gripper">
+  <xacro:macro name="tools_ros2_control" params="prefix
+                                                 ft_sensor
+                                                 gripper
+                                                 ft_sensor_fake:=false">
+
     <xacro:if value="${ft_sensor}">
       <xacro:include filename="$(find robotiq_ft_sensor_description)/urdf/robotiq_fts.ros2_control.xacro"/>
-      <xacro:robotiq_fts_ros2_control name="${prefix}" tf_prefix="${prefix}"/>
+      <xacro:robotiq_fts_ros2_control name="${prefix}" tf_prefix="${prefix}" use_fake_mode="${ft_sensor_fake}"/>
     </xacro:if>
 
     <xacro:if value="${gripper}">
       <xacro:include filename="$(find robotiq_description)/urdf/2f_140.ros2_control.xacro"/>
       <xacro:robotiq_gripper_ros2_control name="${prefix}robotiq_2f_140" prefix="${prefix}"/>
     </xacro:if>
+
   </xacro:macro>
 </robot>

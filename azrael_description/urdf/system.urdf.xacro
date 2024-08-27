@@ -166,6 +166,6 @@
   </xacro:robotiq_gripper> -->
 
   <xacro:include filename="tools.ros2_control.xacro"/>
-  <xacro:tools_ros2_control prefix="$(arg prefix)" ft_sensor="$(arg ft_sensor_ros2_control)" gripper="$(arg gripper_ros2_control)"/>
+  <xacro:tools_ros2_control prefix="$(arg prefix)" ft_sensor="$(arg ft_sensor_ros2_control)" gripper="$(arg gripper_ros2_control)" ft_sensor_fake="$(arg use_fake_hardware)"/>
 
 </robot>
