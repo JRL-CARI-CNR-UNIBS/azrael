@@ -14,7 +14,6 @@ def generate_launch_description():
   launch_args = [
     DeclareLaunchArgument(name="robot_ip", description="ur net IP"),
     DeclareLaunchArgument(name="use_fake_hardware", default_value="false", description="use fake hardware"),
-    DeclareLaunchArgument(name="ft_sensor_ros2_control", default_value="true", description="load ros2_control config of ft_sensor"),
     DeclareLaunchArgument(name="rviz", default_value="true", description="Load Rviz"),
   ]
   return LaunchDescription(launch_args + [OpaqueFunction(function=launch_setup)])
@@ -26,13 +25,12 @@ def launch_setup(context):
   robot_description_args = {
     "robot_ip" : LaunchConfiguration("robot_ip"),
     "use_fake_hardware" : LaunchConfiguration("use_fake_hardware"),
-    "ft_sensor_ros2_control" : LaunchConfiguration("ft_sensor_ros2_control"),
+    "prefix" : "azrael/",
   }
 
   srdf_path = PathJoinSubstitution([FindPackageShare("azrael_moveit_config"), "config", "azrael.srdf"]).perform(context)
   joint_limits_path = PathJoinSubstitution([FindPackageShare("azrael_moveit_config"), "config", "joint_limits.yaml"]).perform(context)
   moveit_controllers_path = PathJoinSubstitution([FindPackageShare("azrael_moveit_config"), "config", "moveit_controllers.yaml"]).perform(context)
-
   rviz_config_path = PathJoinSubstitution([FindPackageShare("azrael_moveit_config"), "config", "moveit.rviz"])
 
   moveit_config = (

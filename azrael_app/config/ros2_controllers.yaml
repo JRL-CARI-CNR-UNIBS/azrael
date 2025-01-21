@@ -1,23 +1,26 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
-    
+    update_rate: 125  # Hz
+
     joint_trajectory_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
+    imm_controller:
+      type: imm_controller/ImmController
+
 joint_trajectory_controller:
   ros__parameters:
     joints:
-      - az_shoulder_pan_joint
-      - az_shoulder_lift_joint
-      - az_elbow_joint
-      - az_wrist_1_joint
-      - az_wrist_2_joint
-      - az_wrist_3_joint
-    
+      - azrael/shoulder_pan_joint
+      - azrael/shoulder_lift_joint
+      - azrael/elbow_joint
+      - azrael/wrist_1_joint
+      - azrael/wrist_2_joint
+      - azrael/wrist_3_joint
+
     command_interfaces:
       - position
 
@@ -25,3 +28,20 @@ joint_trajectory_controller:
       - position
       - velocity
 
+
+imm_controller:
+  ros__parameters:
+    joints:
+      - azrael/shoulder_pan_joint
+      - azrael/shoulder_lift_joint
+      - azrael/elbow_joint
+      - azrael/wrist_1_joint
+      - azrael/wrist_2_joint
+      - azrael/wrist_3_joint
+    interface_name: position
+    robot_chain_root: azrael/base_link
+    robot_chain_tip: azrael/tool0
+    amr_base_link: azrael/base_footprint
+    cmd_vel_topic: /azrael/cmd_vel
+    only_robot: false
+    omni: true
