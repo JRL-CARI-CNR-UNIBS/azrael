@@ -1,12 +1,18 @@
+from launch.conditions import IfCondition
 from launch.launch_description import LaunchDescription, DeclareLaunchArgument
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import OpaqueFunction, IncludeLaunchDescription, GroupAction
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 
 from launch_ros.substitutions import FindPackageShare
-from launch_ros.actions import Node
+from launch_ros.actions import Node, PushRosNamespace
 
 def generate_launch_description():
   launch_arguments = [
+    DeclareLaunchArgument(name='use_ur', default_value='true', description='Run controller manager to manage UR arm'),
+    DeclareLaunchArgument(name='robot_ip', default_value='192.168.254.31', description='ur net IP'),
+    DeclareLaunchArgument(name='use_fake_hardware', default_value='false', description='use fake hardware'),
+    DeclareLaunchArgument(name='prefix', default_value='azrael', description='URDF prefix (without /)'),
   ]
 
   return LaunchDescription(launch_arguments + [OpaqueFunction(function=launch_setup)])
@@ -66,10 +72,36 @@ def launch_setup(context):
         executable="azrael_driver_udp_node",
         output="log")
 
+  ## Controller Manager
+  ros2_control_config_path = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'ros2_controllers.yaml'])
+  controller_manager_node = Node(
+    package='controller_manager',
+    executable='ros2_control_node',
+    parameters=[ros2_control_config_path],
+    # prefix='gnome-terminal -- cgdb -ex run --args',
+    output='screen',
+    remappings=[('controller_manager/robot_description','robot_description')],
+    condition=IfCondition(LaunchConfiguration('use_ur'))
+  )
+
+  robot_description_launcher = IncludeLaunchDescription(
+    launch_description_source=PythonLaunchDescriptionSource(
+      launch_file_path=PathJoinSubstitution([FindPackageShare('azrael_app'), 'launch', 'on_robot', 'robot_description.launch.py'])
+    ),
+    launch_arguments=[
+      ('robot_ip', LaunchConfiguration('robot_ip')),
+      ('use_fake_hardware', LaunchConfiguration('use_fake_hardware')),
+      ('prefix', LaunchConfiguration('prefix'))
+    ]
+  )
+
   azrael = GroupAction(
-    actions=[sick,
+    actions=[PushRosNamespace(LaunchConfiguration('prefix')),
+             sick,
              laser_throttle,
              azrael_driver_udp,
+             controller_manager_node,
+             robot_description_launcher
              ]
   )
 

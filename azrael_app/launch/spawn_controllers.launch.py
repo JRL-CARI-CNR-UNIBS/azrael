@@ -8,7 +8,7 @@ from launch.actions import DeclareLaunchArgument
 
 def generate_launch_description():
   launch_args = [
-    DeclareLaunchArgument(name='prefix', default_value='azrael', description='Controller Manager prefix')
+    #DeclareLaunchArgument(name='prefix', default_value='azrael', description='Controller Manager prefix')
   ]
 
   return LaunchDescription(launch_args + [OpaqueFunction(function=launch_setup)])
@@ -16,16 +16,9 @@ def generate_launch_description():
 
 def launch_setup(context):
 
-  ros2_control_config_path = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'ros2_controllers.yaml'])
+  # Parameters are set by the spawner instead of being loaded by the controller manager!
 
-  controller_manager_node = Node(
-    package='controller_manager',
-    executable='ros2_control_node',
-    parameters=[ros2_control_config_path],
-    # prefix='gnome-terminal -- cgdb -ex run --args',
-    output='screen',
-    remappings=[('controller_manager/robot_description','robot_description')],
-  )
+  ros2_control_config_path = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'ros2_controllers.yaml'])
 
   # joint_trajectory_controller_spawner = Node(
   #   package='controller_manager',
@@ -38,7 +31,9 @@ def launch_setup(context):
     package='controller_manager',
     executable='spawner',
     arguments=['joint_state_broadcaster',
-      '--controller-manager', f'{LaunchConfiguration("prefix").perform(context)}/controller_manager'],
+      '--controller-manager', 'controller_manager',
+      '--controller-manager-timeout', '10',
+      '--param-file', ros2_control_config_path],
   )
 
   # https://github.com/muttistefano/imm_controller.git
@@ -46,15 +41,12 @@ def launch_setup(context):
     package='controller_manager',
     executable='spawner',
     arguments=['imm_controller',
-      '--controller-manager', f'{LaunchConfiguration("prefix").perform(context)}/controller_manager'],
+      '--controller-manager', 'controller_manager',
+      '--controller-manager-timeout', '10',
+      '--param-file', ros2_control_config_path],
   )
 
   return [
-    controller_manager_node,
-    TimerAction(
-      actions=[joint_state_broadcaster_spawner,
-              #joint_trajectory_controller_spawner,
-              imm_controller],
-      period=3.0,
-    )
+      joint_state_broadcaster_spawner,
+      imm_controller,
   ]
