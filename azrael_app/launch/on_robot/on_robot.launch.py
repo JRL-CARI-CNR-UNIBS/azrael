@@ -7,6 +7,9 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node, PushRosNamespace
 
+import xacro
+from launch_ros.descriptions import ParameterValue
+
 def generate_launch_description():
   launch_arguments = [
     DeclareLaunchArgument(name='use_ur', default_value='true', description='Run controller manager to manage UR arm'),
@@ -72,12 +75,22 @@ def launch_setup(context):
         executable="azrael_driver_udp_node",
         output="log")
 
+  # UGLY TMP FIX FOR CARTESIAN CONTROLLERS
+  robot_description_path = PathJoinSubstitution([FindPackageShare('azrael_description'), 'urdf', 'system.urdf.xacro']).perform(context)
+  robot_description_args = {
+    'robot_ip' : LaunchConfiguration('robot_ip').perform(context),
+    'use_fake_hardware' : LaunchConfiguration('use_fake_hardware').perform(context),
+    'prefix' : f'{LaunchConfiguration("prefix").perform(context)}/',
+  }
+
+  robot_description = xacro.process_file(robot_description_path, mappings=robot_description_args).toprettyxml(indent=' ')
+
   ## Controller Manager
   ros2_control_config_path = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'ros2_controllers.yaml'])
   controller_manager_node = Node(
     package='controller_manager',
     executable='ros2_control_node',
-    parameters=[ros2_control_config_path],
+    parameters=[ros2_control_config_path, {'robot_description' : ParameterValue(value=robot_description, value_type=str)}],
     # prefix='gnome-terminal -- cgdb -ex run --args',
     output='screen',
     remappings=[('controller_manager/robot_description','robot_description')],
