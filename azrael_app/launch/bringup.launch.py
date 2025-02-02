@@ -29,11 +29,18 @@ def launch_setup(context):
   GroupAction(
     actions=[
       PushRosNamespace(LaunchConfiguration('prefix')),
+      # IMM Controller
       IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource(
           launch_file_path=PathJoinSubstitution([FindPackageShare('azrael_app'), 'launch', 'spawn_controllers.launch.py'])
         )
       ),
+      # Cartesian Controller
+      # IncludeLaunchDescription(
+      #   launch_description_source=PythonLaunchDescriptionSource(
+      #     launch_file_path=PathJoinSubstitution([FindPackageShare('azrael_app'), 'launch', 'spawn_controllers.launch.py'])
+      #   )
+      # ),
       Node(
         package='rviz2',
         executable='rviz2',
