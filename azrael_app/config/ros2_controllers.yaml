@@ -55,6 +55,7 @@ azrael:
         - velocity
       control_interface:
         - position
+      interface_name: position
       robot_chain_root: azrael/base_link
       robot_chain_tip: azrael/tool0
       amr_base_link: azrael/base_footprint
