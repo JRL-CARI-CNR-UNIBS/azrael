@@ -57,7 +57,7 @@ azrael:
         - position
       interface_name: position
       robot_chain_root: azrael/base_link
-      robot_chain_tip: azrael/tool0
+      robot_chain_tip: end_effector
       amr_base_link: azrael/base_footprint
       cmd_vel_topic: /azrael/cmd_vel
       only_robot: false
@@ -87,9 +87,9 @@ azrael:
           publish_state_feedback: True
 
       pd_gains:
-          trans_x: {p: 3.0}
-          trans_y: {p: 3.0}
-          trans_z: {p: 3.0}
-          rot_x: {p: 0.5}
-          rot_y: {p: 0.5}
-          rot_z: {p: 0.5}
+          trans_x: {p: 2.0, i: 0.01}
+          trans_y: {p: 2.0, i: 0.01}
+          trans_z: {p: 2.0, i: 0.01}
+          rot_x: {p: 0.5, i: 0.005}
+          rot_y: {p: 0.5, i: 0.005}
+          rot_z: {p: 0.5, i: 0.005}

@@ -29,16 +29,16 @@ def launch_setup(context):
   GroupAction(
     actions=[
       PushRosNamespace(LaunchConfiguration('prefix')),
-      # IMM Controller
-#      IncludeLaunchDescription(
-#        launch_description_source=PythonLaunchDescriptionSource(
-#          launch_file_path=PathJoinSubstitution([FindPackageShare('azrael_app'), 'launch', 'spawn_controllers.launch.py'])
-#        )
-#      ),
-      # Cartesian Controller
+      # # IMM Controller
+      # IncludeLaunchDescription(
+      #   launch_description_source=PythonLaunchDescriptionSource(
+      #     launch_file_path=PathJoinSubstitution([FindPackageShare('azrael_app'), 'launch', 'spawn_controllers.launch.py'])
+      #   )
+      # ),
+      # # Cartesian Controller
       IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource(
-          launch_file_path=PathJoinSubstitution([FindPackageShare('azrael_app'), 'launch', 'spawn_cartesian_controller.launch.py'])
+          launch_file_path=PathJoinSubstitution([FindPackageShare('azrael_app'), 'launch', 'spawn_cartesian_controllers.launch.py'])
         )
       ),
       Node(

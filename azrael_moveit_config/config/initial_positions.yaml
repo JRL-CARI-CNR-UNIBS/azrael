@@ -1,0 +1,9 @@
+# Default initial positions for azrael's ros2_control fake system
+
+initial_positions:
+  azrael/elbow_joint: 0
+  azrael/shoulder_lift_joint: 0
+  azrael/shoulder_pan_joint: 0
+  azrael/wrist_1_joint: 0
+  azrael/wrist_2_joint: 0
+  azrael/wrist_3_joint: 0

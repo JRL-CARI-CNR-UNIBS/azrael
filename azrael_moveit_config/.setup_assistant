@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: azrael_description
+    relative_path: urdf/system.urdf.xacro
+  srdf:
+    relative_path: config/azrael.srdf
+  package_settings:
+    author_name: samuele sandrini
+    author_email: samuele.sandrini@polito.it
+    generated_timestamp: 1741369055
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

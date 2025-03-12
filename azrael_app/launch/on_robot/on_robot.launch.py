@@ -81,6 +81,7 @@ def launch_setup(context):
     'robot_ip' : LaunchConfiguration('robot_ip').perform(context),
     'use_fake_hardware' : LaunchConfiguration('use_fake_hardware').perform(context),
     'prefix' : f'{LaunchConfiguration("prefix").perform(context)}/',
+    'ur_type' : 'ur10e',
   }
 
   robot_description = xacro.process_file(robot_description_path, mappings=robot_description_args).toprettyxml(indent=' ')
