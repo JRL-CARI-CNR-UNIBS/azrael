@@ -86,6 +86,13 @@ def launch_setup(context, *args, **kwargs):
         .robot_description_kinematics()
         .to_moveit_configs()
     )
+    move_group_node = Node(
+        package='moveit_ros_move_group',
+        executable='move_group',
+        output='screen',
+        parameters=[moveit_config.to_dict()],
+        # condition=IfCondition(LaunchConfiguration('move_group'))
+    )
 
     robot_description = moveit_config.robot_description
 
@@ -243,8 +250,8 @@ def launch_setup(context, *args, **kwargs):
         # 'robotiq_activation_controller',
     ]
     controllers_inactive = [
-        # 'forward_position_controller',
-        # 'joint_trajectory_controller',
+        'forward_position_controller',
+        # 'manipulator_controller',
         # 'robotiq_action_controller',
         # 'robotiq_forward_command_controller',
     ]
@@ -282,6 +289,7 @@ def launch_setup(context, *args, **kwargs):
 
     nodes_to_start = [
         control_node,
+        move_group_node,
         ur_control_node,
         dashboard_client_node,
         # tool_communication_node,
@@ -439,7 +447,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             'initial_joint_controller',
-            default_value='joint_trajectory_controller',
+            default_value='manipulator_controller',
             description='Initially loaded robot controller.',
         )
     )
