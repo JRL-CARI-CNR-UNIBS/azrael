@@ -91,7 +91,7 @@ def launch_setup(context, *args, **kwargs):
         executable='move_group',
         output='screen',
         parameters=[moveit_config.to_dict()],
-        namespace='azrael'
+        # namespace='azrael'
         # condition=IfCondition(LaunchConfiguration('move_group'))
     )
 
@@ -128,7 +128,7 @@ def launch_setup(context, *args, **kwargs):
         ],
         output='screen',
         condition=IfCondition(fake_ur),
-        namespace='azrael'
+        # namespace='azrael'
     )
 
     ur_control_node = Node(
