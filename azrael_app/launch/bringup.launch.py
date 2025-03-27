@@ -39,7 +39,7 @@ from launch_ros.actions import PushRosNamespace, Node
 import os
 
 
-def launch_setup(context):
+def generate_launch_description():
     azrael_dir = get_package_share_directory('azrael_app')
     launch_dir = os.path.join(azrael_dir, 'launch')
     on_robot_dir = os.path.join(azrael_dir, 'launch/on_robot')
