@@ -52,23 +52,23 @@ def generate_launch_description():
 
     bringup_cmd_group = GroupAction(
         [
-            # IncludeLaunchDescription(
-            #     PythonLaunchDescriptionSource(
-            #         os.path.join(launch_dir, 'ur_bringup.launch.py')
-            #     ),
-            #     condition=IfCondition(launch_ur),
-            #     launch_arguments={
-            #         'fake_ur': 'false',
-            #         'headless_mode': 'true',
-            #         'robot_ip': robot_ip,
-            #         'launch_rviz': 'false',
-            #     }.items(),
-            # ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
-                    os.path.join(on_robot_dir, 'on_robot.launch.py')
+                    os.path.join(launch_dir, 'ur_bringup.launch.py')
                 ),
+                condition=IfCondition(launch_ur),
+                launch_arguments={
+                    'fake_ur': 'false',
+                    'headless_mode': 'true',
+                    'robot_ip': robot_ip,
+                    'launch_rviz': 'false',
+                }.items(),
             ),
+            # IncludeLaunchDescription(
+            #     PythonLaunchDescriptionSource(
+            #         os.path.join(on_robot_dir, 'on_robot.launch.py')
+            #     ),
+            # ),
         ]
     )
     ld = LaunchDescription()
