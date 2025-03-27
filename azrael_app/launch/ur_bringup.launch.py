@@ -15,170 +15,6 @@ from launch.substitutions import (
 from moveit_configs_utils import MoveItConfigsBuilder
 from launch.some_substitutions_type import SomeSubstitutionsType
 
-def generate_launch_description():
-    declared_arguments = []
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'launch_rviz',
-            default_value='false',
-            description='Launch RViz?',
-        )
-    )
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'fake_ur',
-            default_value='true',
-            description='Use fake hardware',
-        )
-    )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'fake_gripper',
-    #         description='[MANDATORY ARG] Start gripper with fake hardware mirroring command to its states.',
-    #     )
-    # )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'ur_type',
-            default_value='ur10e',
-            description='Type/series of used UR robot.',
-            choices=['ur3', 'ur3e', 'ur5', 'ur5e', 'ur10', 'ur10e', 'ur16e', 'ur20', 'ur30'],
-        )
-    )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'robot_name',
-    #         default_value='ur10e',
-    #         description='Name of the robot.',
-    #         choices=['ur3', 'ur3e', 'ur5', 'ur5e', 'ur10', 'ur10e', 'ur16e', 'ur20', 'ur30'],
-    #     )
-    # )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'prefix',
-            default_value='azrael',
-            description='prefix of the joint names.',
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'robot_ip',
-            default_value='192.168.254.100',
-            description='IP address by which the robot can be reached.',
-        )
-    )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'tool_device_name',
-    #         default_value= '/tmp/ttyUR', #'/home/nyquist/ttyUR', # 
-    #         description='File descriptor that will be generated for the tool communication device. '
-    #         'The user has be be allowed to write to this location. '
-    #         'Only effective, if use_tool_communication is set to True.',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'use_tool_communication',
-    #         default_value='false', #'true',
-    #         description='Only available for e series!',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'tool_tcp_port',
-    #         default_value='54321',
-    #         description='Remote port that will be used for bridging the tool's serial device. '
-    #         'Only effective, if use_tool_communication is set to True.',
-    #     )
-    # )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'headless_mode',
-            default_value='true',
-            description='Enable headless mode for robot control',
-        )
-    )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'robotiq_use_socket_communication',
-    #         description='[MANDATORY ARG] Use socket communication for Robotiq Gripper?',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_ip_address',
-    #         default_value='192.168.10.2',
-    #         description='Ip address for socket communication',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_port',
-    #         default_value='63352',
-    #         description='Port for socket communication',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_connection_timeout',
-    #         default_value='30000',
-    #         description='Connection timeout for socket communication',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_activate_gripper_by_default',
-    #         default_value='0',
-    #         description='Activate gripper by default?',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'runtime_config_package',
-    #         default_value='ur_robotiq_bringup',
-    #         description='Package with the controller\'s configuration in 'config' folder. '
-    #         'Usually the argument is not set, it enables use of a custom setup.',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'controllers_file',
-    #         default_value='ros2_controllers.yaml',
-    #         description='YAML file with the controllers configuration.',
-    #     )
-    # )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'controller_spawner_timeout',
-            default_value='100',
-            description='Timeout used when spawning controllers.',
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'activate_joint_controller',
-            default_value='true',
-            description='Activate loaded joint controller.',
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'initial_joint_controller',
-            default_value='manipulator_controller',
-            description='Initially loaded robot controller.',
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'launch_dashboard_client',
-            default_value='true',
-            description='Launch Dashboard Client?'
-        )
-    )
-    
-    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
 
 def launch_setup(context, *args, **kwargs):
     # Arguments passed to the robot description XACRO
@@ -473,3 +309,167 @@ def launch_setup(context, *args, **kwargs):
     return nodes_to_start
 
 
+def generate_launch_description():
+    declared_arguments = []
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'launch_rviz',
+            default_value='false',
+            description='Launch RViz?',
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'fake_ur',
+            default_value='true',
+            description='Use fake hardware',
+        )
+    )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'fake_gripper',
+    #         description='[MANDATORY ARG] Start gripper with fake hardware mirroring command to its states.',
+    #     )
+    # )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'ur_type',
+            default_value='ur10e',
+            description='Type/series of used UR robot.',
+            choices=['ur3', 'ur3e', 'ur5', 'ur5e', 'ur10', 'ur10e', 'ur16e', 'ur20', 'ur30'],
+        )
+    )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'robot_name',
+    #         default_value='ur10e',
+    #         description='Name of the robot.',
+    #         choices=['ur3', 'ur3e', 'ur5', 'ur5e', 'ur10', 'ur10e', 'ur16e', 'ur20', 'ur30'],
+    #     )
+    # )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'prefix',
+            default_value='azrael',
+            description='prefix of the joint names.',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'robot_ip',
+            default_value='192.168.254.100',
+            description='IP address by which the robot can be reached.',
+        )
+    )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'tool_device_name',
+    #         default_value= '/tmp/ttyUR', #'/home/nyquist/ttyUR', # 
+    #         description='File descriptor that will be generated for the tool communication device. '
+    #         'The user has be be allowed to write to this location. '
+    #         'Only effective, if use_tool_communication is set to True.',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'use_tool_communication',
+    #         default_value='false', #'true',
+    #         description='Only available for e series!',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'tool_tcp_port',
+    #         default_value='54321',
+    #         description='Remote port that will be used for bridging the tool's serial device. '
+    #         'Only effective, if use_tool_communication is set to True.',
+    #     )
+    # )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'headless_mode',
+            default_value='true',
+            description='Enable headless mode for robot control',
+        )
+    )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'robotiq_use_socket_communication',
+    #         description='[MANDATORY ARG] Use socket communication for Robotiq Gripper?',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         name='robotiq_ip_address',
+    #         default_value='192.168.10.2',
+    #         description='Ip address for socket communication',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         name='robotiq_port',
+    #         default_value='63352',
+    #         description='Port for socket communication',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         name='robotiq_connection_timeout',
+    #         default_value='30000',
+    #         description='Connection timeout for socket communication',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         name='robotiq_activate_gripper_by_default',
+    #         default_value='0',
+    #         description='Activate gripper by default?',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'runtime_config_package',
+    #         default_value='ur_robotiq_bringup',
+    #         description='Package with the controller\'s configuration in 'config' folder. '
+    #         'Usually the argument is not set, it enables use of a custom setup.',
+    #     )
+    # )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         'controllers_file',
+    #         default_value='ros2_controllers.yaml',
+    #         description='YAML file with the controllers configuration.',
+    #     )
+    # )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'controller_spawner_timeout',
+            default_value='100',
+            description='Timeout used when spawning controllers.',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'activate_joint_controller',
+            default_value='true',
+            description='Activate loaded joint controller.',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'initial_joint_controller',
+            default_value='manipulator_controller',
+            description='Initially loaded robot controller.',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'launch_dashboard_client',
+            default_value='true',
+            description='Launch Dashboard Client?'
+        )
+    )
+    
+    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
