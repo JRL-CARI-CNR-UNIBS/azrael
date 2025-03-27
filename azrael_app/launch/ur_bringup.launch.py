@@ -290,7 +290,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     nodes_to_start = [
-        PushRosNamespace(prefix),
+        # PushRosNamespace(prefix),
         move_group_node,
         control_node,
         ur_control_node,
