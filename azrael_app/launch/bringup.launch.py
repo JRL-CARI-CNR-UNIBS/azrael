@@ -58,7 +58,7 @@ def generate_launch_description():
                 ),
                 condition=IfCondition(launch_ur),
                 launch_arguments={
-                    'launch_rviz': "false",
+                    # 'launch_rviz': "false",
                     'fake_ur': "false",
                     'headless_mode': "true",
                     'robot_ip': robot_ip
