@@ -1,4 +1,4 @@
-from launch_ros.actions import Node
+from launch_ros.actions import Node, PushRosNamespace
 from launch_ros.parameter_descriptions import ParameterFile
 from launch_ros.substitutions import FindPackageShare
 
@@ -290,8 +290,9 @@ def launch_setup(context, *args, **kwargs):
     )
 
     nodes_to_start = [
-        control_node,
+        PushRosNamespace(prefix),
         move_group_node,
+        control_node,
         ur_control_node,
         dashboard_client_node,
         # tool_communication_node,
@@ -301,7 +302,8 @@ def launch_setup(context, *args, **kwargs):
         rviz_node,
         initial_joint_controller_spawner_stopped,
         initial_joint_controller_spawner_started,
-    ] + controller_spawners
+        *controller_spawners
+    ]
 
     return nodes_to_start
 
@@ -348,7 +350,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             'robot_ip',
-            default_value='192.168.254.31',
+            default_value='192.168.254.100',
             description='IP address by which the robot can be reached.',
         )
     )
