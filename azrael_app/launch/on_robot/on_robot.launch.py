@@ -114,8 +114,8 @@ def launch_setup(context):
              sick,
              laser_throttle,
              azrael_driver_udp,
-             controller_manager_node,
-             robot_description_launcher
+            #  controller_manager_node,
+            #  robot_description_launcher
              ]
   )
 
