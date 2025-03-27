@@ -20,6 +20,14 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument(
+            'launch_rviz',
+            default_value='true',
+            description='Launch RViz?',
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'fake_ur',
             default_value='true',
             description='Use fake hardware',
@@ -160,13 +168,6 @@ def generate_launch_description():
             'initial_joint_controller',
             default_value='manipulator_controller',
             description='Initially loaded robot controller.',
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'launch_rviz',
-            default_value='true',
-            description='Launch RViz?',
         )
     )
     declared_arguments.append(
