@@ -44,8 +44,8 @@ def generate_launch_description():
     launch_dir = os.path.join(azrael_dir, 'launch')
     on_robot_dir = os.path.join(azrael_dir, 'launch/on_robot')
 
-    launch_ur_cmd = DeclareLaunchArgument(name='launch_ur', default_value='true', description='Launch ur robot launcher'),
-    robot_ip_cmd = DeclareLaunchArgument(name='robot_ip', default_value='192.168.254.100', description='ur local net IP'),
+    launch_ur_cmd = DeclareLaunchArgument(name='launch_ur', default_value='true', description='Launch ur robot launcher')
+    robot_ip_cmd = DeclareLaunchArgument(name='robot_ip', default_value='192.168.254.100', description='ur local net IP')
 
     
     launch_ur = LaunchConfiguration('launch_ur')
