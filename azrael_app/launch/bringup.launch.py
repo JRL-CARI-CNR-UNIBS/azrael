@@ -47,7 +47,6 @@ def generate_launch_description():
     launch_ur_cmd = DeclareLaunchArgument(name='launch_ur', default_value='true', description='Launch ur robot launcher')
     robot_ip_cmd = DeclareLaunchArgument(name='robot_ip', default_value='192.168.254.100', description='ur local net IP')
 
-    
     launch_ur = LaunchConfiguration('launch_ur')
     robot_ip = LaunchConfiguration('robot_ip')
 
@@ -73,8 +72,8 @@ def generate_launch_description():
         ]
     )
     ld = LaunchDescription()
-    ld.add_action(bringup_cmd_group)
     ld.add_action(launch_ur_cmd)
     ld.add_action(robot_ip_cmd)
+    ld.add_action(bringup_cmd_group)
     
     return ld
