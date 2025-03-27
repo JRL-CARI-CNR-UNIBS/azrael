@@ -44,11 +44,11 @@ def generate_launch_description():
     launch_dir = os.path.join(azrael_dir, 'launch')
     on_robot_dir = os.path.join(azrael_dir, 'launch/on_robot')
 
+    robot_ip = LaunchConfiguration('robot_ip')
+    launch_ur = LaunchConfiguration('launch_ur')
+
     launch_ur_cmd = DeclareLaunchArgument(name='launch_ur', default_value='true', description='Launch ur robot launcher')
     robot_ip_cmd = DeclareLaunchArgument(name='robot_ip', default_value='192.168.254.100', description='ur local net IP')
-
-    launch_ur = LaunchConfiguration('launch_ur')
-    robot_ip = LaunchConfiguration('robot_ip')
 
     bringup_cmd_group = GroupAction(
         [
@@ -58,9 +58,9 @@ def generate_launch_description():
                 ),
                 condition=IfCondition(launch_ur),
                 launch_arguments={
-                    'launch_rviz': 'false',
-                    'fake_ur': 'false',
-                    'headless_mode': 'true',
+                    'launch_rviz': False,
+                    'fake_ur': False,
+                    'headless_mode': True,
                     'robot_ip': robot_ip
                 }.items(),
             ),
