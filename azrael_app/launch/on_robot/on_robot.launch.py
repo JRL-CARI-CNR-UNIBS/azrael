@@ -109,11 +109,21 @@ def launch_setup(context):
     ]
   )
 
+  amcl_params = PathJoinSubstitution([FindPackageShare('azrael_app'), 
+                                      'config', 'amcl.yaml'])
+
+  amcl_node = Node(
+    package='nav2_amcl',
+    executable='amcl',
+    parameters=[amcl_params],
+  )
+
   azrael = GroupAction(
     actions=[PushRosNamespace(LaunchConfiguration('prefix')),
              sick,
              laser_throttle,
              azrael_driver_udp,
+             amcl_node
             #  controller_manager_node,
             #  robot_description_launcher
              ]
