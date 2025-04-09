@@ -119,11 +119,11 @@ def launch_setup(context):
   )
 
   azrael = GroupAction(
-    actions=[PushRosNamespace(LaunchConfiguration('prefix')),
+    actions=[amcl_node,
+             PushRosNamespace(LaunchConfiguration('prefix')),
              sick,
              laser_throttle,
              azrael_driver_udp,
-             amcl_node
             #  controller_manager_node,
             #  robot_description_launcher
              ]
