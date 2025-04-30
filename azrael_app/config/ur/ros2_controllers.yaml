@@ -164,7 +164,6 @@ admittance_controller:
     state_interfaces:
       - position
       - velocity
-      - effort
 
     chainable_command_interfaces:
       - position
@@ -175,7 +174,7 @@ admittance_controller:
       plugin_package: kinematics_interface
       base: azrael/base_link # Assumed to be stationary
       tip: azrael/tool0
-      group_name: arm
+      group_name: manipulator
       alpha: 0.0005
 
     ft_sensor:
