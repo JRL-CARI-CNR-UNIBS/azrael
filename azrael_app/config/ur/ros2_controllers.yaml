@@ -213,7 +213,7 @@ admittance_controller:
       selected_axes:
         - true # x
         - true # y
-        - true # z
+        - false # z
         - false # rx
         - false # ry
         - false # rz
