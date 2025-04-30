@@ -248,7 +248,7 @@ def launch_setup(context, *args, **kwargs):
         'joint_state_broadcaster',
         # 'io_and_status_controller',
         # 'speed_scaling_state_broadcaster',
-        # 'force_torque_sensor_broadcaster',
+        'force_torque_sensor_broadcaster',
         # 'ur_configuration_controller',
         # 'robotiq_activation_controller',
     ]
