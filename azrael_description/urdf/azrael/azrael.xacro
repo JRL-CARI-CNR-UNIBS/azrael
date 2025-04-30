@@ -24,6 +24,7 @@
       <visual>
         <origin xyz="0 0 0.032" rpy="0 0 0" />
         <geometry>
+          <!-- <mesh filename="package://azrael_description/meshes/azrael/visual/azrael.dae"/> -->
           <mesh filename="file://$(find azrael_description)/meshes/azrael/visual/azrael.dae"/>
         </geometry>
         <material name="Gray">
