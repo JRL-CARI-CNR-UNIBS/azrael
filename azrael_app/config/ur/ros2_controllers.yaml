@@ -207,7 +207,7 @@ admittance_controller:
 
       CoG: # TODO: To change
         pos: [0.0, 0.0, 0.1]
-        force: 4.316
+        force: 0.0
 
     admittance:
       selected_axes:
