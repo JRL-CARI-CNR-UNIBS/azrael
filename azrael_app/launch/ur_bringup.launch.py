@@ -195,6 +195,7 @@ def launch_setup(context, *args, **kwargs):
                     'joint_state_broadcaster',
                     'speed_scaling_state_broadcaster',
                     'ur_configuration_controller',
+                    'admittance_controller'
                 ]
             },
         ],
@@ -254,6 +255,7 @@ def launch_setup(context, *args, **kwargs):
     ]
     controllers_inactive = [
         'forward_position_controller',
+        'admittance_controller',
         # 'manipulator_controller',
         # 'robotiq_action_controller',
         # 'robotiq_forward_command_controller',

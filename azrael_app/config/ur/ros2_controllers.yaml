@@ -29,6 +29,9 @@ controller_manager:
     ur_configuration_controller:
       type: ur_controllers/URConfigurationController
 
+    admittance_controller:
+      type: admittance_controller/AdmittanceController
+
     # robotiq_action_controller:
     #   type: position_controllers/GripperActionController
 
@@ -144,6 +147,103 @@ forward_position_controller:
       - $(var prefix)/wrist_2_joint
       - $(var prefix)/wrist_3_joint
 
+
+admittance_controller:
+  ros__parameters:
+    joints:
+      - azrael/shoulder_pan_joint
+      - azrael/shoulder_lift_joint
+      - azrael/elbow_joint
+      - azrael/wrist_1_joint
+      - azrael/wrist_2_joint
+      - azrael/wrist_3_joint
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+      - effort
+
+    chainable_command_interfaces:
+      - position
+      - velocity
+
+    kinematics:
+      plugin_name: kinematics_interface_kdl/KinematicsInterfaceKDL
+      plugin_package: kinematics_interface
+      base: azrael/base_link # Assumed to be stationary
+      tip: azrael/tool0
+      group_name: arm
+      alpha: 0.0005
+
+    ft_sensor:
+      name: azrael/tcp_fts_sensor
+      frame:
+        id: azrael/tool0
+        external: false
+      filter_coefficient: 0.005
+    # ft_sensor:
+    #   name: azrael/robotiq_ft_sensor
+    #   frame:
+    #     id: azrael/robotiq_ft_frame_id
+    #     external: false
+    #   filter_coefficient: 0.005
+
+    control:
+      frame:
+        id: azrael/tool0
+        external: false
+
+    fixed_world_frame:
+      frame:
+        id: azrael/base_link
+        external: true
+
+    gravity_compensation:
+      frame:
+        id: azrael/tool0
+        external: false
+
+      CoG: # TODO: To change
+        pos: [0.0, 0.0, 0.1]
+        force: 4.316
+
+    admittance:
+      selected_axes:
+        - true # x
+        - true # y
+        - false # z
+        - false # rx
+        - false # ry
+        - false # rz
+
+      # Having ".0" at the end is MUST, otherwise there is a loading error
+      # F = M*a + D*v + S*(x - x_d)
+      mass:
+        - 1.0
+        - 1.0
+        - 1.0
+        - 1.0
+        - 1.0
+        - 1.0
+
+      damping_ratio: # damping can be used instead: zeta = D / (2 * sqrt( M * S ))
+        - 2.828427 # x
+        - 2.828427 # y
+        - 2.828427 # z
+        - 2.828427 # rx
+        - 2.828427 # ry
+        - 2.828427 # rz
+
+      stiffness:
+        - 214.1
+        - 214.2
+        - 214.3
+        - 214.4
+        - 214.5
+        - 214.6
 
 # robotiq_action_controller:
 #   ros__parameters:
