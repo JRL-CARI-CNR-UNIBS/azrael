@@ -214,7 +214,7 @@ admittance_controller:
         - true # x
         - true # y
         - true # z
-        - true # rx
+        - false # rx
         - false # ry
         - false # rz
 
