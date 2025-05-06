@@ -229,12 +229,12 @@ admittance_controller:
         - 10.10
 
       damping_ratio: # damping can be used instead: zeta = D / (2 * sqrt( M * S ))
-        - 2.828427 # x
-        - 2.828427 # y
-        - 2.828427 # z
-        - 2.828427 # rx
-        - 2.828427 # ry
-        - 2.828427 # rz
+        - 1.828427 # x
+        - 1.828427 # y
+        - 1.828427 # z
+        - 1.828427 # rx
+        - 1.828427 # ry
+        - 1.828427 # rz
 
       stiffness:
         - 90.0
