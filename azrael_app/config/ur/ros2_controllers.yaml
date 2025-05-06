@@ -214,9 +214,9 @@ admittance_controller:
         - true # x
         - true # y
         - true # z
-        - false # rx
-        - false # ry
-        - false # rz
+        - true # rx
+        - true # ry
+        - true # rz
 
       # Having ".0" at the end is MUST, otherwise there is a loading error
       # F = M*a + D*v + S*(x - x_d)
@@ -250,6 +250,7 @@ admittance_controller:
         # - 214.5
         # - 214.6
       enable_parameter_update_without_reactivation: True
+
 # robotiq_action_controller:
 #   ros__parameters:
 #     action_monitor_rate: 20.0
