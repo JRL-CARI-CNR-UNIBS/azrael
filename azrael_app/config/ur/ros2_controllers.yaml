@@ -221,12 +221,12 @@ admittance_controller:
       # Having ".0" at the end is MUST, otherwise there is a loading error
       # F = M*a + D*v + S*(x - x_d)
       mass:
-        - 5.0
-        - 5.0
-        - 5.0
-        - 0.5
-        - 0.5
-        - 0.5
+        - 6.0
+        - 6.0
+        - 6.0
+        - 0.1
+        - 0.1
+        - 0.1
 
       damping_ratio: # damping can be used instead: zeta = D / (2 * sqrt( M * S ))
         - 1.828427 # x
