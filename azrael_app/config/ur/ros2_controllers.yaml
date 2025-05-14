@@ -182,7 +182,7 @@ admittance_controller:
       frame:
         id: azrael/tool0
         external: false
-      filter_coefficient: 0.005
+      filter_coefficient: 0.05
     # ft_sensor:
     #   name: azrael/robotiq_ft_sensor
     #   frame:
