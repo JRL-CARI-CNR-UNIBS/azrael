@@ -213,10 +213,10 @@ admittance_controller:
       selected_axes:
         - true # x
         - true # y
-        - true # z
-        - true # rx
-        - true # ry
-        - true # rz
+        - false # z
+        - false # rx
+        - false # ry
+        - false # rz
 
       # Having ".0" at the end is MUST, otherwise there is a loading error
       # F = M*a + D*v + S*(x - x_d)
