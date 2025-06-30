@@ -106,7 +106,7 @@ void azrael_driver::call_odom()
     message_odom.pose.pose.position.y = this->posx_odom;
 
     message_odom.twist.twist.linear.x  = -this->vely_odom;
-    message_odom.twist.twist.linear.y  = +this->velx_odom;
+    message_odom.twist.twist.linear.y  = this->velx_odom;
     message_odom.twist.twist.angular.z = this->velw_odom;
 
     odom_pub_->publish(message_odom);
@@ -118,9 +118,11 @@ void azrael_driver::call_odom()
     t.header.frame_id = "azrael/odom";
     
 
-    t.transform.translation.x = this->posx_odom;
-    t.transform.translation.y = this->posy_odom;
-
+    // t.transform.translation.x = this->posx_odom;
+    // t.transform.translation.y = this->posy_odom;
+    t.transform.translation.x = -this->posy_odom;
+    t.transform.translation.y = this->posx_odom;
+    
     t.transform.rotation.x = q.x();
     t.transform.rotation.y = q.y();
     t.transform.rotation.z = q.z();
@@ -184,8 +186,8 @@ void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr 
 {
     last_cmd_ = std::chrono::high_resolution_clock::now();
     std::unique_lock<std::mutex> lock3(v_robot_mutex_);
-    this->v_robot_[0] = -msg->linear.y;
-    this->v_robot_[1] = +msg->linear.x;
+    this->v_robot_[0] = msg->linear.y;
+    this->v_robot_[1] = -msg->linear.x;
     this->v_robot_[2] = msg->angular.z;
     // this->v_robot_[0] = fx.filter(msg->linear.x);
     // this->v_robot_[1] = fy.filter(msg->linear.y);
