@@ -79,14 +79,14 @@ void azrael_driver::call_odom()
     double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
     {
         std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-        this->velx_odom = ( -1 * this->v_wheels_[0] + this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
-        this->vely_odom = (      this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
+        this->velx_odom = ( 1 * this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
+        this->vely_odom = (      this->v_wheels_[0] - this->v_wheels_[1] + this->v_wheels_[2] - this->v_wheels_[3] ) * (radius * 0.25);
         this->velw_odom = (      this->v_wheels_[0] - this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius / ( 4 * lxy));
     }
 
 
-    this->posx_odom += -(this->velx_odom * cos(this->posw_odom) + this->vely_odom * sin(this->posw_odom)) * dt;
-    this->posy_odom += (this->velx_odom * sin(this->posw_odom) - this->vely_odom * cos(this->posw_odom)) * dt;
+    this->posx_odom += (this->velx_odom * cos(this->posw_odom) - this->vely_odom * sin(this->posw_odom)) * dt;
+    this->posy_odom += (this->velx_odom * sin(this->posw_odom) + this->vely_odom * cos(this->posw_odom)) * dt;
     this->posw_odom += this->velw_odom * dt;
 
     this->last_time = this->current_time;
@@ -105,8 +105,8 @@ void azrael_driver::call_odom()
     message_odom.pose.pose.position.x = this->posx_odom;
     message_odom.pose.pose.position.y = this->posy_odom;
 
-    message_odom.twist.twist.linear.x  = -this->vely_odom;
-    message_odom.twist.twist.linear.y  = this->velx_odom;
+    message_odom.twist.twist.linear.x  = this->velx_odom;
+    message_odom.twist.twist.linear.y  = this->vely_odom;
     message_odom.twist.twist.angular.z = this->velw_odom;
 
     odom_pub_->publish(message_odom);
@@ -118,11 +118,9 @@ void azrael_driver::call_odom()
     t.header.frame_id = "azrael/odom";
     
 
-    // t.transform.translation.x = this->posx_odom;
-    // t.transform.translation.y = this->posy_odom;
-    t.transform.translation.x = -this->posy_odom;
-    t.transform.translation.y = this->posx_odom;
-    
+    t.transform.translation.x = this->posx_odom;
+    t.transform.translation.y = this->posy_odom;
+
     t.transform.rotation.x = q.x();
     t.transform.rotation.y = q.y();
     t.transform.rotation.z = q.z();
