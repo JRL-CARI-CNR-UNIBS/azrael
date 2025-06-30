@@ -85,8 +85,8 @@ void azrael_driver::call_odom()
     }
 
 
-    this->posx_odom += (this->velx_odom * cos(this->posw_odom) - this->vely_odom * sin(this->posw_odom)) * dt;
-    this->posy_odom += (this->velx_odom * sin(this->posw_odom) + this->vely_odom * cos(this->posw_odom)) * dt;
+    this->posx_odom += -(this->velx_odom * cos(this->posw_odom) + this->vely_odom * sin(this->posw_odom)) * dt;
+    this->posy_odom += (this->velx_odom * sin(this->posw_odom) - this->vely_odom * cos(this->posw_odom)) * dt;
     this->posw_odom += this->velw_odom * dt;
 
     this->last_time = this->current_time;
@@ -102,11 +102,11 @@ void azrael_driver::call_odom()
     message_odom.pose.pose.orientation.z = q.z();
     message_odom.pose.pose.orientation.w = q.w();
 
-    message_odom.pose.pose.position.x = this->posy_odom;
-    message_odom.pose.pose.position.y = -this->posx_odom;
+    message_odom.pose.pose.position.x = this->posx_odom;
+    message_odom.pose.pose.position.y = this->posy_odom;
 
-    message_odom.twist.twist.linear.x  = this->vely_odom;
-    message_odom.twist.twist.linear.y  = -this->velx_odom;
+    message_odom.twist.twist.linear.x  = -this->vely_odom;
+    message_odom.twist.twist.linear.y  = this->velx_odom;
     message_odom.twist.twist.angular.z = this->velw_odom;
 
     odom_pub_->publish(message_odom);
@@ -186,8 +186,8 @@ void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr 
 {
     last_cmd_ = std::chrono::high_resolution_clock::now();
     std::unique_lock<std::mutex> lock3(v_robot_mutex_);
-    this->v_robot_[0] = msg->linear.y;
-    this->v_robot_[1] = -msg->linear.x;
+    this->v_robot_[0] = -msg->linear.y;
+    this->v_robot_[1] = msg->linear.x;
     this->v_robot_[2] = msg->angular.z;
     // this->v_robot_[0] = fx.filter(msg->linear.x);
     // this->v_robot_[1] = fy.filter(msg->linear.y);
