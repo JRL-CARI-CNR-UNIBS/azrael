@@ -184,8 +184,8 @@ void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr 
 {
     last_cmd_ = std::chrono::high_resolution_clock::now();
     std::unique_lock<std::mutex> lock3(v_robot_mutex_);
-    this->v_robot_[0] = msg->linear.y;
-    this->v_robot_[1] = -msg->linear.x;
+    this->v_robot_[0] = -msg->linear.y;
+    this->v_robot_[1] = +msg->linear.x;
     this->v_robot_[2] = msg->angular.z;
     // this->v_robot_[0] = fx.filter(msg->linear.x);
     // this->v_robot_[1] = fy.filter(msg->linear.y);
