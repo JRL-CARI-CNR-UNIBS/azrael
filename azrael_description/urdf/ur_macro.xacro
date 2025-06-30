@@ -206,7 +206,6 @@
       <xacro:insert_block name="origin" />
       <parent link="${parent}" />
       <child link="${prefix}base_link" />
-      <origin xyz="0 0 0" rpy="0 0 -${pi}" />
     </joint>
 
     <!-- joints - main serial chain -->
