@@ -105,8 +105,8 @@ void azrael_driver::call_odom()
     message_odom.pose.pose.position.x = -this->posy_odom;
     message_odom.pose.pose.position.y = this->posx_odom;
 
-    message_odom.twist.twist.linear.x  = -this->vely_odom;
-    message_odom.twist.twist.linear.y  = this->velx_odom;
+    message_odom.twist.twist.linear.x  = this->vely_odom;
+    message_odom.twist.twist.linear.y  = -this->velx_odom;
     message_odom.twist.twist.angular.z = this->velw_odom;
 
     odom_pub_->publish(message_odom);
