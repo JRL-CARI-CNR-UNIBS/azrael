@@ -50,7 +50,6 @@
       <xacro:insert_block name="origin"/>
       <parent link="${prefix}base_footprint" />
       <child link="${prefix}base_link_azrael" />
-      <!-- <origin xyz="0 0 0.0" rpy="0 0 -${M_PI/2}" /> -->
     </joint>
 
     <link name="${prefix}laser" />
