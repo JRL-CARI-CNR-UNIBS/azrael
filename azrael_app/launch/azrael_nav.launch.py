@@ -18,46 +18,57 @@ def launch_setup(context):
   nav_params_azrael = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'azrael_nav.yaml'])
 
 #  azrael has its own localization system
-#  azrael_amcl = Node(
-#    package='nav2_amcl',
-#    executable='amcl',
-#    parameters=[nav_params_azrael],
-#  )
+  azrael_amcl = Node(
+   package='nav2_amcl',
+   executable='amcl',
+   parameters=[nav_params_azrael],
+  )
 
   azrael_bt_navigator = Node(
     package='nav2_bt_navigator',
     executable='bt_navigator',
-    parameters=[nav_params_azrael]
+    parameters=[nav_params_azrael],
+    # arguments=['--ros-args', '--log-level', 'debug']
   )
 
   azrael_behavior_server = Node(
     package='nav2_behaviors',
     executable='behavior_server',
     parameters=[nav_params_azrael],
+    # arguments=['--ros-args', '--log-level', 'debug']
+
   )
 
   azrael_waypoint_follower = Node(
     package='nav2_waypoint_follower',
     executable='waypoint_follower',
     parameters=[nav_params_azrael],
+    # arguments=['--ros-args', '--log-level', 'debug']
+
   )
 
   azrael_planner_server = Node(
     package='nav2_planner',
     executable='planner_server',
-    parameters=[nav_params_azrael]
+    parameters=[nav_params_azrael],
+    arguments=['--ros-args', '--log-level', 'debug']
+
   )
 
   azrael_controller_server = Node(
     package='nav2_controller',
     executable='controller_server',
     parameters=[nav_params_azrael],
+    arguments=['--ros-args', '--log-level', 'debug']
+
   )
 
   azrael_smoother_server = Node(
     package='nav2_smoother',
     executable='smoother_server',
-    parameters=[nav_params_azrael]
+    parameters=[nav_params_azrael],
+    # arguments=['--ros-args', '--log-level', 'debug']
+
   )
 
   #static_trasform_publisher
@@ -99,7 +110,7 @@ def launch_setup(context):
 
   azrael_nav_group = GroupAction(
     actions=[PushRosNamespace(LaunchConfiguration('ns')),
-#             azrael_amcl,
+             azrael_amcl,
              azrael_bt_navigator,
              azrael_planner_server,
              azrael_controller_server,
