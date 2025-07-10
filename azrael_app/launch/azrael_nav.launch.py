@@ -51,7 +51,7 @@ def launch_setup(context):
     package='nav2_planner',
     executable='planner_server',
     parameters=[nav_params_azrael],
-    arguments=['--ros-args', '--log-level', 'debug']
+    # arguments=['--ros-args', '--log-level', 'debug']
 
   )
 
@@ -59,7 +59,7 @@ def launch_setup(context):
     package='nav2_controller',
     executable='controller_server',
     parameters=[nav_params_azrael],
-    arguments=['--ros-args', '--log-level', 'debug']
+    # arguments=['--ros-args', '--log-level', 'debug']
 
   )
 
@@ -109,8 +109,9 @@ def launch_setup(context):
   
 
   azrael_nav_group = GroupAction(
-    actions=[PushRosNamespace(LaunchConfiguration('ns')),
+    actions=[
              azrael_amcl,
+             PushRosNamespace(LaunchConfiguration('ns')),
              azrael_bt_navigator,
              azrael_planner_server,
              azrael_controller_server,
