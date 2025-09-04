@@ -199,12 +199,11 @@ azrael:
           # - 214.5
           # - 214.6
 
-gripper_action_controller:
-  ros__parameters:
-    allow_stalling: true
-    goal_tolerance: 0.01
-    joint: finger_joint
-    max_effort: 0.0
-    stall_timeout: 1.5
-    stall_velocity_threshold: 0.001
-    type: position_controllers/GripperActionController
+  gripper_action_controller:
+    ros__parameters:
+      allow_stalling: true
+      goal_tolerance: 0.01
+      joint: finger_joint
+      max_effort: 0.0
+      stall_timeout: 1.5
+      stall_velocity_threshold: 0.001
