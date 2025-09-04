@@ -14,3 +14,8 @@ The "azrael_base_nav.launch.py" provides a basic navigation environment.
 ```
  ros2 launch azrael_app ur_bringup.launch.py fake_ur:=false headless_mode:=true robot_ip:=192.168.254.100 launch_rviz:=false
 ```
+
+
+ros2 launch azrael_app on_robot.launch.py robot_ip:=192.168.254.100
+
+ros2 launch azrael_app ur_bringup.launch.py fake_ur:=false headless^Code:=true robot_ip:=192.168.254.100 launch_rviz:=false
