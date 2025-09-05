@@ -32,6 +32,9 @@ controller_manager:
     admittance_controller:
       type: admittance_controller/AdmittanceController
 
+    gripper_action_controller:
+      type: position_controllers/GripperActionController
+
     # robotiq_action_controller:
     #   type: position_controllers/GripperActionController
 
@@ -40,9 +43,6 @@ controller_manager:
 
     # robotiq_forward_command_controller:
     #   type: forward_command_controller/MultiInterfaceForwardCommandController
-    gripper_action_controller:
-      type: position_controllers/GripperActionController
-
 
 speed_scaling_state_broadcaster:
   ros__parameters:
@@ -252,6 +252,7 @@ admittance_controller:
         # - 214.5
         # - 214.6
       enable_parameter_update_without_reactivation: True
+      
 gripper_action_controller:
   ros__parameters:
     allow_stalling: true
