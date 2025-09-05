@@ -7,7 +7,7 @@ moveit_setup_assistant_config:
   package_settings:
     author_name: samuele sandrini
     author_email: samuele.sandrini@polito.it
-    generated_timestamp: 1741369055
+    generated_timestamp: 1757067416
   control_xacro:
     command:
       - position

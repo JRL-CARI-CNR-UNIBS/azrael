@@ -126,6 +126,20 @@
     <origin xyz="0.0 0.1 0.28" rpy="0 0 -${M_PI/2}" />          <!-- position robot in the world -->
    </xacro:ur_robot>
 
+    <!-- Robotiq 2f-140 -->
+    <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_140_macro.urdf.xacro" />
+
+    <xacro:robotiq_gripper name="RobotiqGripperHardwareInterface" prefix="" parent="$(arg prefix)tool0" use_fake_hardware="$(arg fake_ur)" com_port="/dev/ttyUSB1">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:robotiq_gripper>
+
+    <link name="$(arg prefix)tcp" />
+    <joint name="$(arg prefix)tcpjoint" type="fixed">
+      <parent link="$(arg prefix)tool0"/>
+      <child link="$(arg prefix)tcp"/>
+        <origin xyz="0 0 0.15" rpy="0 0 0"/>
+    </joint>
+    <!-- Robotiq 2f-140 -->
 
 <!--  <link name="$(arg prefix)tcp" />
   <joint name="$(arg prefix)tcpjoint" type="fixed">
