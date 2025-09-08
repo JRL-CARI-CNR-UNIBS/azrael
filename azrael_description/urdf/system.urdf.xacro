@@ -127,7 +127,7 @@
    </xacro:ur_robot>
 
     <!-- Robotiq 2f-140 -->
-    <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_140_macro.urdf.xacro" />
+    <!-- <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_140_macro.urdf.xacro" />
 
     <xacro:robotiq_gripper name="RobotiqGripperHardwareInterface" prefix="" parent="$(arg prefix)tool0" use_fake_hardware="$(arg fake_ur)" com_port="/dev/ttyUSB1">
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -138,7 +138,7 @@
       <parent link="$(arg prefix)tool0"/>
       <child link="$(arg prefix)tcp"/>
         <origin xyz="0 0 0.15" rpy="0 0 0"/>
-    </joint>
+    </joint> -->
 
 <!--  <link name="$(arg prefix)tcp" />
   <joint name="$(arg prefix)tcpjoint" type="fixed">
