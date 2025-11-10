@@ -109,6 +109,8 @@ class azrael_driver : public rclcpp::Node
 
     nav_msgs::msg::Odometry message_odom ;
 
+    bool publish_tf_;
+
     rclcpp::TimerBase::SharedPtr timer_;
 
     std::thread t1;

@@ -195,7 +195,7 @@ def launch_setup(context, *args, **kwargs):
                     'joint_state_broadcaster',
                     'speed_scaling_state_broadcaster',
                     'ur_configuration_controller',
-                    'admittance_controller'
+                    'cnr_admittance_controller'
                 ]
             },
         ],
@@ -256,7 +256,7 @@ def launch_setup(context, *args, **kwargs):
     ]
     controllers_inactive = [
         'forward_position_controller',
-        'admittance_controller',
+        'cnr_admittance_controller',
         # 'manipulator_controller',
         # 'robotiq_action_controller',
         # 'robotiq_forward_command_controller',
@@ -295,17 +295,17 @@ def launch_setup(context, *args, **kwargs):
 
     nodes_to_start = [
         # PushRosNamespace(prefix),
-        move_group_node,
+        # move_group_node,
         control_node,
         ur_control_node,
         dashboard_client_node,
         # tool_communication_node,
         controller_stopper_node,
-        urscript_interface,
+        #urscript_interface,
         robot_state_publisher_node,
         rviz_node,
-        initial_joint_controller_spawner_stopped,
-        initial_joint_controller_spawner_started,
+        # initial_joint_controller_spawner_stopped,
+        # initial_joint_controller_spawner_started,
         *controller_spawners
     ]
 

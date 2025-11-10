@@ -73,7 +73,8 @@ def launch_setup(context):
   azrael_driver_udp = Node(
         package="azrael_driver_udp",
         executable="azrael_driver_udp_node",
-        output="log")
+        output="screen",
+        parameters=[{"publish_tf": False}],)
 
   # UGLY TMP FIX FOR CARTESIAN CONTROLLERS
   robot_description_path = PathJoinSubstitution([FindPackageShare('azrael_description'), 'urdf', 'system.urdf.xacro']).perform(context)
@@ -118,12 +119,22 @@ def launch_setup(context):
     parameters=[amcl_params],
   )
 
+  robot_localization_node = Node(
+    package='robot_localization',
+    executable='ekf_node',
+    name='ekf_filter_node',
+    parameters=[PathJoinSubstitution([FindPackageShare('azrael_app'), 
+                                      'config', 'robot_localization.yaml'])],
+    remappings=[('cmd_vel', f'/{LaunchConfiguration("prefix").perform(context)}/cmd_vel'),],
+  )
+
   azrael = GroupAction(
     actions=[amcl_node,
              PushRosNamespace(LaunchConfiguration('prefix')),
              sick,
              laser_throttle,
              azrael_driver_udp,
+             robot_localization_node,
             #  controller_manager_node,
             #  robot_description_launcher
              ]

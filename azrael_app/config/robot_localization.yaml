@@ -1,0 +1,63 @@
+azrael:
+  ekf_filter_node:
+    ros__parameters:
+      frequency: 20.0
+      sensor_timeout: 0.1
+      two_d_mode: true
+      # transform_time_offset: 0.0
+      transform_timeout: 0.0
+      print_diagnostics: true
+      debug: false
+      odom_frame: azrael/odom
+      base_link_frame: azrael/base_footprint
+      world_frame: azrael/odom
+
+      publish_tf: true
+      
+      odom0: /azrael/odom
+      odom0_config: [true,  true,  false,
+                     false, false, true,
+                     true, true, false,
+                     false, false, true,
+                     false, false, false]
+      odom0_differential: false
+      odom0_queue_size: 10
+      # Advanced
+      odom0_nodelay: false
+      
+
+      pose0: /aruco_poses_with_cov
+      pose0_config: [true,  true,  false,
+                     false, false, true,
+                     false, false, false,
+                     false, false, false,
+                     false, false, false]
+      pose0_differential: true
+      pose0_queue_size: 10
+      # Advanced
+      pose0_nodelay: false
+      pose0_pose_rejection_threshold: 0.5
+
+
+      use_control: false
+      control_timeout: 0.15
+      control_config: [true, true, false,
+                       false, false, true]
+
+      initial_estimate_covariance: [1e-2, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 1e-2, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 1e3, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 1e3, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 1e3, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 1e-2, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e-4, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e-4, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e3, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e3, 0e1, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e3, 0e1, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e-4, 0e1, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e3, 0e1, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e3, 0e1,
+                                    0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 0e1, 1e3]
+      dynamic_process_noise_covariance: false
+

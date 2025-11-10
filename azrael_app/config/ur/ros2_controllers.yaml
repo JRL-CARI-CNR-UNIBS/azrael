@@ -29,8 +29,8 @@ controller_manager:
     ur_configuration_controller:
       type: ur_controllers/URConfigurationController
 
-    admittance_controller:
-      type: admittance_controller/AdmittanceController
+    cnr_admittance_controller:
+      type: cnr_admittance_controller/AdmittanceController
 
     gripper_action_controller:
       type: position_controllers/GripperActionController
@@ -150,8 +150,9 @@ forward_position_controller:
       - $(var prefix)/wrist_3_joint
 
 
-admittance_controller:
+cnr_admittance_controller:
   ros__parameters:
+    update_rate: 500
     joints:
       - azrael/shoulder_pan_joint
       - azrael/shoulder_lift_joint
@@ -184,13 +185,11 @@ admittance_controller:
       frame:
         id: azrael/tool0
         external: false
-      filter_coefficient: 0.005
-    # ft_sensor:
-    #   name: azrael/robotiq_ft_sensor
-    #   frame:
-    #     id: azrael/robotiq_ft_frame_id
-    #     external: false
-    #   filter_coefficient: 0.005
+#      filter_coefficient: 0.005
+      low_pass_filter_frequency: 10.0
+      force_deadband:  10.0
+      torque_deadband: 10.0
+      bias_cycles: 100
 
     control:
       frame:

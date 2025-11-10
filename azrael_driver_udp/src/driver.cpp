@@ -62,6 +62,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
+    this->declare_parameter("publish_tf", rclcpp::PARAMETER_BOOL);
+    this->get_parameter_or("publish_tf", publish_tf_, true);
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
     current_time = std::chrono::high_resolution_clock::now();
@@ -110,23 +112,24 @@ void azrael_driver::call_odom()
     message_odom.twist.twist.angular.z = this->velw_odom;
 
     odom_pub_->publish(message_odom);
+    if(publish_tf_){
+        geometry_msgs::msg::TransformStamped t;
+        
+        t.header.stamp = this->get_clock()->now();
+        t.child_frame_id = "azrael/base_footprint";
+        t.header.frame_id = "azrael/odom";
+        
 
-    geometry_msgs::msg::TransformStamped t;
-    
-    t.header.stamp = this->get_clock()->now();
-    t.child_frame_id = "azrael/base_footprint";
-    t.header.frame_id = "azrael/odom";
-    
+        t.transform.translation.x = this->posx_odom;
+        t.transform.translation.y = this->posy_odom;
 
-    t.transform.translation.x = this->posx_odom;
-    t.transform.translation.y = this->posy_odom;
+        t.transform.rotation.x = q.x();
+        t.transform.rotation.y = q.y();
+        t.transform.rotation.z = q.z();
+        t.transform.rotation.w = q.w();
 
-    t.transform.rotation.x = q.x();
-    t.transform.rotation.y = q.y();
-    t.transform.rotation.z = q.z();
-    t.transform.rotation.w = q.w();
-
-    tf_broadcaster_->sendTransform(t);
+        tf_broadcaster_->sendTransform(t);
+    }
 
 
 }
