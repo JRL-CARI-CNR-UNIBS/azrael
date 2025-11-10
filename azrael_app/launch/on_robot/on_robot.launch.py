@@ -119,7 +119,7 @@ def launch_setup(context):
   )
 
   azrael = GroupAction(
-    actions=[ # amcl_node,
+    actions=[amcl_node,
              PushRosNamespace(LaunchConfiguration('prefix')),
              sick,
              laser_throttle,
