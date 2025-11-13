@@ -144,7 +144,7 @@ planner_configs:
     max_failures: 5000  # maximum consecutive failure limit. default: 5000
 
 manipulator:
-  default_planner_config: BiTRRT
+  default_planner_config: RRTConnect
   planner_configs:
     - SBL
     - EST
@@ -164,3 +164,4 @@ manipulator:
     - BiTRRT
     - LBTRRT
     - BiEST
+  longest_valid_segment_fraction: 0.001
