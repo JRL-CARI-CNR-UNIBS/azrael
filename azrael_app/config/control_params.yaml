@@ -1,7 +1,6 @@
 controller_manager:
   ros__parameters:
-    #update_rate: 500
-    update_rate: 1000000
+    # update_rate set in the update_rate.yaml file
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
