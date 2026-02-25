@@ -1,0 +1,16 @@
+%YAML 1.2
+---
+launch:
+  - node:
+      pkg: joy
+      exec: joy_node
+      name: ps4_joy_node
+      namespace: azrael
+
+  - node:
+      pkg: teleop_twist_joy
+      exec: teleop_node
+      name: teleop_twist_ps4_node
+      namespace: azrael
+      param:
+        - from: "$(find-pkg-share azrael_app)/config/joy.yaml"
