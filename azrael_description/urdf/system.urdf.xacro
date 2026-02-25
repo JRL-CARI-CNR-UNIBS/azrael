@@ -21,6 +21,8 @@
 
   <xacro:arg name="ur_type" default="ur10e"/>
 
+  <xacro:arg name="use_gripper" default="true"/>
+
   <!-- parameters -->
   <xacro:arg name="prefix" default="azrael/" />
   <xacro:arg name="joint_limit_params" default="$(find azrael_description)/config/$(arg ur_type)/joint_limits.yaml"/>
@@ -123,22 +125,24 @@
     non_blocking_read="$(arg non_blocking_read)"
     keep_alive_count="$(arg keep_alive_count)">
 
-    <origin xyz="0.0 0.1 0.28" rpy="0 0 -${M_PI/2}" />          <!-- position robot in the world -->
+    <origin xyz="0.0 0.0 0.28" rpy="0 0 -${M_PI/2}" />          <!-- position robot in the world -->
    </xacro:ur_robot>
 
     <!-- Robotiq 2f-85 -->
-    <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro" />
+    <xacro:if value="$(arg use_gripper)">
+      <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro" />
 
-    <xacro:robotiq_gripper name="RobotiqGripperHardwareInterface" prefix="" parent="$(arg prefix)tool0" use_fake_hardware="$(arg fake_ur)" com_port="/dev/ttyUSB1">
-        <origin xyz="0 0 0" rpy="0 0 0" />
-    </xacro:robotiq_gripper>
+      <xacro:robotiq_gripper name="RobotiqGripperHardwareInterface" prefix="" parent="$(arg prefix)tool0" use_fake_hardware="$(arg fake_ur)" com_port="/dev/ttyUSB1">
+          <origin xyz="0 0 0" rpy="0 0 0" />
+      </xacro:robotiq_gripper>
 
-    <link name="$(arg prefix)tcp" />
-    <joint name="$(arg prefix)tcpjoint" type="fixed">
-      <parent link="$(arg prefix)tool0"/>
-      <child link="$(arg prefix)tcp"/>
-        <origin xyz="0 0 0.15" rpy="0 0 0"/>
-    </joint>
+      <link name="$(arg prefix)tcp" />
+      <joint name="$(arg prefix)tcpjoint" type="fixed">
+        <parent link="$(arg prefix)tool0"/>
+        <child link="$(arg prefix)tcp"/>
+          <origin xyz="0 0 0.15" rpy="0 0 0"/>
+      </joint>
+    </xacro:if>
     <!-- Robotiq 2f-85 -->
 
 <!--  <link name="$(arg prefix)tcp" />

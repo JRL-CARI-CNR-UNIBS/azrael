@@ -20,7 +20,14 @@ azrael:
 
       gripper_action_controller:
         type: position_controllers/GripperActionController
-  
+
+      gpio_controller:
+        type: ur_controllers/GPIOController
+
+  gpio_controller:
+		ros__parameters:
+			tf_prefix: "azrael/"
+
   joint_trajectory_controller:
     ros__parameters:
       joints:
