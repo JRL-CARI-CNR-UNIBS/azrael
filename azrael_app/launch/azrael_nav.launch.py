@@ -15,7 +15,7 @@ def generate_launch_description():
   return LaunchDescription([*args, OpaqueFunction(function=launch_setup)])
 
 def launch_setup(context):
-  nav_params_azrael = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'azrael_nav.yaml'])
+  nav_params_azrael = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'nav_params.yaml'])
 
 #  azrael has its own localization system
   azrael_amcl = Node(
@@ -59,25 +59,13 @@ def launch_setup(context):
     package='nav2_controller',
     executable='controller_server',
     parameters=[nav_params_azrael],
-    # arguments=['--ros-args', '--log-level', 'debug']
-
   )
 
   azrael_smoother_server = Node(
     package='nav2_smoother',
     executable='smoother_server',
     parameters=[nav_params_azrael],
-    # arguments=['--ros-args', '--log-level', 'debug']
-
   )
-
-  #static_trasform_publisher
-#   map_static_trasform = Node(
-#     package='tf2_ros',
-#     executable='static_transform_publisher',
-#     arguments=['--frame-id', 'map',
-#                '--child-frame-id', 'azrael/odom']
-#   )
   
   lifecycle_nodes = [
     '/azrael/behavior_server',
@@ -98,16 +86,6 @@ def launch_setup(context):
                 {'bond_timeout': 0.0}],
   )
 
-#   point_to_laser_cmd = Node(
-#         package='pointcloud_to_laserscan', 
-#         executable='pointcloud_to_laserscan_node',
-#         # remappings=[('cloud_in', f'/azrael/cloud_in')], # topic per laser: scan 
-#         parameters=[pointcloud_to_laserscan_param],
-#         name='pointcloud_to_laserscan'
-#     )
-
-  
-
   azrael_nav_group = GroupAction(
     actions=[
              azrael_amcl,
@@ -119,8 +97,6 @@ def launch_setup(context):
              azrael_behavior_server,
              azrael_waypoint_follower,
              azrael_nav2_lifecycle_manager_node,
-            #  map_static_trasform,
-            #  point_to_laser_cmd
              ]
   )
 

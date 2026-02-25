@@ -20,27 +20,10 @@ def launch_setup(context, *args, **kwargs):
     # Arguments passed to the robot description XACRO
     launch_rviz = LaunchConfiguration('launch_rviz')
     fake_ur = LaunchConfiguration('fake_ur')
-    # fake_gripper = LaunchConfiguration('fake_gripper')
-    # ur_type = LaunchConfiguration('ur_type')
-    # robot_name = LaunchConfiguration('robot_name')
     prefix = LaunchConfiguration('prefix')
     robot_ip = LaunchConfiguration('robot_ip')
-    # tool_device_name = LaunchConfiguration('tool_device_name')
-    # use_tool_communication = LaunchConfiguration('use_tool_communication')
-    # tool_tcp_port = LaunchConfiguration('tool_tcp_port')
     headless_mode = LaunchConfiguration('headless_mode')
 
-    # robotiq_use_socket_communication = LaunchConfiguration('robotiq_use_socket_communication')
-    # robotiq_ip_address = LaunchConfiguration('robotiq_ip_address')
-    # robotiq_port = LaunchConfiguration('robotiq_port')
-    # robotiq_connection_timeout = LaunchConfiguration('robotiq_connection_timeout')
-    # robotiq_activate_gripper_by_default = LaunchConfiguration('robotiq_activate_gripper_by_default')
-
-    # Arguments passed just to the nodes
-    # runtime_config_package = LaunchConfiguration('runtime_config_package')
-    # controllers_file = LaunchConfiguration('controllers_file')
-    # description_package = LaunchConfiguration('description_package')
-    # description_file = LaunchConfiguration('description_file')
     controller_spawner_timeout = LaunchConfiguration('controller_spawner_timeout')
     activate_joint_controller = LaunchConfiguration('activate_joint_controller')
     initial_joint_controller = LaunchConfiguration('initial_joint_controller')
@@ -49,7 +32,6 @@ def launch_setup(context, *args, **kwargs):
     srdf_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', 'azrael.srdf']).perform(context)
     joint_limits_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', 'joint_limits.yaml']).perform(context)
     moveit_controllers_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', 'moveit_controllers.yaml']).perform(context)
-    # rviz_config_path = PathJoinSubstitution([FindPackageShare('azrael_app'), 'rviz', 'setup.rviz'])
 
     robot_description_path = PathJoinSubstitution([FindPackageShare('azrael_description'), 'urdf', 'system.urdf.xacro']).perform(context)
     robot_description_args : dict[SomeSubstitutionsType, SomeSubstitutionsType] = {
@@ -57,21 +39,6 @@ def launch_setup(context, *args, **kwargs):
         'fake_ur' : fake_ur.perform(context),
         'prefix' : f'{prefix.perform(context)}/',
     }
-    # mappings= {'fake_ur': fake_ur,
-    #            'fake_gripper': fake_gripper, 
-    #            'ur_type': ur_type, 
-    #            'robot_name': robot_name, 
-    #            'tf_prefix': tf_prefix, 
-    #            'robot_ip': robot_ip, 
-    #            'tool_device_name': tool_device_name, 
-    #            'use_tool_communication': use_tool_communication, 
-    #            'tool_tcp_port': tool_tcp_port, 
-    #            'headless_mode': headless_mode,
-    #            'robotiq_use_socket_communication': robotiq_use_socket_communication,
-    #            'robotiq_ip_address': robotiq_ip_address,
-    #            'robotiq_port': robotiq_port,
-    #            'robotiq_connection_timeout': robotiq_connection_timeout,
-    #            'robotiq_activate_gripper_by_default': robotiq_activate_gripper_by_default,})
     
     moveit_config = (
         MoveItConfigsBuilder('azrael', package_name='azrael_moveit_config')
@@ -81,7 +48,6 @@ def launch_setup(context, *args, **kwargs):
                                 publish_robot_description_semantic=True,
                                 publish_planning_scene=True)
         .planning_pipelines(default_planning_pipeline='ompl', pipelines=['ompl', 'chomp'])
-        # .pilz_cartesian_limits(file_path=pilz_limits_path)
         .joint_limits(file_path=joint_limits_path)
         .trajectory_execution(file_path=moveit_controllers_path)
         .robot_description_kinematics()
@@ -92,14 +58,12 @@ def launch_setup(context, *args, **kwargs):
         executable='move_group',
         output='screen',
         parameters=[moveit_config.to_dict()],
-        # namespace='azrael'
-        # condition=IfCondition(LaunchConfiguration('move_group'))
     )
 
     robot_description = moveit_config.robot_description
 
     initial_joint_controllers = PathJoinSubstitution(
-        [FindPackageShare('azrael_app'), 'config/ur', 'ros2_controllers.yaml']
+        [FindPackageShare('azrael_app'), 'config', 'ros2_controllers.yaml']
     )
 
     rviz_config_file = PathJoinSubstitution(
@@ -110,13 +74,10 @@ def launch_setup(context, *args, **kwargs):
     update_rate_config_file = PathJoinSubstitution(
         [
             FindPackageShare('azrael_app'),
-            'config/ur',
+            'config',
             'update_rate.yaml',
         ]
     )
-
-    # Define if condition for both UR Robot and Robotiq Gripper fake hardware (AND)
-    # fake_ur_and_gripper = AndSubstitution(fake_ur, fake_gripper)
 
     # UR Robot nodes
     control_node = Node(
@@ -155,21 +116,6 @@ def launch_setup(context, *args, **kwargs):
         emulate_tty=True,
         parameters=[{'robot_ip': robot_ip}],
     )
-
-    # tool_communication_node = Node(
-    #     package='ur_robot_driver',
-    #     condition=IfCondition(use_tool_communication),
-    #     executable='tool_communication.py',
-    #     name='ur_tool_comm',
-    #     output='screen',
-    #     parameters=[
-    #         {
-    #             'robot_ip': robot_ip,
-    #             'tcp_port': tool_tcp_port,
-    #             'device_name': tool_device_name,
-    #         }
-    #     ],
-    # )
 
     urscript_interface = Node(
         package='ur_robot_driver',
@@ -252,14 +198,12 @@ def launch_setup(context, *args, **kwargs):
         # 'speed_scaling_state_broadcaster',
         'gripper_action_controller',
         'force_torque_sensor_broadcaster',
-        # 'ur_configuration_controller',
         # 'robotiq_activation_controller',
         'gpio_controller',
     ]
     controllers_inactive = [
         'forward_position_controller',
         'admittance_controller',
-        # 'manipulator_controller',
         # 'robotiq_action_controller',
         # 'robotiq_forward_command_controller',
     ]
@@ -296,12 +240,10 @@ def launch_setup(context, *args, **kwargs):
     )
 
     nodes_to_start = [
-        # PushRosNamespace(prefix),
         move_group_node,
         control_node,
         ur_control_node,
         dashboard_client_node,
-        # tool_communication_node,
         controller_stopper_node,
         urscript_interface,
         robot_state_publisher_node,
@@ -332,12 +274,6 @@ def generate_launch_description():
             description='Use fake hardware',
         )
     )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'fake_gripper',
-    #         description='[MANDATORY ARG] Start gripper with fake hardware mirroring command to its states.',
-    #     )
-    # )
     declared_arguments.append(
         DeclareLaunchArgument(
             'ur_type',
@@ -346,14 +282,6 @@ def generate_launch_description():
             choices=['ur3', 'ur3e', 'ur5', 'ur5e', 'ur10', 'ur10e', 'ur16e', 'ur20', 'ur30'],
         )
     )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'robot_name',
-    #         default_value='ur10e',
-    #         description='Name of the robot.',
-    #         choices=['ur3', 'ur3e', 'ur5', 'ur5e', 'ur10', 'ur10e', 'ur16e', 'ur20', 'ur30'],
-    #     )
-    # )
     declared_arguments.append(
         DeclareLaunchArgument(
             'prefix',
@@ -368,30 +296,6 @@ def generate_launch_description():
             description='IP address by which the robot can be reached.',
         )
     )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'tool_device_name',
-    #         default_value= '/tmp/ttyUR', #'/home/nyquist/ttyUR', # 
-    #         description='File descriptor that will be generated for the tool communication device. '
-    #         'The user has be be allowed to write to this location. '
-    #         'Only effective, if use_tool_communication is set to True.',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'use_tool_communication',
-    #         default_value='false', #'true',
-    #         description='Only available for e series!',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'tool_tcp_port',
-    #         default_value='54321',
-    #         description='Remote port that will be used for bridging the tool's serial device. '
-    #         'Only effective, if use_tool_communication is set to True.',
-    #     )
-    # )
     declared_arguments.append(
         DeclareLaunchArgument(
             'headless_mode',
@@ -399,55 +303,6 @@ def generate_launch_description():
             description='Enable headless mode for robot control',
         )
     )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'robotiq_use_socket_communication',
-    #         description='[MANDATORY ARG] Use socket communication for Robotiq Gripper?',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_ip_address',
-    #         default_value='192.168.10.2',
-    #         description='Ip address for socket communication',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_port',
-    #         default_value='63352',
-    #         description='Port for socket communication',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_connection_timeout',
-    #         default_value='30000',
-    #         description='Connection timeout for socket communication',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         name='robotiq_activate_gripper_by_default',
-    #         default_value='0',
-    #         description='Activate gripper by default?',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'runtime_config_package',
-    #         default_value='ur_robotiq_bringup',
-    #         description='Package with the controller\'s configuration in 'config' folder. '
-    #         'Usually the argument is not set, it enables use of a custom setup.',
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         'controllers_file',
-    #         default_value='ros2_controllers.yaml',
-    #         description='YAML file with the controllers configuration.',
-    #     )
-    # )
     declared_arguments.append(
         DeclareLaunchArgument(
             'controller_spawner_timeout',
