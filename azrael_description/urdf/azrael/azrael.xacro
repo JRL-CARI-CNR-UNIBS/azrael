@@ -59,10 +59,6 @@
       <child link="${prefix}laser" />
     </joint>
 
-
-
-
-
   </xacro:macro>
 
 
