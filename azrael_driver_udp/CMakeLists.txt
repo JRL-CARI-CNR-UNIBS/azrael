@@ -27,7 +27,6 @@ include_directories(include)
 
 add_executable(azrael_driver_udp_node src/driver.cpp)
 ament_target_dependencies(azrael_driver_udp_node rclcpp nav_msgs tf2 tf2_ros iir)
-target_compile_definitions(azrael_driver_udp_node PUBLIC ROS_DISTRO=$ENV{ROS_DISTRO})
 
 #target_include_directories(my_target
 #  PUBLIC

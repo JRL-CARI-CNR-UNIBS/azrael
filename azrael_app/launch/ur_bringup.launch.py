@@ -63,7 +63,7 @@ def launch_setup(context, *args, **kwargs):
     robot_description = moveit_config.robot_description
 
     initial_joint_controllers = PathJoinSubstitution(
-        [FindPackageShare('azrael_app'), 'config', 'ros2_controllers.yaml']
+        [FindPackageShare('azrael_app'), 'config', 'control_params.yaml']
     )
 
     rviz_config_file = PathJoinSubstitution(

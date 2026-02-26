@@ -3,34 +3,34 @@
 launch: 
   - arg: 
       name: "namespace" 
-      default_value: "azrael" 
+      default: "azrael" 
       description: "namespace of each node"
   - arg: 
       name: "autostart" 
-      default_value: "true" 
+      default: "True" 
       description: "autostart nav nodes"
   - arg: 
       name: "use_composition" 
-      default_value: "true" 
+      default: "True" 
       description: "use composite nav nodes"
   - arg: 
       name: "container_name"
-      default_value: "azrael_nav_container"
+      default: "azrael_nav_container"
       description: "Container name if using composition"
   - arg: 
       name: "load_map_server"
-      default_value: "true"
+      default: "True"
       description: "Load map server node"
   - arg: 
       name: "map"
-      default_value: ""
+      default: "$(find-pkg-share azrael_app)/map/cari_map.yaml"
       description: "Full path to map yaml file to load"
 
   - group:
       - push_ros_namespace:
           namespace: $(var namespace)
       - node:
-          pkg: rclcpp_container
+          pkg: rclcpp_components
           exec: component_container_isolated
           name: "$(var container_name)"
           param:
@@ -38,10 +38,10 @@ launch:
             - name: "autostart"
               value: "$(var autostart)"
           if: '$(eval "$(var use_composition)")'
-          
+
       - include:
           file: "$(find-pkg-share azrael_app)/launch/localization_component.launch.py"
-          let:
+          arg:
             - name: "namespace"
               value: "$(var namespace)"
             - name: "autostart"
@@ -54,14 +54,15 @@ launch:
               value: "$(var load_map_server)"
             - name: "map"
               value: "$(var map)"
-      - include:
-          file: "$(find-pkg-share azrael_app)/launch/navigation_component.launch.py"
-          let:
-            - name: "namespace"
-              value: "$(var namespace)"
-            - name: "autostart"
-              value: "$(var autostart)"
-            - name: "use_composition"
-              value: "$(var use_composition)"
-            - name: "container_name"
-              value: "$(var container_name)"
+
+      # - include:
+      #     file: "$(find-pkg-share azrael_app)/launch/navigation_component.launch.py"
+      #     arg:
+      #       - name: "namespace"
+      #         value: "$(var namespace)"
+      #       - name: "autostart"
+      #         value: "$(var autostart)"
+      #       - name: "use_composition"
+      #         value: "$(var use_composition)"
+      #       - name: "container_name"
+      #         value: "$(var container_name)"

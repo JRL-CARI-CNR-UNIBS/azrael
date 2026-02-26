@@ -14,10 +14,10 @@ def generate_launch_description() -> LaunchDescription:
                           default_value='azrael', 
                           description='namespace of each node'),
     DeclareLaunchArgument(name='autostart', 
-                          default_value='true', 
+                          default_value='True', 
                           description='autostart nav nodes'),
     DeclareLaunchArgument(name='use_composition', 
-                        default_value='true', 
+                        default_value='True', 
                         description='use composite nav nodes'),
     DeclareLaunchArgument(name='container_name',
                           default_value='azrael_nav_container',
@@ -27,8 +27,9 @@ def generate_launch_description() -> LaunchDescription:
   namespace = LaunchConfiguration('namespace')
   use_composition = LaunchConfiguration('use_composition')
   container_name = LaunchConfiguration('container_name')
+  container_name_full = (namespace, '/', container_name)
 
-  lifecycle_nodes = [ f'/{namespace}/{node}' for node in
+  lifecycle_nodes = [ ('/',namespace, '/', node) for node in
     [
       'bt_navigator',
       'behavior_server',
@@ -99,13 +100,12 @@ def generate_launch_description() -> LaunchDescription:
     condition=IfCondition(use_composition),
     actions=[
       LoadComposableNodes(
-        target_container=container_name,
+        target_container=container_name_full,
         composable_node_descriptions=[
           ComposableNode(
             package='nav2_bt_navigator',
             plugin='nav2_bt_navigator::BtNavigator',
             name='bt_navigator',
-            namespace=namespace,
             parameters=[nav_params_azrael],
           ),
 
@@ -113,7 +113,6 @@ def generate_launch_description() -> LaunchDescription:
             package='nav2_behaviors',
             plugin='behavior_server::BehaviorServer',
             name='behavior_server',
-            namespace=namespace,
             parameters=[nav_params_azrael],
           ),
 
@@ -121,7 +120,6 @@ def generate_launch_description() -> LaunchDescription:
             package='nav2_waypoint_follower',
             plugin='nav2_waypoint_follower::WaypointFollower',
             name='waypoint_follower',
-            namespace=namespace,
             parameters=[nav_params_azrael],
           ),
 
@@ -129,7 +127,6 @@ def generate_launch_description() -> LaunchDescription:
             package='nav2_planner',
             plugin='nav2_planner::PlannerServer',
             name='planner_server',
-            namespace=namespace,
             parameters=[nav_params_azrael],
           ),
 
@@ -137,7 +134,6 @@ def generate_launch_description() -> LaunchDescription:
             package='nav2_controller',
             plugin='nav2_controller::ControllerServer',
             name='controller_server',
-            namespace=namespace,
             parameters=[nav_params_azrael],
           ),
 
@@ -145,7 +141,6 @@ def generate_launch_description() -> LaunchDescription:
             package='nav2_smoother',
             plugin='nav2_smoother::SmootherServer',
             name='smoother_server',
-            namespace=namespace,
             parameters=[nav_params_azrael],
           ),
 
@@ -153,7 +148,6 @@ def generate_launch_description() -> LaunchDescription:
             package='nav2_lifecycle_manager',
             plugin='nav2_lifecycle_manager::LifecycleManager',
             name='lifecycle_manager_navigation',
-            namespace=namespace,
             parameters=[{'autostart': LaunchConfiguration('autostart')}, 
                         {'node_names': lifecycle_nodes}, 
                         {'bond_timeout': 0.0}],

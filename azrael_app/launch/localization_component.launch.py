@@ -14,20 +14,20 @@ def generate_launch_description() -> LaunchDescription:
                           default_value='azrael', 
                           description='namespace of each node'),
     DeclareLaunchArgument(name='autostart', 
-                          default_value='true', 
+                          default_value='True', 
                           description='autostart nav nodes'),
     DeclareLaunchArgument(name='use_composition', 
-                        default_value='true', 
+                        default_value='True', 
                         description='use composite nav nodes'),
     DeclareLaunchArgument(name='container_name',
                           default_value='azrael_nav_container',
                           description='Container name if using composition'),
     DeclareLaunchArgument(name='load_map_server',
-                          default_value='true',
+                          default_value='True',
                           description='Load map server node'),
     DeclareLaunchArgument(name='map',
                           default_value='',
-                          description='Full path to map yaml file to load'),
+                          description='Full path to map yaml file to load. If set, override the map loaded from parameters'),
   ]
 
   autostart = LaunchConfiguration('autostart')
@@ -37,15 +37,16 @@ def generate_launch_description() -> LaunchDescription:
   map_yaml_file = LaunchConfiguration('map')
   load_map_server = LaunchConfiguration('load_map_server')
 
+  container_name_full = (namespace, '/', container_name)
 
 
-  lifecycle_nodes = [ f'/{namespace}/{node}' for node in
+  lifecycle_nodes = [ ('/', namespace, '/', node) for node in
     [
       'amcl'
     ]
   ]
 
-  lifecycle_nodes_w_map_server = lifecycle_nodes + [ f'/{namespace}/{node}' for node in
+  lifecycle_nodes_w_map_server = lifecycle_nodes + [ ('/', namespace, '/', node) for node in
     [
       'map_server'
     ]
@@ -90,7 +91,6 @@ def generate_launch_description() -> LaunchDescription:
                 output='screen',
                 parameters=[configured_params],
             ),
-
             Node(
                 package='nav2_lifecycle_manager',
                 executable='lifecycle_manager',
@@ -120,7 +120,7 @@ def generate_launch_description() -> LaunchDescription:
       condition=IfCondition(use_composition),
       actions=[
           LoadComposableNodes(
-              target_container=container_name,
+              target_container=container_name_full,
               condition=IfCondition(
                   AndSubstitution(
                       load_map_server,
@@ -133,12 +133,11 @@ def generate_launch_description() -> LaunchDescription:
                       plugin='nav2_map_server::MapServer',
                       name='map_server',
                       parameters=[configured_params],
-                      namespace=namespace,
                   ),
               ],
           ),
           LoadComposableNodes(
-              target_container=container_name,
+              target_container=container_name_full,
               condition=IfCondition(
                   AndSubstitution(
                       load_map_server,
@@ -154,20 +153,24 @@ def generate_launch_description() -> LaunchDescription:
                           configured_params,
                           {'yaml_filename': map_yaml_file},
                       ],
-                      namespace=namespace,
                   ),
               ],
           ),
           LoadComposableNodes(
-              target_container=container_name,
+              target_container=container_name_full,
               composable_node_descriptions=[
                   ComposableNode(
                       package='nav2_amcl',
                       plugin='nav2_amcl::AmclNode',
                       name='amcl',
                       parameters=[configured_params],
-                      namespace=namespace,
                   ),
+              ],
+          ),
+          LoadComposableNodes(
+              target_container=container_name_full,
+              condition=IfCondition(load_map_server),
+              composable_node_descriptions=[
                   ComposableNode(
                       package='nav2_lifecycle_manager',
                       plugin='nav2_lifecycle_manager::LifecycleManager',
@@ -175,9 +178,13 @@ def generate_launch_description() -> LaunchDescription:
                       parameters=[
                           {'autostart': autostart, 'node_names': lifecycle_nodes_w_map_server}
                       ],
-                      namespace=namespace,
-                      condition=IfCondition(load_map_server),
                   ),
+              ],
+          ),
+          LoadComposableNodes(
+              target_container=container_name_full,
+              condition=UnlessCondition(load_map_server),
+              composable_node_descriptions=[
                   ComposableNode(
                       package='nav2_lifecycle_manager',
                       plugin='nav2_lifecycle_manager::LifecycleManager',
@@ -185,8 +192,6 @@ def generate_launch_description() -> LaunchDescription:
                       parameters=[
                           {'autostart': autostart, 'node_names': lifecycle_nodes}
                       ],
-                      namespace=namespace,
-                      condition=UnlessCondition(load_map_server),
                   ),
               ],
           ),
