@@ -1,10 +1,10 @@
 #include <azrael_driver_udp/driver.h>
 #include <rclcpp/qos.hpp>
 
-#if ROS_DISTRO == "humble"
-#define ODOM_QOS_PROFILE rclcpp::SystemDefaultsQoS()
-#else
+#if RCLCPP_VERSION_MAJOR > 28
 #define ODOM_QOS_PROFILE rclcpp::SensorDataQoS()
+#else
+#define ODOM_QOS_PROFILE rclcpp::SystemDefaultsQoS()
 #endif
 
 using std::placeholders::_1;
