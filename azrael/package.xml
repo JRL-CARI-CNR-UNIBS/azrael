@@ -11,6 +11,11 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <build_depend>azrael_app<build_depend>
+  <build_depend>azrael_description<build_depend>
+  <build_depend>azrael_driver_udp<build_depend>
+  <build_depend>azrael_moveit_config<build_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

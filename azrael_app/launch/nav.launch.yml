@@ -34,7 +34,7 @@ launch:
           exec: component_container_isolated
           name: "$(var container_name)"
           param:
-            - from: $(find-pkg-share azrael_app)/config/nav_params.yaml
+            - from: "$(find-pkg-share azrael_app)/config/nav_params.yaml"
             - name: "autostart"
               value: "$(var autostart)"
           if: '$(eval "$(var use_composition)")'
@@ -55,14 +55,14 @@ launch:
             - name: "map"
               value: "$(var map)"
 
-      # - include:
-      #     file: "$(find-pkg-share azrael_app)/launch/navigation_component.launch.py"
-      #     arg:
-      #       - name: "namespace"
-      #         value: "$(var namespace)"
-      #       - name: "autostart"
-      #         value: "$(var autostart)"
-      #       - name: "use_composition"
-      #         value: "$(var use_composition)"
-      #       - name: "container_name"
-      #         value: "$(var container_name)"
+      - include:
+          file: "$(find-pkg-share azrael_app)/launch/navigation_component.launch.py"
+          arg:
+            - name: "namespace"
+              value: "$(var namespace)"
+            - name: "autostart"
+              value: "$(var autostart)"
+            - name: "use_composition"
+              value: "$(var use_composition)"
+            - name: "container_name"
+              value: "$(var container_name)"

@@ -46,11 +46,11 @@ def generate_launch_description() -> LaunchDescription:
     ]
   ]
 
-  lifecycle_nodes_w_map_server = lifecycle_nodes + [ ('/', namespace, '/', node) for node in
+  lifecycle_nodes_w_map_server = [ ('/', namespace, '/', node) for node in
     [
       'map_server'
     ]
-  ]
+  ] + lifecycle_nodes
 
   configured_params = PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'nav_params.yaml'])
 
@@ -96,7 +96,7 @@ def generate_launch_description() -> LaunchDescription:
                 executable='lifecycle_manager',
                 name='lifecycle_manager_localization',
                 output='screen',
-                parameters=[{'autostart': autostart}, {'node_names': lifecycle_nodes_w_map_server}],
+                parameters=[{'autostart': autostart}, {'node_names': lifecycle_nodes_w_map_server, 'bond_timeout': 0.0}],
                 condition=IfCondition(load_map_server)
             ),
             Node(
@@ -104,7 +104,7 @@ def generate_launch_description() -> LaunchDescription:
                 executable='lifecycle_manager',
                 name='lifecycle_manager_localization',
                 output='screen',
-                parameters=[{'autostart': autostart}, {'node_names': lifecycle_nodes}],
+                parameters=[{'autostart': autostart}, {'node_names': lifecycle_nodes, 'bond_timeout': 0.0}],
                 condition=UnlessCondition(load_map_server)
             ),                        
         ],
@@ -176,7 +176,7 @@ def generate_launch_description() -> LaunchDescription:
                       plugin='nav2_lifecycle_manager::LifecycleManager',
                       name='lifecycle_manager_localization',
                       parameters=[
-                          {'autostart': autostart, 'node_names': lifecycle_nodes_w_map_server}
+                          {'autostart': autostart, 'node_names': lifecycle_nodes_w_map_server, 'bond_timeout': 0.0}
                       ],
                   ),
               ],
@@ -190,7 +190,7 @@ def generate_launch_description() -> LaunchDescription:
                       plugin='nav2_lifecycle_manager::LifecycleManager',
                       name='lifecycle_manager_localization',
                       parameters=[
-                          {'autostart': autostart, 'node_names': lifecycle_nodes}
+                          {'autostart': autostart, 'node_names': lifecycle_nodes, 'bond_timeout': 0.0}
                       ],
                   ),
               ],
