@@ -1,9 +1,14 @@
 #include <azrael_driver_udp/driver.h>
+#include <rclcpp/qos.hpp>
+
+#if RCLCPP_VERSION_MAJOR > 28
+#define ODOM_QOS_PROFILE rclcpp::SensorDataQoS()
+#else
+#define ODOM_QOS_PROFILE rclcpp::SystemDefaultsQoS()
+#endif
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
-
-
 
 azrael_driver::azrael_driver() : Node("azrael_driver")
 {
@@ -49,7 +54,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     fy.setup (samplingrate, cutoff_frequency);
     fw.setup (samplingrate, cutoff_frequency);
 
-    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::SensorDataQoS());
+    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", ODOM_QOS_PROFILE);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
     // timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
     // timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
