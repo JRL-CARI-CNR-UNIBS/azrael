@@ -1,0 +1,67 @@
+%YAML 1.2
+---
+launch: 
+  - arg: 
+      name: "namespace" 
+      default_value: "azrael" 
+      description: "namespace of each node"
+  - arg: 
+      name: "autostart" 
+      default_value: "true" 
+      description: "autostart nav nodes"
+  - arg: 
+      name: "use_composition" 
+      default_value: "true" 
+      description: "use composite nav nodes"
+  - arg: 
+      name: "container_name"
+      default_value: "azrael_nav_container"
+      description: "Container name if using composition"
+  - arg: 
+      name: "load_map_server"
+      default_value: "true"
+      description: "Load map server node"
+  - arg: 
+      name: "map"
+      default_value: ""
+      description: "Full path to map yaml file to load"
+
+  - group:
+      - push_ros_namespace:
+          namespace: $(var namespace)
+      - node:
+          pkg: rclcpp_container
+          exec: component_container_isolated
+          name: "$(var container_name)"
+          param:
+            - from: $(find-pkg-share azrael_app)/config/nav_params.yaml
+            - name: "autostart"
+              value: "$(var autostart)"
+          if: '$(eval "$(var use_composition)")'
+          
+      - include:
+          file: "$(find-pkg-share azrael_app)/launch/localization_component.launch.py"
+          let:
+            - name: "namespace"
+              value: "$(var namespace)"
+            - name: "autostart"
+              value: "$(var autostart)"
+            - name: "use_composition"
+              value: "$(var use_composition)"
+            - name: "container_name"
+              value: "$(var container_name)"
+            - name: "load_map_server"
+              value: "$(var load_map_server)"
+            - name: "map"
+              value: "$(var map)"
+      - include:
+          file: "$(find-pkg-share azrael_app)/launch/navigation_component.launch.py"
+          let:
+            - name: "namespace"
+              value: "$(var namespace)"
+            - name: "autostart"
+              value: "$(var autostart)"
+            - name: "use_composition"
+              value: "$(var use_composition)"
+            - name: "container_name"
+              value: "$(var container_name)"
