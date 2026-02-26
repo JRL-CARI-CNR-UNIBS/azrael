@@ -4,7 +4,7 @@ project(azrael_app)
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY launch config rviz srdf map
+  DIRECTORY launch config rviz map
   DESTINATION share/${PROJECT_NAME}
 )
 
