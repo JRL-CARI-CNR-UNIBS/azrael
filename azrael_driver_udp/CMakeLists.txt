@@ -9,6 +9,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 FIND_PACKAGE(Boost REQUIRED COMPONENTS system thread regex)
 
 
@@ -46,10 +48,5 @@ endif()
 install(
   TARGETS azrael_driver_udp_node
   DESTINATION lib/${PROJECT_NAME})
-
-  install(
-  DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
-)
 
 ament_package()

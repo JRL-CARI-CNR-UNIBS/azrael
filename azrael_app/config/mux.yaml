@@ -1,0 +1,9 @@
+azrael:
+  topic_tools:
+    ros__parameters:
+      input_topics:
+        - cmd_vel_nav
+        - cmd_vel_joy
+        - cmd_vel_ctrl
+      output_topic: cmd_vel
+      initial_topic: cmd_vel_nav

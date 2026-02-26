@@ -1,0 +1,27 @@
+%YAML 1.2
+---
+launch:
+  - arg:
+      name: rviz_config
+      default: "$(find-pkg-share azrael_app)/rviz/setup.rviz"
+
+  - let:
+      name: robot_description
+      value: "$(command 'xacro $(find-pkg-share azrael_description)/urdf/system.urdf.xacro')"
+  
+  - node:
+      pkg: robot_state_publisher
+      exec: robot_state_publisher
+      param:
+        - name: robot_description
+          value: $(var robot_description)
+          type: str
+      
+  - node:
+      pkg: joint_state_publisher_gui
+      exec: joint_state_publisher_gui
+
+  - node:
+      pkg: rviz2
+      exec: rviz2
+      args: "-d $(var rviz_config)"

@@ -1,14 +1,21 @@
-teleop_twist_joy_node:
-  ros__parameters:
-    axis_linear:
-      x: 0
-      y: 1
-    scale_linear:
-      x: 0.25
-      y: 0.25
-    axis_angular:
-      yaw: 3
-    scale_angular:
-      yaw: 0.3
-    enable_button: 5
-    enable_turbo_button: 8
+azrael:
+  teleop_twist_ps4_node:
+    ros__parameters:
+      publish_stamped_twist: false
+      axis_linear:
+        x: 1
+        y: 0
+      scale_linear:
+        x: 0.25
+        y: 0.25
+      axis_angular:
+        yaw: 3
+      scale_angular:
+        yaw: 0.3
+      enable_button: 5
+      enable_turbo_button: 8
+
+  ps4_joy_node:
+    ros__parameters:
+      deadzone: 0.1
+  

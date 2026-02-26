@@ -1,9 +1,14 @@
 #include <azrael_driver_udp/driver.h>
+#include <rclcpp/qos.hpp>
+
+#if RCLCPP_VERSION_MAJOR > 28
+#define ODOM_QOS_PROFILE rclcpp::SensorDataQoS()
+#else
+#define ODOM_QOS_PROFILE rclcpp::SystemDefaultsQoS()
+#endif
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
-
-
 
 azrael_driver::azrael_driver() : Node("azrael_driver")
 {
@@ -49,7 +54,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     fy.setup (samplingrate, cutoff_frequency);
     fw.setup (samplingrate, cutoff_frequency);
 
-    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::SensorDataQoS());
+    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", ODOM_QOS_PROFILE);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
     // timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
     // timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
@@ -79,8 +84,8 @@ void azrael_driver::call_odom()
     double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time-last_time).count() / 1e9;
     {
         std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-        this->velx_odom = ( -1 * this->v_wheels_[0] + this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
-        this->vely_odom = (      this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
+        this->velx_odom = ( 1 * this->v_wheels_[0] + this->v_wheels_[1] + this->v_wheels_[2] + this->v_wheels_[3] ) * (radius * 0.25);
+        this->vely_odom = (      this->v_wheels_[0] - this->v_wheels_[1] + this->v_wheels_[2] - this->v_wheels_[3] ) * (radius * 0.25);
         this->velw_odom = (      this->v_wheels_[0] - this->v_wheels_[1] - this->v_wheels_[2] + this->v_wheels_[3] ) * (radius / ( 4 * lxy));
     }
 
@@ -184,8 +189,8 @@ void azrael_driver::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr 
 {
     last_cmd_ = std::chrono::high_resolution_clock::now();
     std::unique_lock<std::mutex> lock3(v_robot_mutex_);
-    this->v_robot_[0] = msg->linear.x;
-    this->v_robot_[1] = msg->linear.y;
+    this->v_robot_[0] = -msg->linear.y;
+    this->v_robot_[1] = msg->linear.x;
     this->v_robot_[2] = msg->angular.z;
     // this->v_robot_[0] = fx.filter(msg->linear.x);
     // this->v_robot_[1] = fy.filter(msg->linear.y);

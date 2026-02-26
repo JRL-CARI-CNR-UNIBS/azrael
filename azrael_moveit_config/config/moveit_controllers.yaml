@@ -1,0 +1,19 @@
+# MoveIt uses this configuration for controller management
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - manipulator_controller
+
+  manipulator_controller:
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - azrael/shoulder_pan_joint
+      - azrael/shoulder_lift_joint
+      - azrael/elbow_joint
+      - azrael/wrist_1_joint
+      - azrael/wrist_2_joint
+      - azrael/wrist_3_joint

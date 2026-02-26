@@ -1,0 +1,289 @@
+controller_manager:
+  ros__parameters:
+    # update_rate set in the update_rate.yaml file
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    io_and_status_controller:
+      type: ur_controllers/GPIOController
+
+    speed_scaling_state_broadcaster:
+      type: ur_controllers/SpeedScalingStateBroadcaster
+
+    force_torque_sensor_broadcaster:
+      type: force_torque_sensor_broadcaster/ForceTorqueSensorBroadcaster
+
+    manipulator_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    scaled_joint_trajectory_controller:
+      type: ur_controllers/ScaledJointTrajectoryController
+
+    forward_velocity_controller:
+      type: velocity_controllers/JointGroupVelocityController
+
+    forward_position_controller:
+      type: position_controllers/JointGroupPositionController
+
+    ur_configuration_controller:
+      type: ur_controllers/URConfigurationController
+
+    admittance_controller:
+      type: admittance_controller/AdmittanceController
+
+    gripper_action_controller:
+      type: position_controllers/GripperActionController
+
+    # robotiq_action_controller:
+    #   type: position_controllers/GripperActionController
+
+    # robotiq_activation_controller:
+    #   type: robotiq_controllers/RobotiqActivationController
+
+    # robotiq_forward_command_controller:
+    #   type: forward_command_controller/MultiInterfaceForwardCommandController
+    
+    gpio_controller:
+      type: ur_controllers/GPIOController
+
+gpio_controller:
+  ros__parameters:
+    tf_prefix: "azrael/"
+
+speed_scaling_state_broadcaster:
+  ros__parameters:
+    state_publish_rate: 100.0
+    tf_prefix: "$(var prefix)"
+
+io_and_status_controller:
+  ros__parameters:
+    tf_prefix: "$(var prefix)"
+
+ur_configuration_controller:
+  ros__parameters:
+    tf_prefix: "$(var prefix)"
+
+force_torque_sensor_broadcaster:
+  ros__parameters:
+    sensor_name: $(var prefix)/tcp_fts_sensor
+    state_interface_names:
+      - force.x
+      - force.y
+      - force.z
+      - torque.x
+      - torque.y
+      - torque.z
+    frame_id: $(var prefix)/tool0
+    topic_name: ft_data
+
+
+manipulator_controller:
+  ros__parameters:
+    joints:
+      - $(var prefix)/shoulder_pan_joint
+      - $(var prefix)/shoulder_lift_joint
+      - $(var prefix)/elbow_joint
+      - $(var prefix)/wrist_1_joint
+      - $(var prefix)/wrist_2_joint
+      - $(var prefix)/wrist_3_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 100.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    allow_nonzero_velocity_at_trajectory_end: false
+    constraints:
+      stopped_velocity_tolerance: 0.2
+      goal_time: 0.0
+      $(var prefix)shoulder_pan_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)shoulder_lift_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)elbow_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)wrist_1_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)wrist_2_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)wrist_3_joint: { trajectory: 0.2, goal: 0.1 }
+
+scaled_joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - $(var prefix)/shoulder_pan_joint
+      - $(var prefix)/shoulder_lift_joint
+      - $(var prefix)/elbow_joint
+      - $(var prefix)/wrist_1_joint
+      - $(var prefix)/wrist_2_joint
+      - $(var prefix)/wrist_3_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 100.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    allow_nonzero_velocity_at_trajectory_end: false
+    constraints:
+      stopped_velocity_tolerance: 0.2
+      goal_time: 0.0
+      $(var prefix)shoulder_pan_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)shoulder_lift_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)elbow_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)wrist_1_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)wrist_2_joint: { trajectory: 0.2, goal: 0.1 }
+      $(var prefix)wrist_3_joint: { trajectory: 0.2, goal: 0.1 }
+    speed_scaling_interface_name: $(var prefix)/speed_scaling/speed_scaling_factor
+
+forward_velocity_controller:
+  ros__parameters:
+    joints:
+      - $(var prefix)/shoulder_pan_joint
+      - $(var prefix)/shoulder_lift_joint
+      - $(var prefix)/elbow_joint
+      - $(var prefix)/wrist_1_joint
+      - $(var prefix)/wrist_2_joint
+      - $(var prefix)/wrist_3_joint
+    interface_name: velocity
+
+forward_position_controller:
+  ros__parameters:
+    joints:
+      - $(var prefix)/shoulder_pan_joint
+      - $(var prefix)/shoulder_lift_joint
+      - $(var prefix)/elbow_joint
+      - $(var prefix)/wrist_1_joint
+      - $(var prefix)/wrist_2_joint
+      - $(var prefix)/wrist_3_joint
+
+
+admittance_controller:
+  ros__parameters:
+    joints:
+      - azrael/shoulder_pan_joint
+      - azrael/shoulder_lift_joint
+      - azrael/elbow_joint
+      - azrael/wrist_1_joint
+      - azrael/wrist_2_joint
+      - azrael/wrist_3_joint
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+
+    chainable_command_interfaces:
+      - position
+      - velocity
+
+    kinematics:
+      plugin_name: kinematics_interface_kdl/KinematicsInterfaceKDL
+      plugin_package: kinematics_interface
+      base: azrael/base_link # Assumed to be stationary
+      tip: azrael/tool0
+      group_name: manipulator
+      alpha: 0.0005
+
+    ft_sensor:
+      name: azrael/tcp_fts_sensor
+      frame:
+        id: azrael/tool0
+        external: false
+      filter_coefficient: 0.005
+    # ft_sensor:
+    #   name: azrael/robotiq_ft_sensor
+    #   frame:
+    #     id: azrael/robotiq_ft_frame_id
+    #     external: false
+    #   filter_coefficient: 0.005
+
+    control:
+      frame:
+        id: azrael/tool0
+        external: false
+
+    fixed_world_frame:
+      frame:
+        id: azrael/base_link
+        external: true
+
+    gravity_compensation:
+      frame:
+        id: azrael/tool0
+        external: false
+
+      CoG: # TODO: To change
+        pos: [0.0, 0.0, 0.1]
+        force: 0.0
+
+    admittance:
+      selected_axes:
+        - true # x
+        - true # y
+        - false # z
+        - false # rx
+        - false # ry
+        - false # rz
+
+      # Having ".0" at the end is MUST, otherwise there is a loading error
+      # F = M*a + D*v + S*(x - x_d)
+      mass:
+        - 6.0
+        - 6.0
+        - 6.0
+        - 0.1
+        - 0.1
+        - 0.1
+
+      damping_ratio: # damping can be used instead: zeta = D / (2 * sqrt( M * S ))
+        - 1.828427 # x
+        - 1.828427 # y
+        - 1.828427 # z
+        - 1.828427 # rx
+        - 1.828427 # ry
+        - 1.828427 # rz
+
+      stiffness:
+        - 90.0
+        - 90.0
+        - 90.0
+        - 9.0
+        - 9.0
+        - 9.0
+        # - 214.1
+        # - 214.2
+        # - 214.3
+        # - 214.4
+        # - 214.5
+        # - 214.6
+      enable_parameter_update_without_reactivation: True
+      
+gripper_action_controller:
+  ros__parameters:
+    allow_stalling: true
+    goal_tolerance: 0.01
+    joint: robotiq_85_left_knuckle_joint
+    max_effort: 100.0
+    stall_timeout: 1.5
+    stall_velocity_threshold: 0.001
+
+# robotiq_action_controller:
+#   ros__parameters:
+#     action_monitor_rate: 20.0
+#     allow_stalling: false
+#     goal_tolerance: 0.01
+#     joint: $(var prefix)robotiq_85_left_knuckle_joint
+#     max_effort: 0.0
+#     stall_timeout: 10.0
+#     stall_velocity_threshold: 0.001
+
+# robotiq_activation_controller:
+#   ros__parameters:
+#     default: false
+
+# robotiq_forward_command_controller:
+#   ros__parameters:
+#     joint: $(var prefix)robotiq_85_left_knuckle_joint
+#     interface_names: ['position', 'velocity', 'effort']

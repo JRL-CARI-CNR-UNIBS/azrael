@@ -1,0 +1,95 @@
+%YAML 1.2
+---
+launch:
+  - arg:
+      name: namespace
+      default: "azrael"
+      description: "Nodes namespace"
+
+  - node:
+      pkg: azrael_driver_udp
+      exec: azrael_driver_udp_node
+      namespace: $(var namespace)
+      output: log
+
+  - node:
+      pkg: topic_tools
+      exec: throttle
+      namespace: $(var namespace)
+      args: "messages scan 2 scan_rviz"
+      param: 
+        - name: input_topic
+          value: scan
+        - name: throttle_type
+          value: messages
+        - name: msgs_per_sec
+          value: 2.0
+        - name: output_topic
+          value: scan_rviz
+      output: "screen"
+
+  - node:
+      pkg: sick_scan
+      exec: sick_generic_caller
+      namespace: $(var namespace)
+      output: screen
+      remap:
+        - from: "sick_lms_1xx/scan"
+          to: "scan"
+      param:
+      - name: intensity
+        value: False
+      - name: intensity_resolution_16bit
+        value: False
+      - name: min_ang
+        value: -2.35619
+      - name: max_ang
+        value: 2.35619
+      - name: frame_id
+        value: "azrael/laser"
+      - name: use_binary_protocol
+        value: True
+      - name: scanner_type
+        value: "sick_lms_1xx"
+      - name: hostname
+        value: "192.170.1.1"
+      - name: cloud_topic
+        value: "cloud"
+      - name: port
+        value: "2112"
+      - name: timelimit
+        value:  5
+      - name: min_intensity
+        value:  0.0
+      - name: use_generation_timestamp
+        value:  True
+      - name: range_min
+        value:  0.05
+      - name: range_max
+        value:  25.0
+      - name: scan_freq
+        value:  50.0
+      - name: ang_res
+        value:  0.5
+      - name: range_filter_handling
+        value:  0
+      - name: add_transform_xyz_rpy
+        value:  "0,0,0,0,0,0"
+      - name: add_transform_check_dynamic_updates
+        value:  False
+      - name: start_services
+        value:  True
+      - name: message_monitoring_enabled
+        value:  True
+      - name: read_timeout_millisec_default
+        value:  5000
+      - name: read_timeout_millisec_startup
+        value:  120000
+      - name: read_timeout_millisec_kill_node
+        value:  15000000
+      - name: client_authorization_pw
+        value: "F4724744"
+      - name: imu_enable
+        value:  False
+      - name: ros_qos
+        value:  4

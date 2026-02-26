@@ -1,12 +1,64 @@
+# Azrael mobile manipulator
 Collection of ROS2 packages for the Azrael mobile manipulator developed in STIIMA-CNR
 
-[![stiima](docs/azrael.jpeg)](https://www.stiima.cnr.it/)
+[<img src="docs/azrael.jpeg" alt="stiima" width="300">](https://www.stiima.cnr.it/)
 
+---
 
-RPI4  : ubuntu@192.168.1.10(raspberry)  
-NUC   : pauli@192.168.1.128(pauli)  
+## Network Setup
 
-On the RPI4 run the motor driver in azrael_base_driver/build/ as "sudo azrael_mobile_driver"  
-On the Nuc run "ros2 launch azrael_driver_udp azrael_driver_bringup.py" to bringup the driver,odometry,lidar,and robot description.  
-The "azrael_base_nav.launch.py" provides a basic navigation environment.  
+RPI4  : ubuntu@192.168.1.10
+NUC   : pauli@192.168.1.128
 
+## Quick Start
+
+### 1. Base Motor Control (Raspberry Pi 4)
+
+On your PC:
+
+```bash
+ssh ubuntu@192.168.1.10
+sudo azrael_base_driver/build/azrael_mobile_driver
+```
+This starts the low-level base motor driver.
+
+### 1. Core Bringup
+
+```bash
+ssh pauli@192.168.1.128
+```
+#### 2.1 Base driver, odometry, lidar
+
+```bash
+ros2 launch azrael_app base_bringup.launch.yml
+```
+
+#### 2.2 UR manipulator + gripper bringup
+
+```bash
+ros2 launch azrael_app ur_bringup.launch.py
+```
+
+### 3 Navigation & Localization (Remote PC)
+```bash
+ros2 launch azrael_app nav.launch.yml
+```
+This should start the navigation stack (map server, planner, controller, AMCL, etc.).
+
+### 4 Visualization (Remote RViz)
+```bash
+ros2 launch azrael_app remote_rviz.launch.py
+```
+
+## Manual Teleoperation
+
+### Joystick
+```bash
+ros2 launch azrael_app joy.launch.yml
+```
+
+### Keyboard
+```bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard \
+  --ros-args -r /cmd_vel:=/azrael/cmd_vel
+```
