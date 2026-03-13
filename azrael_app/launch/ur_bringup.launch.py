@@ -10,11 +10,14 @@ from launch.substitutions import (
     LaunchConfiguration,
     NotSubstitution,
     PathJoinSubstitution,
+    PythonExpression,
 )
 
 from moveit_configs_utils import MoveItConfigsBuilder
 from launch.some_substitutions_type import SomeSubstitutionsType
 
+
+AVAILABLE_GRIPPERS = ['robotiq-2f-85', 'robotiq-2f-140']
 
 def launch_setup(context, *args, **kwargs):
     # Arguments passed to the robot description XACRO
@@ -200,7 +203,6 @@ def launch_setup(context, *args, **kwargs):
         # 'speed_scaling_state_broadcaster',
         'gripper_action_controller',
         'force_torque_sensor_broadcaster',
-        # 'robotiq_activation_controller',
         'gpio_controller',
     ]
     controllers_inactive = [
@@ -212,6 +214,21 @@ def launch_setup(context, *args, **kwargs):
 
     controller_spawners = [controller_spawner(controllers_active)] + [
         controller_spawner(controllers_inactive, active=False)
+    ]
+
+    robotiq_controller_spawners = [
+        Node(
+            package='controller_manager',
+            executable='spawner',
+            arguments=[
+                'robotiq_activation_controller',
+                '-c',
+                '/controller_manager',
+                '--controller-manager-timeout',
+                controller_spawner_timeout,
+            ],
+            condition=IfCondition(PythonExpression(['"', gripper, '" in ', repr(AVAILABLE_GRIPPERS)]))
+        )
     ]
 
     # There may be other controllers of the joints, but this is the initially-started one
@@ -252,7 +269,8 @@ def launch_setup(context, *args, **kwargs):
         rviz_node,
         initial_joint_controller_spawner_stopped,
         initial_joint_controller_spawner_started,
-        *controller_spawners
+        *controller_spawners,
+        *robotiq_controller_spawners
     ]
 
     return nodes_to_start
@@ -338,7 +356,7 @@ def generate_launch_description():
             'gripper',
             default_value='None',
             description='Gripper mounted',
-            choices=['None', 'robotiq-2f-85', 'robotiq-2f-140'],
+            choices=['None', *AVAILABLE_GRIPPERS],
         )
     )
 
