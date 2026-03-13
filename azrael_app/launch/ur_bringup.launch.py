@@ -23,6 +23,7 @@ def launch_setup(context, *args, **kwargs):
     prefix = LaunchConfiguration('prefix')
     robot_ip = LaunchConfiguration('robot_ip')
     headless_mode = LaunchConfiguration('headless_mode')
+    gripper = LaunchConfiguration('gripper')
 
     controller_spawner_timeout = LaunchConfiguration('controller_spawner_timeout')
     activate_joint_controller = LaunchConfiguration('activate_joint_controller')
@@ -38,6 +39,7 @@ def launch_setup(context, *args, **kwargs):
         'robot_ip' : robot_ip.perform(context),
         'fake_ur' : fake_ur.perform(context),
         'prefix' : f'{prefix.perform(context)}/',
+        'gripper' : gripper.perform(context),
     }
     
     moveit_config = (
@@ -331,5 +333,13 @@ def generate_launch_description():
             description='Launch Dashboard Client?'
         )
     )
-    
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'gripper',
+            default_value='None',
+            description='Gripper mounted',
+            choices=['None', 'robotiq-2f-85', 'robotiq-2f-140'],
+        )
+    )
+
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
