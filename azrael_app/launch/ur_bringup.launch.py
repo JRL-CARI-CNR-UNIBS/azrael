@@ -3,7 +3,7 @@ from launch_ros.parameter_descriptions import ParameterFile
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction, TimerAction
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, GroupAction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import (
     AndSubstitution,
@@ -21,7 +21,6 @@ AVAILABLE_GRIPPERS = ['robotiq-2f-85', 'robotiq-2f-140']
 
 def launch_setup(context, *args, **kwargs):
     # Arguments passed to the robot description XACRO
-    launch_rviz = LaunchConfiguration('launch_rviz')
     fake_ur = LaunchConfiguration('fake_ur')
     prefix = LaunchConfiguration('prefix')
     robot_ip = LaunchConfiguration('robot_ip')
@@ -69,10 +68,6 @@ def launch_setup(context, *args, **kwargs):
 
     initial_joint_controllers = PathJoinSubstitution(
         [FindPackageShare('azrael_app'), 'config', 'control_params.yaml']
-    )
-
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare('azrael_app'), 'rviz', 'view_robot.rviz']
     )
 
     # Define update rate for UR Robot
@@ -153,32 +148,12 @@ def launch_setup(context, *args, **kwargs):
         ],
     )
 
-    # RSP and Rviz nodes
+    # RSP
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='both',
         parameters=[robot_description],
-    )
-
-    rviz_node = TimerAction(
-        period=10.0,  # Delay in seconds
-        actions=[
-            Node(
-                package='rviz2',
-                condition=IfCondition(launch_rviz),
-                executable='rviz2',
-                name='rviz2',
-                output='log',
-                arguments=['-d', rviz_config_file],
-                parameters=[
-                    moveit_config.robot_description,
-                    moveit_config.robot_description_semantic,
-                    moveit_config.planning_pipelines,
-                    moveit_config.robot_description_kinematics,
-                ],
-            ),
-        ]
     )
 
     # Spawn controllers
@@ -197,11 +172,9 @@ def launch_setup(context, *args, **kwargs):
             + controllers,
         )
 
-    controllers_active = [ # scaled_joint_trajectory_controller is loaded and activated by default
-        'joint_state_broadcaster',
+    controllers_active = [ 'joint_state_broadcaster',
         # 'io_and_status_controller',
         # 'speed_scaling_state_broadcaster',
-        'gripper_action_controller',
         'force_torque_sensor_broadcaster',
         'gpio_controller',
     ]
@@ -216,20 +189,50 @@ def launch_setup(context, *args, **kwargs):
         controller_spawner(controllers_inactive, active=False)
     ]
 
-    robotiq_controller_spawners = [
-        Node(
-            package='controller_manager',
-            executable='spawner',
-            arguments=[
-                'robotiq_activation_controller',
-                '-c',
-                '/controller_manager',
-                '--controller-manager-timeout',
-                controller_spawner_timeout,
-            ],
-            condition=IfCondition(PythonExpression(['"', gripper, '" in ', repr(AVAILABLE_GRIPPERS)]))
-        )
-    ]
+    robotiq_controller_spawners = GroupAction(
+        actions=[
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=[
+                    'gripper_activation_controller',
+                    '-c',
+                    '/controller_manager',
+                    '--controller-manager-timeout',
+                    controller_spawner_timeout,
+                    '--param-file',
+                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'robotiq_controllers.yaml'])
+                ],
+            ),
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=[
+                    'gripper_state_broadcaster',
+                    '-c',
+                    '/controller_manager',
+                    '--controller-manager-timeout',
+                    controller_spawner_timeout,
+                    '--param-file',
+                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'robotiq_controllers.yaml'])
+                ],
+            ),
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=[
+                    'gripper_controller',
+                    '-c',
+                    '/controller_manager',
+                    '--controller-manager-timeout',
+                    controller_spawner_timeout,
+                    '--param-file',
+                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'robotiq_controllers.yaml']) 
+                ]
+            )
+        ],
+        condition=IfCondition(PythonExpression(['"', gripper, '" in ', repr(AVAILABLE_GRIPPERS)]))
+    )
 
     # There may be other controllers of the joints, but this is the initially-started one
     initial_joint_controller_spawner_started = Node(
@@ -266,11 +269,10 @@ def launch_setup(context, *args, **kwargs):
         controller_stopper_node,
         urscript_interface,
         robot_state_publisher_node,
-        rviz_node,
         initial_joint_controller_spawner_stopped,
         initial_joint_controller_spawner_started,
         *controller_spawners,
-        *robotiq_controller_spawners
+        robotiq_controller_spawners
     ]
 
     return nodes_to_start
@@ -278,14 +280,6 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     declared_arguments = []
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'launch_rviz',
-            default_value='false',
-            description='Launch RViz?',
-        )
-    )
 
     declared_arguments.append(
         DeclareLaunchArgument(

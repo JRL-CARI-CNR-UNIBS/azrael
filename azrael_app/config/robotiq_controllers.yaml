@@ -1,0 +1,18 @@
+gripper_action_controller:
+  ros__parameters:
+    type: robotiq_controllers/RobotiqActivationController
+
+gripper_state_broadcaster:
+  ros__parameters:
+    type: joint_state_broadcaster/JointStateBroadcaster
+    joints:
+      - azrael/finger_joint
+    interfaces:
+      - position
+
+gripper_controller:
+  ros__parameters:
+    type: position_controllers/GripperActionController # On Humble
+    joint: azrael/finger_joint
+    allow_stalling: true
+    
