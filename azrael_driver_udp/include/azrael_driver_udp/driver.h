@@ -7,6 +7,7 @@
 #include "std_msgs/msg/string.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "sensor_msgs/msg/joint_state.hpp"
 #include "tf2_ros/buffer.h"
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2/LinearMath/Quaternion.h>
@@ -99,6 +100,8 @@ class azrael_driver : public rclcpp::Node
     rclcpp::TimerBase::SharedPtr                               timer_odom_, timer_rec, timer_send;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr      odom_pub_;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
+    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr  joint_state_pub_;
+    sensor_msgs::msg::JointState wheel_msg_;
 
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
 

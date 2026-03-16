@@ -54,10 +54,14 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     fy.setup (samplingrate, cutoff_frequency);
     fw.setup (samplingrate, cutoff_frequency);
 
+    joint_state_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("azrael_joint_states", ODOM_QOS_PROFILE);
     odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", ODOM_QOS_PROFILE);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
     // timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
     // timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
+
+    wheel_msg_.name = {"front_right", "front_left", "back_left", "back_right"};
+    wheel_msg_.velocity.resize(4);
 
     timer_send   = this->create_wall_timer(8ms, std::bind(&azrael_driver::timer_udp_send, this));
     timer_rec    = this->create_wall_timer(5ms, std::bind(&azrael_driver::timer_udp_receive, this));
@@ -132,6 +136,14 @@ void azrael_driver::call_odom()
     t.transform.rotation.w = q.w();
 
     tf_broadcaster_->sendTransform(t);
+
+    wheel_msg_.header.stamp = t.header.stamp;
+    wheel_msg_.velocity[0] = this->v_wheels_[0];
+    wheel_msg_.velocity[1] = this->v_wheels_[1];
+    wheel_msg_.velocity[2] = this->v_wheels_[2];
+    wheel_msg_.velocity[3] = this->v_wheels_[3];
+    joint_state_pub_->publish(wheel_msg_);
+
 
 
 }
