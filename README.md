@@ -38,6 +38,13 @@ ros2 launch azrael_app base_bringup.launch.yml
 ```bash
 ros2 launch azrael_app ur_bringup.launch.py
 ```
+Example:
+```bash
+ros2 launch azrael_app ur_bringup.launch.py fake_ur:=false gripper:=robotiq-2f-140
+```
+available grippers:
+- `robotiq-2f-140`
+- `robotiq-2f-85`
 
 ### 3 Navigation & Localization (Remote PC)
 ```bash
