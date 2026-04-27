@@ -1,0 +1,48 @@
+name: humble
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-jammy-ros-humble-desktop-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install IIR library
+        run: |
+          chmod +x ./azrael/scripts/iir_installation.sh
+          ./azrael/scripts/iir_installation.sh
+
+      - name: Build and test
+        uses: ros-tooling/action-ros-ci@v0.4
+        with:
+          package-name: azrael_app azrael_description azrael_driver_udp azrael_moveit_config
+          target-ros2-distro: humble
+          vcs-repo-file-url: https://raw.githubusercontent.com/JRL-CARI-CNR-UNIBS/azrael/main/dependencies.repos
+          colcon-defaults: |
+            {
+              "build": {
+                "symlink-install": true
+              },
+              "test": {
+                "parallel-workers": 1
+              }
+            }
