@@ -32,7 +32,9 @@ def launch_setup(context, *args, **kwargs):
     initial_joint_controller = LaunchConfiguration('initial_joint_controller')
     launch_dashboard_client = LaunchConfiguration('launch_dashboard_client')
 
-    srdf_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', 'azrael.srdf']).perform(context)
+    gripper_name = gripper.perform(context).replace('-', '_')
+
+    srdf_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', f'azrael_{gripper_name}.srdf']).perform(context)
     joint_limits_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', 'joint_limits.yaml']).perform(context)
     moveit_controllers_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', 'moveit_controllers.yaml']).perform(context)
 
@@ -189,6 +191,7 @@ def launch_setup(context, *args, **kwargs):
         controller_spawner(controllers_inactive, active=False)
     ]
 
+    
     robotiq_controller_spawners = GroupAction(
         actions=[
             Node(
@@ -201,7 +204,7 @@ def launch_setup(context, *args, **kwargs):
                     '--controller-manager-timeout',
                     controller_spawner_timeout,
                     '--param-file',
-                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'robotiq_controllers.yaml'])
+                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'gripper_control', f'gripper_controllers_{gripper_name}.yaml'])
                 ],
             ),
             Node(
@@ -214,7 +217,7 @@ def launch_setup(context, *args, **kwargs):
                     '--controller-manager-timeout',
                     controller_spawner_timeout,
                     '--param-file',
-                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'robotiq_controllers.yaml'])
+                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'gripper_control', f'gripper_controllers_{gripper_name}.yaml'])
                 ],
             ),
             Node(
@@ -227,7 +230,7 @@ def launch_setup(context, *args, **kwargs):
                     '--controller-manager-timeout',
                     controller_spawner_timeout,
                     '--param-file',
-                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'robotiq_controllers.yaml']) 
+                    PathJoinSubstitution([FindPackageShare('azrael_app'), 'config', 'gripper_control', f'gripper_controllers_{gripper_name}.yaml'])
                 ]
             )
         ],
