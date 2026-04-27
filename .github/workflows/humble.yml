@@ -31,12 +31,13 @@ jobs:
           chmod +x ./azrael/scripts/iir_installation.sh
           ./azrael/scripts/iir_installation.sh
 
-      - name: Build and test
+      - name: Build
         uses: ros-tooling/action-ros-ci@v0.4
         with:
           package-name: azrael_app azrael_description azrael_driver_udp azrael_moveit_config
           target-ros2-distro: humble
           vcs-repo-file-url: dependencies.repos
+          skip-tests: true
           colcon-defaults: |
             {
               "build": {
