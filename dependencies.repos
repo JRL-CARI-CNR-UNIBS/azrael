@@ -1,0 +1,21 @@
+repositories:
+  sick_scan_xd:
+    type: git
+    url: https://github.com/SICKAG/sick_scan_xd
+    version: master
+  warehouse_ros_mongo:
+    type: git
+    url: https://github.com/moveit/warehouse_ros_mongo.git
+    version: ros2
+  iir:
+    type: git
+    url: https://github.com/berndporr/iir1.git
+    version: master
+  ros2_robotiq_gripper:
+    type: git
+    url: https://github.com/PickNikRobotics/ros2_robotiq_gripper.git
+    version: humble
+  serial:
+    type: git
+    url: https://github.com/tylerjw/serial.git
+    version: ros2
