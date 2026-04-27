@@ -26,11 +26,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install IIR library
-        run: |
-          chmod +x ./azrael/scripts/iir_installation.sh
-          ./azrael/scripts/iir_installation.sh
-
       - name: Build
         uses: ros-tooling/action-ros-ci@v0.4
         with:
