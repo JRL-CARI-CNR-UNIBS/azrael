@@ -1,20 +1,36 @@
 # Azrael mobile manipulator
-Collection of ROS2 packages for the Azrael mobile manipulator developed in STIIMA-CNR
+
+Collection of ROS 2 packages for the Azrael mobile manipulator, developed at STIIMA-CNR.
 
 [<img src="docs/azrael.jpeg" alt="stiima" width="300">](https://www.stiima.cnr.it/)
 
 ---
 
+## Packages
+
+| Package | Description |
+|---|---|
+| [`azrael`](azrael) | Metapackage bundling the packages below |
+| [`azrael_app`](azrael_app) | Launch files, configs, and RViz setups to bring up the robot |
+| [`azrael_description`](azrael_description) | URDF, meshes, and configuration describing the robot |
+| [`azrael_driver_udp`](azrael_driver_udp) | ROS 2 driver to move Azrael via the RPI4 base driver over UDP |
+| [`azrael_moveit_config`](azrael_moveit_config) | MoveIt configuration for the UR manipulator |
+
+## Requirements
+
+- ROS 2 Humble
+- Dependencies listed in [`dependencies.repos`](dependencies.repos) (fetch with `vcs import < dependencies.repos`)
+
 ## Network Setup
 
-RPI4  : ubuntu@192.168.1.10
-NUC   : pauli@192.168.1.128
+| Host | Address |
+|---|---|
+| RPI4 (base) | `ubuntu@192.168.1.10` |
+| NUC (onboard PC) | `pauli@192.168.1.128` |
 
 ## Quick Start
 
-### 1. Base Motor Control (Raspberry Pi 4)
-
-On your PC:
+### 1. Base motor control (Raspberry Pi 4)
 
 ```bash
 ssh ubuntu@192.168.1.10
@@ -22,11 +38,12 @@ sudo azrael_base_driver/build/azrael_mobile_driver
 ```
 This starts the low-level base motor driver.
 
-### 1. Core Bringup
+### 2. Core bringup (NUC)
 
 ```bash
 ssh pauli@192.168.1.128
 ```
+
 #### 2.1 Base driver, odometry, lidar
 
 ```bash
@@ -38,21 +55,25 @@ ros2 launch azrael_app base_bringup.launch.yml
 ```bash
 ros2 launch azrael_app ur_bringup.launch.py
 ```
+
 Example:
 ```bash
 ros2 launch azrael_app ur_bringup.launch.py fake_ur:=false gripper:=robotiq-2f-140
 ```
-available grippers:
+
+Available grippers:
 - `robotiq-2f-140`
 - `robotiq-2f-85`
 
-### 3 Navigation & Localization (Remote PC)
+### 3. Navigation & localization (remote PC)
+
 ```bash
 ros2 launch azrael_app nav.launch.yml
 ```
-This should start the navigation stack (map server, planner, controller, AMCL, etc.).
+This starts the navigation stack (map server, planner, controller, AMCL, etc.).
 
-### 4 Visualization (Remote RViz)
+### 4. Visualization (remote RViz)
+
 ```bash
 ros2 launch azrael_app remote_rviz.launch.py
 ```

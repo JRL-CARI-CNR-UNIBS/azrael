@@ -65,6 +65,8 @@ class azrael_driver : public rclcpp::Node
 
     
     double v_wheels_[4]  = {0.0,0.0,0.0,0.0};
+    double pwm_wheels_[4] = {0.0,0.0,0.0,0.0};
+    double recv_buf_[8]  = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
     double v_robot_[3]   = {0.0,0.0,0.0};
 
 
