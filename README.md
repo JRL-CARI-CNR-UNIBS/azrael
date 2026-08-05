@@ -57,7 +57,7 @@ ros2 launch azrael_app base_bringup.launch.yml
 ros2 launch azrael_app ur_bringup.launch.py
 ```
 
-Example:
+Example (use `fake_ur:=true` to skip using the real UR robot):
 ```bash
 ros2 launch azrael_app ur_bringup.launch.py fake_ur:=false gripper:=robotiq-2f-140
 ```
