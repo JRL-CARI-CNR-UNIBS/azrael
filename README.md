@@ -91,3 +91,17 @@ ros2 launch azrael_app joy.launch.yml
 ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args -r /cmd_vel:=/azrael/cmd_vel
 ```
+
+### Localization (on GINO)
+In one terminal 
+```bash
+cd /home/gino/projects/mobile_robots_ws
+source install/setup.bash 
+ros2 launch azrael_fusion azrael_fusion_rf2o_REAL.launch.py 
+```
+In another terminal
+```bash
+cd /home/gino/projects/mobile_robots_ws
+source install/setup.bash
+ros2 run robot_localization ekf_node --ros-args --params-file src/azrael_fusion/config/ekf_plicp_REAL.yaml
+```
