@@ -54,11 +54,13 @@ ros2 launch azrael_app base_bringup.launch.yml
 #### 2.2 UR manipulator + gripper bringup
 
 ```bash
-ros2 launch azrael_app ur_bringup.launch.py
+ros2 launch azrael_app ur_bringup.launch.py 
 ```
 
 Example (use `fake_ur:=true` to skip using the real UR robot):
 ```bash
+cd /home/gino/projects/mobile_robots_ws
+source install/setup.bash
 ros2 launch azrael_app ur_bringup.launch.py fake_ur:=false gripper:=robotiq-2f-140
 ```
 
@@ -69,6 +71,8 @@ Available grippers:
 ### 3. Navigation & localization (remote PC)
 
 ```bash
+cd /home/gino/projects/mobile_robots_ws
+source install/setup.bash
 ros2 launch azrael_app nav.launch.yml
 ```
 This starts the navigation stack (map server, planner, controller, AMCL, etc.).
@@ -76,6 +80,8 @@ This starts the navigation stack (map server, planner, controller, AMCL, etc.).
 ### 4. Visualization (remote RViz)
 
 ```bash
+cd /home/gino/projects/mobile_robots_ws
+source install/setup.bash 
 ros2 launch azrael_app remote_rviz.launch.py
 ```
 
@@ -83,6 +89,8 @@ ros2 launch azrael_app remote_rviz.launch.py
 
 ### Joystick
 ```bash
+cd /home/gino/projects/mobile_robots_ws
+source install/setup.bash
 ros2 launch azrael_app joy.launch.yml
 ```
 
