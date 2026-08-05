@@ -27,6 +27,7 @@ Collection of ROS 2 packages for the Azrael mobile manipulator, developed at STI
 |---|---|
 | RPI4 (base) | `ubuntu@192.168.1.10` |
 | NUC (onboard PC) | `pauli@192.168.1.128` |
+| Workstation | `gino@192.168.1.2` |
 
 ## Quick Start
 
