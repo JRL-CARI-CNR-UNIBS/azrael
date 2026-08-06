@@ -1,0 +1,4 @@
+services:
+  - module: azrael_manager.services
+    classes:
+     - active_ur

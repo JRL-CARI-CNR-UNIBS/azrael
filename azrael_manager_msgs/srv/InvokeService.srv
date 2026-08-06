@@ -1,0 +1,12 @@
+# Service to invoke
+string service
+
+# parameters needed by the service
+string[] parameters
+
+---
+
+int8 SUCCESS=0
+int8 FAILED=1
+int8 error_code
+string error_message
