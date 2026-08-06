@@ -29,7 +29,7 @@ launch:
       output: "screen"
 
   - node:
-      pkg: sick_scan
+      pkg: sick_scan_xd
       exec: sick_generic_caller
       namespace: $(var namespace)
       output: screen
