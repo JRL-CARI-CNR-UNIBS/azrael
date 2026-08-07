@@ -7,9 +7,7 @@ import ipaddress
 class ActivateMotorDriver(Interface):
     def __init__(self):
         self._name_service = "activate_motor_driver"
-        self._parameter_definitions = {
-            'ip' : ParameterTypes.STRING
-        }
+        self._parameter_definitions = {}
 
     def on_configure(self) -> None:
         pass

@@ -7,14 +7,21 @@ class UrBringup(Interface):
     def __init__(self):
         super().__init__()
 
+        self.AVAILABLE_GRIPPERS = ['None', 'robotiq-2f-85', 'robotiq-2f-140']
+
         self._name_service = "ur_bringup"
 
         self._parameter_definitions = {
-            "fake"      : ParameterTypes.BOOL,
-            "gripper"   : ParameterTypes.STRING
+            "fake"      : {
+                'type' : ParameterTypes.BOOL,
+                'description' : 'fake hardware or not'
+            },
+            "gripper"   : {
+                'type' : ParameterTypes.STRING,
+                'description' : f'gripper to mount. Available: {self.AVAILABLE_GRIPPERS}'
+            }
         }
 
-        self.AVAILABLE_GRIPPERS = ['None', 'robotiq-2f-85', 'robotiq-2f-140']
 
     def on_configure(self) -> None:
         pass

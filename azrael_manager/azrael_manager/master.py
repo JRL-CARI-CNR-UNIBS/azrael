@@ -81,7 +81,8 @@ class AzraelMasterNode(Node):
             res.error_code = InvokeService.Response.FAILED
             res.error_message = message
         selected = self._available_services[req.service]
-        res.error_code, res.error_message = selected.list_parameters()
+        res.parameter_names, res.parameter_types, res.parameter_descriptions, res.error_code, res.error_message = selected.list_parameters()
+        return res
 
 
 def main():

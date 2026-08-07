@@ -1,4 +1,4 @@
-from azrael_manager_msgs.srv import InvokeService
+from azrael_manager_msgs.srv import InvokeService, GetParameterList
 from azrael_manager.parameter_types import ParameterTypes
 from abc import ABC, abstractmethod
 import subprocess
@@ -10,7 +10,7 @@ class Interface(ABC):
 
     def __init__(self):
         self._name_service: str = ""
-        self._parameter_definitions: dict[str, int] = {}
+        self._parameter_definitions: dict[str, dict] = {}
         self._last_call_parameters = {}
         self.logger = None
 
@@ -30,18 +30,20 @@ class Interface(ABC):
     def run(self) -> subprocess.Popen:
         pass
 
-    # @abstractmethod
-    def list_parameters(self) -> str:
-        msg = ""
-        for s, t in self._parameter_definitions:
-            msg += f"parameter: {s}, type: {ParameterTypes.as_string(t)}\n"
-        return msg
-
+    def list_parameters(self) -> tuple[list[str], list[str], list[str], int, str]:
+        names = []
+        types = []
+        descs = []
+        for p, d in self._parameter_definitions.items():
+            names.append(p)
+            types.append(ParameterTypes.as_string(d['types']))
+            descs.append(d['description'])
+        return names, types, descs, GetParameterList.Response.SUCCESS, "No problem"
 
     def get_name(self) -> str:
         return self._name_service
 
-    def get_parameters_definition(self) -> dict[str, int]:
+    def get_parameters_definition(self) -> dict[str, dict]:
         return self._parameter_definitions
 
     def validate_parameters(self, param_list: list[str]) -> tuple[int, str]:
@@ -55,7 +57,7 @@ class Interface(ABC):
                 p = token
             else:
                 # Is value
-                t = self._parameter_definitions[p]
+                t = self._parameter_definitions[p]['type']
                 v = None
                 if t == ParameterTypes.STRING:
                     v = token
