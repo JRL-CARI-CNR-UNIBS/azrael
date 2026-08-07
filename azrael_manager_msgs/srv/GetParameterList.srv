@@ -1,0 +1,11 @@
+string service
+---
+string[] parameter_names
+string[] parameter_types
+string[] parameter_descriptions
+
+int8 SUCCESS=0
+int8 FAILED=1
+
+int8 error_code
+string error_message

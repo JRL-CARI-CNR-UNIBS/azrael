@@ -3,7 +3,7 @@ import rclpy.logging
 from rclpy.node import Node
 
 from azrael_manager.interface import Interface
-from azrael_manager_msgs.srv import InvokeService
+from azrael_manager_msgs.srv import InvokeService, GetParameterList
 
 import subprocess
 import importlib
@@ -18,6 +18,7 @@ class AzraelMasterNode(Node):
         super().__init__("__azrael_manager__")
 
         self.invoke_launcher = self.create_service(srv_type=InvokeService, srv_name="/azrael/system/invoke_service", callback=self.handle_service)
+        self.list_param_server = self.create_service(srv_type=GetParameterList, srv_name="/azrael/system/get_parameters_for_service", callback=self.list_parameters_callback)
         self._defined_modules_and_classes: dict[str, list[str]] = {}
         self._available_services: dict[str, Interface] = {}
         self._procs: dict[str, subprocess.Popen] = {}
@@ -72,6 +73,15 @@ class AzraelMasterNode(Node):
                 self.add_service(k, c)
 
         return True
+
+    def list_parameters_callback(self, req: GetParameterList.Request, res: GetParameterList.Response):
+        if req.service not in self._available_services:
+            message = f'Service requested [{req.service}] is not available'
+            self.get_logger().error(message)
+            res.error_code = InvokeService.Response.FAILED
+            res.error_message = message
+        selected = self._available_services[req.service]
+        res.error_code, res.error_message = selected.list_parameters()
 
 
 def main():

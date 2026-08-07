@@ -30,6 +30,14 @@ class Interface(ABC):
     def run(self) -> subprocess.Popen:
         pass
 
+    # @abstractmethod
+    def list_parameters(self) -> str:
+        msg = ""
+        for s, t in self._parameter_definitions:
+            msg += f"parameter: {s}, type: {ParameterTypes.as_string(t)}\n"
+        return msg
+
+
     def get_name(self) -> str:
         return self._name_service
 
