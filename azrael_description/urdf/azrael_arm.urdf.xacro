@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
-<robot name="azrael" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:include filename="azrael/azrael_base.xacro"/>
+<robot name="azrael_arm" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:include filename="azrael/azrael_arm.xacro"/>
 
   <xacro:arg name="name" default="ur"/>
@@ -9,7 +8,6 @@
   <xacro:arg name="gripper" default="None"/>
   <xacro:property name="gripper" value="$(arg gripper)"/>
   <xacro:arg name="prefix" default="azrael/"/>
-
   <xacro:arg name="joint_limit_params" default="$(find azrael_description)/config/$(arg ur_type)/joint_limits.yaml"/>
   <xacro:arg name="kinematics_params" default="$(find azrael_description)/config/$(arg ur_type)/default_kinematics.yaml"/>
   <xacro:arg name="physical_params" default="$(find azrael_description)/config/$(arg ur_type)/physical_parameters.yaml"/>
@@ -33,7 +31,7 @@
   <xacro:arg name="fake_sensor_commands" default="true"/>
   <xacro:arg name="sim_gazebo" default="false"/>
   <xacro:arg name="sim_ignition" default="false"/>
-  <xacro:arg name="generate_ros2_control_tag" default="true"/>
+  <xacro:arg name="generate_ros2_control_tag" default="false"/>
   <xacro:arg name="script_filename" default="$(find ur_client_library)/resources/external_control.urscript"/>
   <xacro:arg name="output_recipe_filename" default="$(find ur_robot_driver)/resources/rtde_output_recipe.txt"/>
   <xacro:arg name="input_recipe_filename" default="$(find ur_robot_driver)/resources/rtde_input_recipe.txt"/>
@@ -45,9 +43,6 @@
   <xacro:arg name="non_blocking_read" default="true"/>
   <xacro:arg name="keep_alive_count" default="2"/>
 
-  <xacro:property name="M_PI" value="3.14159"/>
-  <xacro:azrael_base prefix="$(arg prefix)">
-    <origin xyz="0 0 0" rpy="0 0 -${M_PI/2}"/>
-  </xacro:azrael_base>
+  <link name="$(arg prefix)base_footprint"/>
   <xacro:azrael_arm parent="$(arg prefix)base_footprint"/>
 </robot>

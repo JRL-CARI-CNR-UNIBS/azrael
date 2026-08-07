@@ -15,6 +15,20 @@ launch:
         - value: "mola"
         - value: "rf2o"
 
+  - arg:
+      name: base_robot_description
+      default: "$(command 'xacro $(find-pkg-share azrael_description)/urdf/azrael_base.urdf.xacro prefix:=$(var namespace)/')"
+      description: "Base and lidar robot description"
+
+  - node:
+      pkg: robot_state_publisher
+      exec: robot_state_publisher
+      name: base_robot_state_publisher
+      output: both
+      param:
+        - name: robot_description
+          value: "$(var base_robot_description)"
+
   - node:
       pkg: azrael_driver_udp
       exec: azrael_driver_udp_node

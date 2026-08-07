@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<robot name="azrael_base" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="azrael/azrael_base.xacro"/>
+  <xacro:arg name="prefix" default="azrael/"/>
+  <xacro:property name="M_PI" value="3.14159"/>
+
+  <xacro:azrael_base prefix="$(arg prefix)">
+    <origin xyz="0 0 0" rpy="0 0 -${M_PI/2}"/>
+  </xacro:azrael_base>
+</robot>

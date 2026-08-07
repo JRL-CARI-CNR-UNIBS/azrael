@@ -16,6 +16,7 @@
   <depend>ur_client_library</depend>
   <depend>ur_robot_driver</depend>
   <depend>robotiq_description</depend>
+  <exec_depend>xacro</exec_depend>
   
 
   <export>

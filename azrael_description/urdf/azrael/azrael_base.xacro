@@ -10,7 +10,7 @@
   <xacro:property name="base_y_size" value="0.55" />
   <xacro:property name="base_z_size" value="0.35" />
 
-  <xacro:macro name="azrael" params="prefix *origin">
+  <xacro:macro name="azrael_base" params="prefix *origin">
 
     <!-- Base footprint is on the ground under the robot -->
     <link name="${prefix}base_footprint">

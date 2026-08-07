@@ -1,5 +1,5 @@
 from launch_ros.actions import Node, PushRosNamespace
-from launch_ros.parameter_descriptions import ParameterFile
+from launch_ros.parameter_descriptions import ParameterFile, ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
@@ -7,12 +7,13 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction, GroupAction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import (
     AndSubstitution,
+    Command,
+    FindExecutable,
     LaunchConfiguration,
     NotSubstitution,
     PathJoinSubstitution,
     PythonExpression,
 )
-
 from moveit_configs_utils import MoveItConfigsBuilder
 from launch.some_substitutions_type import SomeSubstitutionsType
 
@@ -39,6 +40,7 @@ def launch_setup(context, *args, **kwargs):
     moveit_controllers_path = PathJoinSubstitution([FindPackageShare('azrael_moveit_config'), 'config', 'moveit_controllers.yaml']).perform(context)
 
     robot_description_path = PathJoinSubstitution([FindPackageShare('azrael_description'), 'urdf', 'system.urdf.xacro']).perform(context)
+    arm_description_path = PathJoinSubstitution([FindPackageShare('azrael_description'), 'urdf', 'azrael_arm.urdf.xacro'])
     robot_description_args : dict[SomeSubstitutionsType, SomeSubstitutionsType] = {
         'robot_ip' : robot_ip.perform(context),
         'fake_ur' : fake_ur.perform(context),
@@ -67,6 +69,21 @@ def launch_setup(context, *args, **kwargs):
     )
 
     robot_description = moveit_config.robot_description
+    arm_robot_description = {
+        'robot_description': ParameterValue(
+            Command([
+                FindExecutable(name='xacro'),
+                ' ',
+                arm_description_path,
+                ' robot_ip:=', robot_ip,
+                ' fake_ur:=', fake_ur,
+                ' prefix:=', prefix, '/',
+                ' gripper:=', gripper,
+                ' generate_ros2_control_tag:=false',
+            ]),
+            value_type=str,
+        )
+    }
 
     initial_joint_controllers = PathJoinSubstitution(
         [FindPackageShare('azrael_app'), 'config', 'control_params.yaml']
@@ -151,11 +168,12 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # RSP
-    robot_state_publisher_node = Node(
+    arm_robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
+        name='arm_robot_state_publisher',
         output='both',
-        parameters=[robot_description],
+        parameters=[arm_robot_description],
     )
 
     # Spawn controllers
@@ -271,7 +289,7 @@ def launch_setup(context, *args, **kwargs):
         dashboard_client_node,
         controller_stopper_node,
         urscript_interface,
-        robot_state_publisher_node,
+        arm_robot_state_publisher_node,
         initial_joint_controller_spawner_stopped,
         initial_joint_controller_spawner_started,
         *controller_spawners,
