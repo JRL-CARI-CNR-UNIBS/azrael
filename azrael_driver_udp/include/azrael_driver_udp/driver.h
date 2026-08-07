@@ -76,6 +76,8 @@ class azrael_driver : public rclcpp::Node
     double posy_odom = 0.0;
     double posw_odom = 0.0;
 
+    bool publish_odom_tf_ = true;
+
     Iir::Butterworth::LowPass<2> fx;
     Iir::Butterworth::LowPass<2> fy;
     Iir::Butterworth::LowPass<2> fw;

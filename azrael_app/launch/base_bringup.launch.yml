@@ -6,11 +6,36 @@ launch:
       default: "azrael"
       description: "Nodes namespace"
 
+  - arg:
+      name: odometry
+      default: "raw"
+      description: "Odometry source"
+      choice:
+        - value: "raw"
+        - value: "mola"
+        - value: "rf2o"
+
   - node:
       pkg: azrael_driver_udp
       exec: azrael_driver_udp_node
       namespace: $(var namespace)
       output: log
+      remap:
+        - from: "odom_raw"
+          to: '$(eval "''odom'' if ''$(var odometry)'' == ''raw'' else ''odom_raw''")'
+      param:
+        - name: publish_odom_tf
+          type: bool
+          value: '$(eval "''True'' if ''$(var odometry)'' == ''raw'' else ''False''")'
+
+  - include:
+      file: "$(find-pkg-share azrael_fusion)/launch/azrael_odometry_fusion.launch.yml"
+      if: '$(eval "''$(var odometry)'' != ''raw''")'
+      arg:
+        - name: namespace
+          value: "$(var namespace)"
+        - name: odometry
+          value: "$(var odometry)"
 
   - node:
       pkg: topic_tools
