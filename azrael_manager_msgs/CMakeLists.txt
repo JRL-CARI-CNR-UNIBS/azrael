@@ -11,6 +11,8 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/InvokeService.srv"
+  "srv/GetParameterList.srv"
+  "srv/KillService.srv"
 )
 
 if(BUILD_TESTING)

@@ -1,0 +1,11 @@
+string service
+
+int8 TERMINATE = 15
+int8 KILL = 9
+int8 signal
+
+---
+int8 SUCCESS=0
+int8 FAILED=1
+int8 error_code
+string error_message
