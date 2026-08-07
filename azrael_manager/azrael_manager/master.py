@@ -58,7 +58,7 @@ class AzraelMasterNode(Node):
                 for lt in yf['services']:
                     if lt['module'] and lt['classes']:
                         self._defined_modules_and_classes[lt['module']] = lt['classes']
-                        self.get_logger().info(f'Defined: module {lt['module']}, classes \n{lt['classes']}')
+                        self.get_logger().info(f"Defined: module {lt['module']}, classes \n{lt['classes']}")
 
         for k,v in self._defined_modules_and_classes:
             for c in v:
