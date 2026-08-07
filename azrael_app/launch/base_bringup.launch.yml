@@ -118,3 +118,6 @@ launch:
         value:  False
       - name: ros_qos
         value:  4
+      - name: tf_publish_rate
+        value: 0
+      
