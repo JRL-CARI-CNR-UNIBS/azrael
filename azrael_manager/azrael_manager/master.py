@@ -1,7 +1,7 @@
 from rclpy.node import Node
 import rclpy
 
-from .interface import Interface
+from azrael_manager.interface import Interface
 from azrael_manager_msgs.srv import InvokeService
 
 import subprocess
