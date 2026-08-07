@@ -1,0 +1,46 @@
+%YAML 1.2
+---
+launch:
+  - arg:
+      name: namespace
+      default: "azrael"
+      description: "Robot namespace and TF prefix"
+
+  - group:
+      - set_remap:
+          from: "/$(var namespace)/lidar_odometry/pose"
+          to: "/$(var namespace)/odom"
+
+      - include:
+          file: "$(find-pkg-share mola_lidar_odometry)/ros2-launchs/ros2-lidar-odometry.launch.py"
+          arg:
+            - name: namespace
+              value: "$(var namespace)"
+            - name: use_namespace
+              value: "True"
+            - name: use_namespaced_tf
+              value: "False"
+            - name: lidar_topic_name
+              value: "scan"
+            - name: lidar_topic_type
+              value: "LaserScan"
+            - name: mola_lo_pipeline
+              value: "../pipelines/lidar2d.yaml"
+            - name: mola_tf_base_link
+              value: "$(var namespace)/base_footprint"
+            - name: mola_lo_reference_frame
+              value: "$(var namespace)/odom"
+            - name: mola_state_estimator_reference_frame
+              value: "$(var namespace)/odom"
+            - name: publish_localization_following_rep105
+              value: "False"
+            - name: use_state_estimator
+              value: "False"
+            - name: use_imu_for_lio
+              value: "False"
+            - name: mola_deskew_method
+              value: "MotionCompensationMethod::Linear"
+            - name: use_mola_gui
+              value: "False"
+            - name: use_rviz
+              value: "False"
