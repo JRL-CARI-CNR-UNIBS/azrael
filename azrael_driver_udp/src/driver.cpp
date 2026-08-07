@@ -64,6 +64,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     wheel_msg_.name = {"front_right", "front_left", "back_left", "back_right"};
     wheel_msg_.velocity.resize(4);
+    wheel_msg_.effort.resize(4);
 
     timer_send   = this->create_wall_timer(8ms, std::bind(&azrael_driver::timer_udp_send, this));
     timer_rec    = this->create_wall_timer(5ms, std::bind(&azrael_driver::timer_udp_receive, this));
@@ -148,6 +149,10 @@ void azrael_driver::call_odom()
     wheel_msg_.velocity[1] = this->v_wheels_[1];
     wheel_msg_.velocity[2] = this->v_wheels_[2];
     wheel_msg_.velocity[3] = this->v_wheels_[3];
+    wheel_msg_.effort[0] = this->pwm_wheels_[0];
+    wheel_msg_.effort[1] = this->pwm_wheels_[1];
+    wheel_msg_.effort[2] = this->pwm_wheels_[2];
+    wheel_msg_.effort[3] = this->pwm_wheels_[3];
     joint_state_pub_->publish(wheel_msg_);
 
 
@@ -160,7 +165,9 @@ void azrael_driver::timer_udp_receive()
     // {
         {
             std::unique_lock<std::mutex> lock1(v_wheels_mutex_);
-            socket->receive_from(boost::asio::buffer(v_wheels_), local_endpoint);
+            socket->receive_from(boost::asio::buffer(recv_buf_), local_endpoint);
+            std::copy(recv_buf_, recv_buf_ + 4, v_wheels_);
+            std::copy(recv_buf_ + 4, recv_buf_ + 8, pwm_wheels_);
             // std::this_thread::sleep_for(std::chrono::microseconds(20000));
         }
     // }
