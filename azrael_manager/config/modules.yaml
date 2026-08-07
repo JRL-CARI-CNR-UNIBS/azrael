@@ -1,7 +1,13 @@
 services:
+  - module: azrael_manager.modules.module_base_bringup
+    classes:
+      - BaseBringup
   - module: azrael_manager.modules.module_ur_bringup
     classes:
       - UrBringup
   - module: azrael_manager.modules.module_base_driver
     classes:
       - ActivateMotorDriver
+  - module: azrael_manager.modules.module_camera_driver
+    classes:
+      - ActivateCameraDriver
