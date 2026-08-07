@@ -36,7 +36,7 @@ class Interface(ABC):
         descs = []
         for p, d in self._parameter_definitions.items():
             names.append(p)
-            types.append(ParameterTypes.as_string(d['types']))
+            types.append(ParameterTypes.as_string(d['type']))
             descs.append(d['description'])
         return names, types, descs, GetParameterList.Response.SUCCESS, "No problem"
 

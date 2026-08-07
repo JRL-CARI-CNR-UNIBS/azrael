@@ -17,7 +17,7 @@ class ActivateCameraDriver(Interface):
 
     def run(self) -> subprocess.Popen:
         proc = subprocess.Popen(
-            ['ssh', 'azrael_raspy_camera', '"ros2 launch realsense2_camera rs_launch.py   enable_depth:=false   enable_color:=true   enable_infra1:=false   enable_infra2:=false   enable_gyro:=true   enable_accel:=true   unite_imu_method:=2 rgb_camera.color_profile:=640x480x15"']
+            ['ssh', 'azrael_raspy_camera', '"source /home/ginocam/source_from_remote.sh && ros2 launch realsense2_camera rs_launch.py   enable_depth:=false   enable_color:=true   enable_infra1:=false   enable_infra2:=false   enable_gyro:=true   enable_accel:=true   unite_imu_method:=2 rgb_camera.color_profile:=640x480x15"']
         )
 
         return proc
