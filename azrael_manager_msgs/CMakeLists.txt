@@ -13,6 +13,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/InvokeService.srv"
   "srv/GetParameterList.srv"
   "srv/KillService.srv"
+  "srv/GetAvailableServices.srv"
 )
 
 if(BUILD_TESTING)

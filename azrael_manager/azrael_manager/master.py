@@ -4,7 +4,7 @@ from rclpy.node import Node
 from rclpy.duration import Duration
 
 from azrael_manager.interface import Interface
-from azrael_manager_msgs.srv import InvokeService, GetParameterList, KillService
+from azrael_manager_msgs.srv import InvokeService, GetParameterList, KillService, GetAvailableServices
 
 import subprocess
 import importlib
@@ -18,9 +18,10 @@ class AzraelMasterNode(Node):
     def __init__(self, fconfig):
         super().__init__("__azrael_manager__")
 
-        self.invoke_launcher = self.create_service(srv_type=InvokeService, srv_name="/azrael/system/invoke_service", callback=self.handle_service_callback)
-        self.list_param_server = self.create_service(srv_type=GetParameterList, srv_name="/azrael/system/get_parameters_for_service", callback=self.list_parameters_callback)
-        self.kill_server = self.create_service(srv_type=KillService, srv_name="/azrael/system/kill_service", callback=self.kill_service_callback)
+        self.invoke_launcher = self.create_service(srv_type=InvokeService, srv_name="/azrael/manager/invoke_service", callback=self.handle_service_callback)
+        self.list_param_server = self.create_service(srv_type=GetParameterList, srv_name="/azrael/manager/get_parameters_for_service", callback=self.list_parameters_callback)
+        self.kill_server = self.create_service(srv_type=KillService, srv_name="/azrael/manager/kill_service", callback=self.kill_service_callback)
+        self.list_available_services = self.create_service(srv_type=GetAvailableServices, srv_name="/azrael/manager/get_available_service", callback=self.list_available_services_callback)
         self._defined_modules_and_classes: dict[str, list[str]] = {}
         self._available_services: dict[str, Interface] = {}
         self._procs: dict[str, subprocess.Popen] = {}
@@ -89,6 +90,10 @@ class AzraelMasterNode(Node):
         if selected == None:
             return res
         res.parameter_names, res.parameter_types, res.parameter_descriptions, res.error_code, res.error_message = selected.list_parameters()
+        return res
+
+    def list_available_services_callback(self, req: GetAvailableServices.Request, res: GetAvailableServices.Response):
+        res.services = list(self._available_services.keys())
         return res
 
     def kill_service_callback(self, req: KillService.Request, res: KillService.Response):
