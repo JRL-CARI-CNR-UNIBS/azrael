@@ -16,7 +16,7 @@ class UrBringup(Interface):
 
         self.AVAILABLE_GRIPPERS = ['None', 'robotiq-2f-85', 'robotiq-2f-140']
 
-    def configure(self) -> None:
+    def on_configure(self) -> None:
         pass
 
     def run(self) -> subprocess.Popen:
@@ -27,6 +27,7 @@ class UrBringup(Interface):
         return proc
 
     def on_validate_parameters(self, pars: dict) -> tuple[int, str]:
+        self.logger.debug(f"pars fed: {[pars]}")
         if 'gripper' not in pars:
             pars['gripper'] = 'None'
         elif pars['gripper'] not in self.AVAILABLE_GRIPPERS:
@@ -34,5 +35,8 @@ class UrBringup(Interface):
 
         if 'fake' not in pars:
             pars['fake'] = True
+
+
+        self.logger.debug(f"pars after validation: {[pars]}")
 
         return (InvokeService.Response.SUCCESS, "No problem")

@@ -1,5 +1,6 @@
-from rclpy.node import Node
 import rclpy
+import rclpy.logging
+from rclpy.node import Node
 
 from azrael_manager.interface import Interface
 from azrael_manager_msgs.srv import InvokeService
@@ -25,10 +26,16 @@ class AzraelMasterNode(Node):
 
     def handle_service(self, req: InvokeService.Request, res: InvokeService.Response):
         if req.service not in self._available_services:
-            self.get_logger().error(f'Service requested [{req.service}] is not available')
+            message = f'Service requested [{req.service}] is not available'
+            self.get_logger().error(message)
+            res.error_code = InvokeService.Response.FAILED
+            res.error_message = message
         selected = self._available_services[req.service]
-        selected.validate_parameters(req.parameters)
+        self.get_logger().debug(req.parameters)
+        res.error_code, res.error_message = selected.validate_parameters(req.parameters)
         self._procs[req.service] = selected.run()
+        return res
+
 
     def add_service(self, module_name: str, class_name: str) -> None:
         modl = importlib.import_module(module_name)
@@ -39,7 +46,7 @@ class AzraelMasterNode(Node):
             return
 
         srv = clss()
-        srv.configure()
+        srv.configure(rclpy.logging.get_logger(srv.get_name()))
         self._available_services[srv.get_name()] = srv
 
         return

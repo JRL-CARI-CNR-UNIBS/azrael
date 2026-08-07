@@ -3,6 +3,7 @@ from azrael_manager.parameter_types import ParameterTypes
 from abc import ABC, abstractmethod
 import subprocess
 import rclpy
+import rclpy.logging
 import ast
 
 class Interface(ABC):
@@ -11,9 +12,14 @@ class Interface(ABC):
         self._name_service: str = ""
         self._parameter_definitions: dict[str, int] = {}
         self._last_call_parameters = {}
+        self.logger = None
+
+    def configure(self, logger) -> None:
+        self.logger = logger
+        self.on_configure()
 
     @abstractmethod
-    def configure(self) -> None:
+    def on_configure(self) -> None:
         pass
 
     @abstractmethod
@@ -61,9 +67,11 @@ class Interface(ABC):
                        not (t == ParameterTypes.FLOAT_ARRAY and all(isinstance(k, float) for k in val)) and \
                        not (t == ParameterTypes.STRING_ARRAY and all(isinstance(k, str) for k in val)):
                            return (InvokeService.Response.FAILED, f"Value [{token}] of parameter [{p}] is of wrong type: {t}")
+                    v = val
 
-                    pars[p] = v
-                    p = ""
+                pars[p] = v
+                self.logger.debug(f"parameter: {'p'}, value: {'v'}")
+                p = ""
 
         local_err = self.on_validate_parameters(pars)
         if local_err[0] != InvokeService.Response.SUCCESS:
