@@ -1,4 +1,7 @@
 services:
-  - module: azrael_manager.services.ur_bringup
+  - module: azrael_manager.modules.module_ur_bringup
     classes:
-     - UrBringup
+      - UrBringup
+  - module: azrael_manager.modules.module_base_driver
+    classes:
+      - ActivateMotorDriver
