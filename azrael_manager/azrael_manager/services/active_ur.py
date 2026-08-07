@@ -1,6 +1,6 @@
-from ..parameter_types import  ParameterTypes
+from azrael_manager.parameter_types import  ParameterTypes
+from azrael_manager.interface import Interface
 from azrael_manager_msgs.srv import InvokeService
-from ..interface import Interface
 import subprocess
 
 class UrBringup(Interface):

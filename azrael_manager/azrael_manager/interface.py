@@ -1,5 +1,5 @@
 from azrael_manager_msgs.srv import InvokeService
-from parameter_types import ParameterTypes
+from azrael_manager.parameter_types import ParameterTypes
 from abc import ABC, abstractmethod
 import subprocess
 import rclpy
