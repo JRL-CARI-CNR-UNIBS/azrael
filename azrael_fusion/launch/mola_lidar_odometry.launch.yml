@@ -7,6 +7,16 @@ launch:
       description: "Robot namespace and TF prefix"
 
   - group:
+      # lidar_odometry_ros2.yaml reads MOLA_TF_BASE_LINK as base_link_frame 
+      # (base_link_frame: "${MOLA_TF_BASE_LINK|base_link}" )and
+      # MOLA_TF_FOOTPRINT_LINK as its optional base_footprint_frame. Since the
+      # configured MOLA base link is already azrael/base_footprint, disable the
+      # optional frame to avoid the redundant static TF
+      # azrael/base_footprint -> base_footprint (without namespace).
+      - set_env:
+          name: MOLA_TF_FOOTPRINT_LINK
+          value: ""
+
       - set_remap:
           from: "/$(var namespace)/lidar_odometry/pose"
           to: "/$(var namespace)/odom"
