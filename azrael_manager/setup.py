@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+from glob import glob
+import os
 
 package_name = 'azrael_manager'
 
@@ -10,6 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml'))
     ],
     package_data={'': ['py.typed']},
     install_requires=['setuptools'],
@@ -25,6 +28,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'manager = azrael_manager.master:main'
         ],
     },
 )
