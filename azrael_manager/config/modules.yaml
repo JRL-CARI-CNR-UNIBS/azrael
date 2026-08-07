@@ -1,4 +1,4 @@
 services:
-  - module: azrael_manager.services
+  - module: azrael_manager.services.ur_bringup
     classes:
      - UrBringup

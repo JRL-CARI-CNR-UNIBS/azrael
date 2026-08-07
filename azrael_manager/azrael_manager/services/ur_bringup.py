@@ -21,7 +21,7 @@ class UrBringup(Interface):
 
     def run(self) -> subprocess.Popen:
         proc = subprocess.Popen(
-            ['ros2', 'launch', 'azrael_bringup', 'ur_bringup.launch.py', f'fake_ur:={self._last_call_parameters['fake']}', f'gripper:={self._last_call_parameters['gripper']}']
+            ['ros2', 'launch', 'azrael_app', 'ur_bringup.launch.py', f"fake_ur:={self._last_call_parameters['fake']}", f"gripper:={self._last_call_parameters['gripper']}"]
         )
 
         return proc
