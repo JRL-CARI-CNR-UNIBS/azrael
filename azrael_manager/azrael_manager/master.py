@@ -60,7 +60,7 @@ class AzraelMasterNode(Node):
                         self._defined_modules_and_classes[lt['module']] = lt['classes']
                         self.get_logger().info(f"Defined: module {lt['module']}, classes \n{lt['classes']}")
 
-        for k,v in self._defined_modules_and_classes:
+        for k,v in self._defined_modules_and_classes.items():
             for c in v:
                 self.add_service(k, c)
 
