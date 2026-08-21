@@ -1,0 +1,58 @@
+%YAML 1.2
+---
+launch:
+  - arg:
+      name: namespace
+      default: "azrael"
+      description: "Robot namespace and TF prefix"
+
+  - group:
+      # lidar_odometry_ros2.yaml reads MOLA_TF_BASE_LINK as base_link_frame 
+      # (base_link_frame: "${MOLA_TF_BASE_LINK|base_link}" )and
+      # MOLA_TF_FOOTPRINT_LINK as its optional base_footprint_frame. Since the
+      # configured MOLA base link is already azrael/base_footprint, disable the
+      # optional frame to avoid the redundant static TF
+      # azrael/base_footprint -> base_footprint (without namespace).
+      - set_env:
+          name: MOLA_TF_FOOTPRINT_LINK
+          value: ""
+
+      - set_remap:
+          from: "/$(var namespace)/lidar_odometry/pose"
+          to: "/$(var namespace)/odom"
+
+      - include:
+          file: "$(find-pkg-share mola_lidar_odometry)/ros2-launchs/ros2-lidar-odometry.launch.py"
+          arg:
+            - name: namespace
+              value: "$(var namespace)"
+            - name: use_namespace
+              value: "True"
+            - name: use_namespaced_tf
+              value: "False"
+            - name: lidar_topic_name
+              value: "scan"
+            - name: lidar_topic_type
+              value: "LaserScan"
+            - name: mola_lo_pipeline
+              value: "../pipelines/lidar2d.yaml"
+            - name: mola_tf_base_link
+              value: "$(var namespace)/base_footprint"
+            - name: mola_lo_reference_frame
+              value: "$(var namespace)/odom"
+            - name: mola_state_estimator_reference_frame
+              value: "$(var namespace)/odom"
+            - name: publish_localization_following_rep105
+              value: "False"
+            - name: use_state_estimator
+              value: "False"
+            - name: use_imu_for_lio
+              value: "False"
+            - name: mola_deskew_method
+              value: "MotionCompensationMethod::Linear"
+            - name: use_mola_gui
+              value: "False"
+            - name: use_rviz
+              value: "False"
+            - name: imu_topic_name
+              value: "__disabled_imu"

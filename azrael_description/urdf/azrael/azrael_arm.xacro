@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<robot name="azrael_arm_macros" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+
+  <xacro:macro name="azrael_arm" params="parent">
+    <xacro:property name="M_PI" value="3.14159"/>
+
+    <xacro:ur_robot
+      name="$(arg name)"
+      tf_prefix="$(arg prefix)"
+      parent="${parent}"
+      joint_limits_parameters_file="$(arg joint_limit_params)"
+      kinematics_parameters_file="$(arg kinematics_params)"
+      physical_parameters_file="$(arg physical_params)"
+      visual_parameters_file="$(arg visual_params)"
+      safety_limits="$(arg safety_limits)"
+      safety_pos_margin="$(arg safety_pos_margin)"
+      safety_k_position="$(arg safety_k_position)"
+      use_fake_hardware="$(arg fake_ur)"
+      generate_ros2_control_tag="$(arg generate_ros2_control_tag)"
+      transmission_hw_interface="$(arg transmission_hw_interface)"
+      fake_sensor_commands="$(arg fake_sensor_commands)"
+      sim_gazebo="$(arg sim_gazebo)"
+      sim_ignition="$(arg sim_ignition)"
+      headless_mode="$(arg headless_mode)"
+      initial_positions="${dict(shoulder_pan_joint=1.0,shoulder_lift_joint=-2.30,elbow_joint=2.26,wrist_1_joint=-0.43,wrist_2_joint=0.75,wrist_3_joint=0.0)}"
+      use_tool_communication="$(arg use_tool_communication)"
+      tool_voltage="$(arg tool_voltage)"
+      tool_parity="$(arg tool_parity)"
+      tool_baud_rate="$(arg tool_baud_rate)"
+      tool_stop_bits="$(arg tool_stop_bits)"
+      tool_rx_idle_chars="$(arg tool_rx_idle_chars)"
+      tool_tx_idle_chars="$(arg tool_tx_idle_chars)"
+      tool_device_name="$(arg tool_device_name)"
+      tool_tcp_port="$(arg tool_tcp_port)"
+      robot_ip="$(arg robot_ip)"
+      script_filename="$(arg script_filename)"
+      output_recipe_filename="$(arg output_recipe_filename)"
+      input_recipe_filename="$(arg input_recipe_filename)"
+      reverse_port="$(arg reverse_port)"
+      script_sender_port="$(arg script_sender_port)"
+      reverse_ip="$(arg reverse_ip)"
+      script_command_port="$(arg script_command_port)"
+      trajectory_port="$(arg trajectory_port)"
+      non_blocking_read="$(arg non_blocking_read)"
+      keep_alive_count="$(arg keep_alive_count)">
+      <origin xyz="0.0 0.0 0.28" rpy="0 0 -${M_PI/2}"/>
+    </xacro:ur_robot>
+
+    <xacro:if value="${gripper == 'robotiq-2f-85'}">
+      <xacro:include filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro"/>
+      <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro"/>
+      <xacro:ur_to_robotiq prefix="$(arg prefix)" parent="$(arg prefix)tool0" child="$(arg prefix)mount_to_robotiq" rotation="${M_PI}"/>
+      <xacro:robotiq_gripper name="RobotiqGripperHardwareInterface" prefix="$(arg prefix)" parent="$(arg prefix)mount_to_robotiq" use_fake_hardware="$(arg fake_ur)" com_port="/dev/ttyUSB1">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </xacro:robotiq_gripper>
+      <link name="$(arg prefix)tcp"/>
+      <joint name="$(arg prefix)tcpjoint" type="fixed">
+        <parent link="$(arg prefix)tool0"/>
+        <child link="$(arg prefix)tcp"/>
+        <origin xyz="0 0 0.171" rpy="0 0 0"/>
+      </joint>
+    </xacro:if>
+
+    <xacro:if value="${gripper == 'robotiq-2f-140'}">
+      <xacro:include filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro"/>
+      <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_140_macro.urdf.xacro"/>
+      <xacro:ur_to_robotiq prefix="$(arg prefix)" parent="$(arg prefix)tool0" child="$(arg prefix)mount_to_robotiq" rotation="${M_PI}"/>
+      <xacro:robotiq_gripper name="RobotiqGripperHardwareInterface" prefix="$(arg prefix)" parent="$(arg prefix)mount_to_robotiq" use_fake_hardware="$(arg fake_ur)" com_port="/dev/ttyUSB1">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </xacro:robotiq_gripper>
+      <link name="$(arg prefix)tcp"/>
+      <joint name="$(arg prefix)tcpjoint" type="fixed">
+        <parent link="$(arg prefix)tool0"/>
+        <child link="$(arg prefix)tcp"/>
+        <origin xyz="0 0 0.241" rpy="0 0 0"/>
+      </joint>
+    </xacro:if>
+  </xacro:macro>
+</robot>

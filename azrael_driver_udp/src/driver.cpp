@@ -15,6 +15,8 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     RCLCPP_INFO(this->get_logger(), "Constructor init");
 
+    publish_odom_tf_ = this->declare_parameter<bool>("publish_odom_tf", true);
+
     // if ( (sockfd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
     //     perror("socket creation failed");
     //     exit(EXIT_FAILURE);
@@ -55,7 +57,7 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
     fw.setup (samplingrate, cutoff_frequency);
 
     joint_state_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("azrael_joint_states", ODOM_QOS_PROFILE);
-    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom", ODOM_QOS_PROFILE);
+    odom_pub_    = this->create_publisher<nav_msgs::msg::Odometry>("odom_raw", ODOM_QOS_PROFILE);
     timer_odom_  = this->create_wall_timer(20ms, std::bind(&azrael_driver::call_odom, this));
     // timer_send   = this->create_wall_timer(20ms, std::bind(&azrael_driver::timer_udp_send, this));
     // timer_rec    = this->create_wall_timer(10ms, std::bind(&azrael_driver::timer_udp_receive, this));
@@ -72,7 +74,9 @@ azrael_driver::azrael_driver() : Node("azrael_driver")
 
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1, std::bind(&azrael_driver::cmd_vel_callback, this, _1));
 
-    tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
+    if (publish_odom_tf_) {
+        tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
+    }
 
     current_time = std::chrono::high_resolution_clock::now();
     last_time    = std::chrono::high_resolution_clock::now();
@@ -136,7 +140,9 @@ void azrael_driver::call_odom()
     t.transform.rotation.z = q.z();
     t.transform.rotation.w = q.w();
 
-    tf_broadcaster_->sendTransform(t);
+    if (publish_odom_tf_) {
+        tf_broadcaster_->sendTransform(t);
+    }
 
     wheel_msg_.header.stamp = t.header.stamp;
     wheel_msg_.velocity[0] = this->v_wheels_[0];

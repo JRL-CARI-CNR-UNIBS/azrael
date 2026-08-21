@@ -1,0 +1,65 @@
+%YAML 1.2
+---
+launch:
+  - arg:
+      name: namespace
+      default: "azrael"
+      description: "Nodes namespace"
+
+  - arg:
+      name: cov_rf2o_x
+      default: "0.01"
+      description: "RF2O covariance along the x axis"
+
+  - arg:
+      name: cov_rf2o_y
+      default: "0.01"
+      description: "RF2O covariance along the y axis"
+
+  - node:
+      pkg: rf2o_laser_odometry
+      exec: rf2o_laser_odometry_node
+      name: rf2o_laser_odometry
+      namespace: "$(var namespace)"
+      output: screen
+      param:
+        - name: laser_scan_topic
+          value: "scan"
+        - name: laser_frame_id
+          value: "$(var namespace)/laser"
+        - name: odom_topic
+          value: "odom_rf2o"
+        - name: publish_tf
+          value: false
+        - name: base_frame_id
+          value: "$(var namespace)/base_footprint"
+        - name: odom_frame_id
+          value: "$(var namespace)/odom"
+        - name: init_pose_from_topic
+          value: ""
+        - name: freq
+          value: 20.0
+        - name: cov_rf2o_x
+          value: "$(var cov_rf2o_x)"
+        - name: cov_rf2o_y
+          value: "$(var cov_rf2o_y)"
+        - name: use_sim_time
+          value: false
+
+  - node:
+      pkg: robot_localization
+      exec: ekf_node
+      name: ekf_filter_node
+      namespace: "$(var namespace)"
+      output: screen
+      param:
+        - from: "$(find-pkg-share azrael_fusion)/config/ekf_rf2o.yaml"
+        - name: odom_frame
+          value: "$(var namespace)/odom"
+        - name: world_frame
+          value: "$(var namespace)/odom"
+        - name: base_link_frame
+          value: "$(var namespace)/base_footprint"
+      remap:
+        - from: "odometry/filtered"
+          to: "odom"

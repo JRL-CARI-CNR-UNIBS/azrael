@@ -1,0 +1,62 @@
+azrael:
+  ekf_filter_node:
+    ros__parameters:
+      use_sim_time: false # use correct time for bag playback
+      reset_on_time_jump: true # reset time on each restart/jump
+      frequency: 30.0
+      two_d_mode: true # 2D plane mode
+      publish_tf: true # publish TF to visualize the transform
+      transform_time_offset: 0.1
+
+      map_frame: map
+      odom_frame: azrael/odom # 'azrael/odom' for rosbag, 'odom' for gazebo
+      base_link_frame: azrael/base_footprint # 'azrael/base_link' for rosbag, 'base_footprint' for gazebo
+      world_frame: azrael/odom  # odometry as world reference, 'azrael/odom' for rosbag, 'odom' for gazebo
+
+      # sensor 1: odometry
+      odom0: odom_raw
+      # [X,Y,Z,roll,pitch,yaw,X˙,Y˙,Z˙,roll˙,pitch˙,yaw˙,X¨,Y¨,Z¨]
+      # position, velocity, acceleration
+      # odometry 2D position only
+      odom0_config: [false,  false,  false,
+                    false, false, false,
+                    true, true, false,
+                    false, false, true, 
+                    false, false, false]
+      odom0_differential: false
+
+      # sensor 2: Laser Odometry (rf2o)
+      odom1: odom_rf2o
+      
+      # [X,Y,Z,roll,pitch,yaw,X_vel,Y_vel,Z_vel,roll_vel,pitch_vel,yaw_vel,X_acc,Y_acc,Z_acc]
+      odom1_config: [true,  true,  false,   # Posizione X e Y attive
+                    false, false, true,   
+                    false, false, false,
+                    false, false, false,
+                    false, false, false]
+      
+      # CRITICO: Differenziale deve essere true. L'EKF leggerà solo la *differenza* # tra le pose di rf2o, non la posizione assoluta. Questo evita salti improvvisi.
+      odom1_differential: true
+
+      # CRITICO: Disattiviamo il rigetto di Mahalanobis per rf2o.
+      # Poiché rf2o a volte spara covarianze strane o a zero, se lasciamo il controllo attivo
+      # l'EKF rifiuterà i pacchetti. Con un valore altissimo, lo forziamo ad accettarli.
+      odom1_mahalanobis_threshold: 1000.0
+      
+      use_control: false # set to true to use /cmd_vel for feed forward prediction
+      stamped_control: false # set to true if the control topic uses TwistStamped messages
+
+      # Which velocities are being controlled. Order is vx, vy, vz, vroll, vpitch, vyaw.
+      control_config: [true, true, false, false, false, true]
+
+      # Places limits on how large the acceleration term will be. Should match your robot's kinematics.
+      acceleration_limits: [4.0, 4.0, 0.0, 0.0, 0.0, 10.0]
+
+      # Acceleration and deceleration limits are not always the same for robots.
+      deceleration_limits: [4.0, 4.0, 0.0, 0.0, 0.0, 10.0]
+
+      # If your robot cannot instantaneously reach its acceleration limit, the permitted change can be controlled with these gains
+      acceleration_gains: [0.8, 0.8, 0.0, 0.0, 0.0, 0.8]
+
+      # If your robot cannot instantaneously reach its deceleration limit, the permitted change can be controlled with these gains
+      deceleration_gains: [1.0, 1.0, 0.0, 0.0, 0.0, 1.0]

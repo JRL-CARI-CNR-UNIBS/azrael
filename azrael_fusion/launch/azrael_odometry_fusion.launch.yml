@@ -1,0 +1,29 @@
+%YAML 1.2
+---
+launch:
+  - arg:
+      name: namespace
+      default: "azrael"
+      description: "Nodes namespace"
+
+  - arg:
+      name: odometry
+      default: "rf2o"
+      description: "Fused odometry source"
+      choice:
+        - value: "mola"
+        - value: "rf2o"
+
+  - include:
+      file: "$(find-pkg-share azrael_fusion)/launch/rf2o_odometry.launch.yml"
+      if: '$(eval "''$(var odometry)'' == ''rf2o''")'
+      arg:
+        - name: namespace
+          value: "$(var namespace)"
+
+  - include:
+      file: "$(find-pkg-share azrael_fusion)/launch/mola_lidar_odometry.launch.yml"
+      if: '$(eval "''$(var odometry)'' == ''mola''")'
+      arg:
+        - name: namespace
+          value: "$(var namespace)"
