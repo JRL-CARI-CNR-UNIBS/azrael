@@ -54,3 +54,5 @@ launch:
               value: "False"
             - name: use_rviz
               value: "False"
+            - name: imu_topic_name
+              value: "__disabled_imu"
